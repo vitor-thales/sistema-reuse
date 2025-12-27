@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Login</title>
+</head>
+<body>
+    <section class="grid grid-cols-7 h-full">
+        <div class="h-full col-span-2 bg-lightgray flex justify-center items-center">
+            <form id="form-login" class="flex flex-col">
+                <h1 class="text-4xl text-darkblue text-center mb-9">LOGIN</h1>
+                    <div class="relative flex justify-center">
+                        <input class="pl-13 pt-3 pb-3 pr-3 text-2xl focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" type="text" name="login" placeholder="E-mail ou CNPJ" />
+
+                        <div class="absolute left-3.5 top-2.5 text-darkblue">
+                            <i class="fa-solid fa-user text-4xl"></i>
+                        </div>
+                    </div>
+
+                    <div class="relative flex justify-center mt-9">
+                        <input class="pl-13 pt-3 pb-3 pr-3 text-2xl focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" type="password" name="senha" placeholder="Senha" />
+
+                        <div class="absolute left-3.5 top-2.5 text-darkblue">
+                            <i class="fa-solid fa-lock text-4xl"></i>
+                        </div>
+                    </div>
+
+                    <a class="text-sm text-gray-400 text-right underline mt-1.5" href="/recuperar-senha">Não lembro a minha senha</a>
+                    
+                    <div class="text-center mt-4">
+                        <button type="submit" class="py-3 px-20 text-2xl bg-mainblue text-white font-semibold rounded-[20px] hover:cursor-pointer" id="login">ENTRAR</button>
+                    </div>
+
+                <div class="grid grid-cols-7 items-center mt-8">
+                    <div class="bg-darkblue col-span-3 w-full h-px"></div>
+                    <p class="text-darkblue text-xl font-bold text-center">ou</p>
+                    <div class="bg-darkblue col-span-3 w-full h-px"></div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button type="button" onclick="window.location.href='http://localhost:8080/registrar'" class="py-3 px-17 text-2xl bg-white text-darkblue border-2 border-mainblue font-semibold hover:cursor-pointer rounded-[20px]">Criar uma Conta</button>
+                </div>
+            </form>
+        </div>
+        <div class="h-full col-span-5 bg-[url(../images/login_bg.png)] bg-no-repeat bg-cover flex flex-col justify-center items-center gap-2">
+            <h1 class="font-bold text-6xl text-white">Bem-vindo(a) de volta ao ReUse!</h1>
+            <p class="font-normal text-2xl text-white">O maior sistema de venda de resíduos eletrônicos do Brasil.</p>
+        </div>
+    </section>
+
+    <script src="../scripts/script.login.js"></script>
+</body>
+</html>
