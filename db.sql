@@ -15,7 +15,7 @@ CREATE TABLE tbEmpresas (
     foneCorporativo VARCHAR(11) UNIQUE NOT NULL,
     nomeResponsavel VARCHAR(80) NOT NULL,
     cpfResponsavel VARCHAR(11) UNIQUE NOT NULL,
-    senhaHash VARCHAR(255),
+    senhaHash VARCHAR(255) NOT NULL,
     cepEmpresa VARCHAR(8) NOT NULL,
     estado VARCHAR(2) NOT NULL,
     cidade VARCHAR(40) NOT NULL,
