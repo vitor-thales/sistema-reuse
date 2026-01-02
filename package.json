@@ -5,6 +5,8 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
+    "tailwind": "npx @tailwindcss/cli -i public/styles/styles.input.css -o public/styles/styles.output.css --watch",
+    "dev:all": "concurrently \"npm run dev\" \"npm run tailwind\"",
     "start": "node src/server.js"
   },
   "repository": {
@@ -22,6 +24,7 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.1.18",
     "bcryptjs": "^3.0.3",
+    "concurrently": "^9.2.1",
     "cookie-parser": "^1.4.7",
     "cookieparser": "^0.1.0",
     "dotenv": "^17.2.3",
