@@ -12,6 +12,6 @@ app.use(express.static(path.join(publicDir)));
 app.use(cookieParser());
 
 app.use("/login", loginRoute);
-app.use("/landingPage", landingPageRoute);
+app.use("/", landingPageRoute);
 
 export default app;

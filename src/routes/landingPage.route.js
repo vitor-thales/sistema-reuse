@@ -5,7 +5,7 @@ import landingPageController from "../controllers/LP.controller.js";
 
 const router = Router();
 
-router.get("/landingPage", landingPageController.getPage);
+router.get("/", landingPageController.getPage);
 
 router.get("/check-login", (req, res) => {
     const token = req.cookies.reuseToken;
