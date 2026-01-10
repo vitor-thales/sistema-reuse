@@ -6,6 +6,7 @@ import { publicDir } from "../utils/paths.js";
 import { env } from "../config/env.js";
 import { generateToken } from "../utils/generateToken.js";
 
+import { getAnuncios } from "../models/anuncios.model.js";
 import { getEmpresaCredentials } from "../models/empresas.model.js";
 
 export default {
@@ -42,4 +43,28 @@ export default {
             res.status(500).json({ error: err });
         }
     },
+
+    async checkAuth(req, res) {
+        const token = req.cookies.reuseToken;
+
+        if (!token)
+            return res.json({ loggedIn: false });
+
+        try {
+            const decoded = jwt.verify(token, env.JWT_SECRET);
+            return res.json({ loggedIn: true, id: decoded.id });
+
+        } catch {
+            return res.json({ loggedIn: false });
+        }
+    },
+
+    async list(req, res) {
+        try {
+            const anuncios = await getAnuncios();
+            res.json(anuncios);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    }
 };
