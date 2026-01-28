@@ -19,7 +19,7 @@ CREATE TABLE tbEmpresas (
     cpfResponsavel VARCHAR(11) UNIQUE NOT NULL,
     senhaHash VARCHAR(255) NOT NULL,
     cepEmpresa VARCHAR(8) NOT NULL,
-    estado VARCHAR(2) NOT NULL,
+    estado VARCHAR(18) NOT NULL,
     cidade VARCHAR(40) NOT NULL,
     bairro VARCHAR(50) NOT NULL,
     endereco VARCHAR(70) NOT NULL,

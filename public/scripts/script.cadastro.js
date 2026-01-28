@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function handleRegisterForm(e, form) {
         e.preventDefault();
 
-        if(form.id == "terms-form") registerUser();
+        if(form.id == "terms-form") return registerUser(e);
 
         const formData = new FormData(form);
         const data = Object.fromEntries(formData)
@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!file) throw new Error("Arquivo inválido!");
 
         const maxSize = maxSizeMB * 1024 * 1024;
-        const allowedType = [
+        const allowedTypes = [
             "application/pdf",
             "image/png",
             "image/jpeg",
@@ -160,10 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const wrappingKey = await crypto.subtle.deriveKey(
             {
-                name: "PBJDF2",
+                name: "PBKDF2",
                 salt,
                 iterations: 150_000,
-                hash: "SHA256"
+                hash: "SHA-256"
             },
             baseKey,
             { name: "AES-GCM", length: 256},
@@ -181,15 +181,15 @@ document.addEventListener("DOMContentLoaded", () => {
     async function registerUser(event) {
         event.preventDefault();
 
-        const companyForm = new FormData(forms.getElementById("company-form"));
-        const addressForm = new FormData(forms.getElementById("address-form"));
-        const documentsForm = new FormData(forms.getElementById("documents-form"));
-        const termsForm = new FormData(forms.getElementById("terms-form"));
+        const companyForm = new FormData(document.getElementById("company-form"));
+        const addressForm = new FormData(document.getElementById("address-form"));
+        const documentsForm = new FormData(document.getElementById("documents-form"));
+        const termsForm = new FormData(document.getElementById("terms-form"));
 
         const data = {
             cnpj: stripMaskNumber(companyForm.get("cnpj")),
             razao_social: companyForm.get("razao-social"),
-            nome_fantasia: companyForm.get("nome-fantiasia"),
+            nome_fantasia: companyForm.get("nome-fantasia"),
             email_corp: companyForm.get("email-corp"),
             telefone: stripMaskNumber(companyForm.get("telefone")),
             nome_resp: companyForm.get("nome-responsavel"),
@@ -202,15 +202,15 @@ document.addEventListener("DOMContentLoaded", () => {
             endereco: addressForm.get("endereco"),
             numero: addressForm.get("numero"),
             complemento: addressForm.get("complemento"),
-            comprovante_end: getFileOrNull(documentsForm.get("comprovante_end")),
-            cartao_cnpj: getFileOrNull(documentsForm.get("cartao_cnpj")),
-            contrato_social: getFileOrNull(documentsForm.get("contrato_social"))
+            comprovante_end: getFileOrNull(documentsForm, "comprovante_end"),
+            cartao_cnpj: getFileOrNull(documentsForm, "cartao_cnpj"),
+            contrato_social: getFileOrNull(documentsForm, "contrato_social")
         };
 
         const salt = crypto.getRandomValues(new Uint8Array(16));
         const iv = crypto.getRandomValues(new Uint8Array(12));
 
-        const [publicKeyBase64, privateKeyBuffer, wrappingKey] = generateKeyPair(senha);
+        const [publicKeyBase64, privateKeyBuffer, wrappingKey] = await generateKeyPair(data.senha, salt);
 
         const encryptedPrivateKey = await crypto.subtle.encrypt(
             { name: "AES-GCM", iv },
@@ -219,19 +219,32 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         data.publicKey = publicKeyBase64;
-        data.privateKey = encryptedPrivateKey;
+        data.privateKey = toBase64(encryptedPrivateKey);
         data.salt = toBase64(salt);
         data.iv = toBase64(salt);
+
+        const formDataToSend = new FormData();
+
+        for (const key in data) {
+            if (data[key] !== null && !(data[key] instanceof File)) {
+                formDataToSend.append(key, data[key]);
+            }
+        }
+
+        formDataToSend.append("comprovante_end", data.comprovante_end);
+        formDataToSend.append("cartao_cnpj", data.cartao_cnpj);
+        if (data.contrato_social) {
+            formDataToSend.append("contrato_social", data.contrato_social);
+        }
 
         try {
             validateFile(data.comprovante_end, 8);
             validateFile(data.cartao_cnpj, 8);
-            validateFile(data.contrato_social, 8);
+            if(data.contrato_social) validateFile(data.contrato_social, 8);
 
             const res = await fetch("/registrar/api/sendSolicitation", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
+                body: formDataToSend
             });
 
             //TODO: Put notification here
