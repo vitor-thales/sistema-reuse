@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         data.publicKey = publicKeyBase64;
         data.privateKey = toBase64(encryptedPrivateKey);
         data.salt = toBase64(salt);
-        data.iv = toBase64(salt);
+        data.iv = toBase64(iv);
 
         const formDataToSend = new FormData();
 
@@ -240,6 +240,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
+            const password = data.senha;
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,}$/;
+
+            if(!passwordRegex.test(password)) {
+                throw new Error("A senha deve ter no mínimo 8 caracteres, incluindo letras maiúsculas,minúsculas e números.");
+            }
+
             validateFile(data.comprovante_end, 8);
             validateFile(data.cartao_cnpj, 8);
             if(data.contrato_social) validateFile(data.contrato_social, 8);
@@ -248,9 +255,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "POST",
                 body: formDataToSend
             });
+            const json = await res.json();
 
             if (res.status == 500) toast.show("Erro interno do sistema", "error");
-            else console.log("enviado :)") //TODO: Mostrar página de suscesso
+            else if (res.status == 400) toast.show(json.errors[0], "error");
+            else window.location.href = "http://localhost:8080/registrar/sucesso"
         } catch (err) {
             console.log(err);
             toast.show(err, "error");

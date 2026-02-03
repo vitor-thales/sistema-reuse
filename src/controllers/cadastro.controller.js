@@ -4,10 +4,15 @@ import bcrypt from "bcryptjs";
 import { publicDir } from "../utils/paths.js";
 import { env } from "../config/env.js";
 import { insertEmpresa } from "../models/empresas.model.js";
+import { sendSolicitationEmail } from "../utils/sendMail.js";
 
 export default {
     async getPage(req, res) {
         res.sendFile(path.join(publicDir, "pages/cadastro.html"));
+    },
+
+    async getSuccess(req, res) {
+        res.sendFile(path.join(publicDir, "pages/cadastro.sucesso.html"));
     },
 
     async sendRequisition(req, res) {
@@ -23,6 +28,9 @@ export default {
         const result = await insertEmpresa(data);
 
         if(result != true) return res.status(500).json({error: result});
-        else return res.status(200).json({message: "Success"});
+        else { 
+            sendSolicitationEmail(data.email_corp, data.nome_resp);
+            return res.status(200).json({message: "Success"});
+        }
     }
 };
