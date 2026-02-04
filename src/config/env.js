@@ -19,6 +19,7 @@ export const env = {
     DB_NAME: required("DB_NAME"),
 
     JWT_SECRET: required("JWT_SECRET"),
+    TFAUTH_JWT_SECRET: required("TFAUTH_JWT_SECRET"),
     TOKEN_EXPIRY: parseInt(required("TOKEN_EXPIRY")),
     SALT: parseInt(required("SALT")),
 
@@ -27,5 +28,7 @@ export const env = {
     BREVO_LOGIN: required("BREVO_LOGIN"),
     BREVO_PASS: required("BREVO_PASS"),
     MAIL_NAME: required("MAIL_NAME"),
-    MAIL_SENDER: required("MAIL_SENDER")
+    MAIL_SENDER: required("MAIL_SENDER"),
+    BREVO_API_KEY: required("BREVO_API_KEY"),
+    SMS_SENDER_NAME: required("SMS_SENDER_NAME")
 };

@@ -81,3 +81,77 @@ export const sendSolicitationEmail = async (userEmail, userName) => {
         console.error("Erro ao enviar e-mail: ", error);
     }
 };
+
+export const sendTwoFactorEmail = async (userEmail, userName, code) => {
+    const mailOptions = {
+        from: `"${env.MAIL_NAME}" <${env.MAIL_SENDER}>`,
+        to: userEmail,
+        subject: `${code} é seu código de segurança ReUse 🛡️`,
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                    .header { background-color: #2563eb; padding: 30px; text-align: center; }
+                    .header h1 { color: #ffffff; margin: 0; font-size: 28px; letter-spacing: 1px; }
+                    .content { padding: 40px 30px; line-height: 1.6; color: #333333; text-align: center; }
+                    .content h2 { color: #1e3a8a; font-size: 22px; margin-bottom: 20px; }
+                    .code-container { margin: 30px 0; }
+                    .code-box { 
+                        display: inline-block; 
+                        background-color: #eff6ff; 
+                        border: 2px dashed #2563eb; 
+                        color: #1e3a8a; 
+                        padding: 15px 30px; 
+                        font-size: 32px; 
+                        font-weight: bold; 
+                        letter-spacing: 8px; 
+                        border-radius: 12px;
+                    }
+                    .footer { background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+                    .divider { border-top: 1px solid #e5e7eb; margin: 20px 0; }
+                    .warning { font-size: 14px; color: #6b7280; margin-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>ReUse</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Verificação de Segurança</h2>
+                        <p>Olá, <strong>${userName}</strong>!</p>
+                        <p>Use o código de verificação abaixo para acessar sua conta. Por motivos de segurança, ele expira em breve.</p>
+                        
+                        <div class="code-container">
+                            <div class="code-box">${code}</div>
+                        </div>
+
+                        <p class="warning">Se você não solicitou este código, ignore este e-mail ou entre em contato com nosso suporte.</p>
+                        
+                        <div class="divider"></div>
+                        
+                        <p>Atenciosamente,<br>
+                        <strong>Equipe de Segurança ReUse</strong></p>
+                    </div>
+                    <div class="footer">
+                        <p>&copy; 2026 ReUse Brasil - Reciclagem Tecnológica Sustentável</p>
+                        <p>Este é um e-mail automático. Por favor, não responda.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`[+] Código 2FA enviado para ${userEmail}`);
+    } catch(error) {
+        console.error("Erro ao enviar e-mail de 2FA: ", error);
+    }
+};

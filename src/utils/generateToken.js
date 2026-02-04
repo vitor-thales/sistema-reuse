@@ -4,3 +4,7 @@ import { env } from "../config/env.js";
 export function generateToken(payload) {
     return jwt.sign(payload, env.JWT_SECRET, {expiresIn: env.TOKEN_EXPIRY});
 }
+
+export function generateTFToken(payload) {
+    return jwt.sign(payload, env.TFAUTH_JWT_SECRET, {expiresIn: env.TOKEN_EXPIRY});
+}
