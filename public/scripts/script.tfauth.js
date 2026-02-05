@@ -1,47 +1,104 @@
 import { toast } from "./utils/script.toast.js";
 
-const inputs = document.querySelectorAll('#step-verification input');
+document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll('.otp-input');
+    const verifyBtn = document.getElementById('btn-verify');
+    const resendBtn = document.getElementById('btn-resend');
+    let cooldownTimer = null;
 
-inputs.forEach((input, index) => {
-    input.addEventListener('input', (e) => {
-        if (e.target.value.length === 1 && index < inputs.length - 1) {
-            inputs[index + 1].focus();
+    async function sendTFCode() {
+        try {
+            const res = await fetch("http://localhost:8080/login/api/sendTFCode", {
+                method: "POST"
+            });
+            const json = await res.json();
+
+            if (!res.ok) throw new Error(json.error);
+            startCooldown(60);
+        } catch (err) {
+            toast.show(err, "error");
+            return;
         }
-    });
-
-    input.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !e.target.value && index > 0) {
-            inputs[index - 1].focus();
-        }
-    });
-});
-
-window.showTwoFactor = async function(method) {
-    const selection = document.getElementById('step-selection');
-    const verification = document.getElementById('step-verification');
-    const text = document.getElementById('verification-text');
-
-    if(method === 'email') {
-        text.innerText = "Sua conta possui verificação em duas etapas, para conseguir entrar insira o código enviado para seu e-mail.";
-    } else {
-        text.innerText = "Sua conta possui verificação em duas etapas, para conseguir entrar insira o código enviado para seu celular.";
     }
 
-    try {
-        const res = await fetch("http://localhost:8080/login/api/sendTFCode", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({method})
+    function startCooldown(seconds) {
+        let timeLeft = seconds;
+        resendBtn.disabled = true;
+        resendBtn.classList.add('opacity-50', 'cursor-not-allowed', 'no-underline');
+        
+        cooldownTimer = setInterval(() => {
+            resendBtn.innerText = `Reenviar em ${timeLeft}s`;
+            timeLeft--;
+
+            if (timeLeft < 0) {
+                clearInterval(cooldownTimer);
+                resendBtn.disabled = false;
+                resendBtn.innerText = "Não recebi o código. Reenviar.";
+                resendBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'no-underline');
+            }
+        }, 1000);
+    }
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            if (e.target.value.length > 1) {
+                e.target.value = e.target.value.slice(0, 1);
+            }
+            if (e.target.value && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
         });
-        const json = await res.json();
 
-        if (!res.ok) throw new Error(json.error);
-    } catch (err) {
-        toast.show(err, "error");
-        return;
-    }
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
 
-    selection.classList.add('hidden');
-    verification.classList.remove('hidden');
-    verification.classList.add('flex');
-}
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const data = e.clipboardData.getData('text').trim();
+            if (!/^\d+$/.test(data)) return; 
+
+            const digits = data.split('');
+            digits.forEach((digit, i) => {
+                if (inputs[index + i]) {
+                    inputs[index + i].value = digit;
+                }
+            });
+            
+            const lastIdx = Math.min(index + digits.length - 1, inputs.length - 1);
+            inputs[lastIdx].focus();
+        });
+    });
+
+    const getCode = () => Array.from(inputs).map(i => i.value).join('');
+
+    verifyBtn.addEventListener('click', async () => {
+        const code = getCode();
+        if (code.length < 6) {
+            return toast.show("Insira o código completo", "error");
+        }
+
+        try {
+            const res = await fetch("/login/api/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code }),
+            });
+
+            if (res.ok) {
+                window.location.href = "/";
+            } else {
+                const errorData = await res.json();
+                toast.show(errorData.message || "Código inválido", "error");
+            }
+        } catch (err) {
+            toast.show("Erro ao verificar código", "error");
+        }
+    });
+
+    resendBtn.addEventListener('click', sendTFCode);
+
+    startCooldown(60);
+});

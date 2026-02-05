@@ -30,3 +30,18 @@ export function notAuth(req, res, next) {
         }
     } else next();
 }
+
+export function tfAuth(req, res, next) {
+    const tfToken = req.cookies?.reuseTFToken;
+
+    if (!tfToken) return res.status(401).json({ error: "Token não encontrado" });
+
+    try {
+        jwt.verify(tfToken, env.TFAUTH_JWT_SECRET);
+        next();
+    } catch (err) {
+        return res
+            .status(401)
+            .json({ error: "Acesso Negado. Token Inválido." });
+    }
+}

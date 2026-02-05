@@ -35,3 +35,11 @@ export async function createVerificationCode(idEmpresa, type, duration, code) {
         throw error;
     }
 }
+
+export async function getLastVerificationCode(idEmpresa) {
+    const [rows] = await db.query(
+        "SELECT dataCriacao FROM tbCodigosVerificacao WHERE idEmpresa = ? ORDER BY dataCriacao DESC LIMIT 1",
+        [idEmpresa]
+    );
+    return rows;
+}

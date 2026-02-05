@@ -6,61 +6,52 @@
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
     <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
     <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
-    <title>ReUse - Cadastro</title>
+    <title>ReUse - Verificação</title>
 </head>
 <body>
-    <section class="grid grid-cols-1 lg:grid-cols-7 h-screen">
-        <div class="h-full lg:col-span-2 bg-white flex flex-col items-center py-5 my-auto px-10 overflow-y-auto relative" id="auth-container">
-        <div class="absolute top-8 left-6 cursor-pointer text-darkblue">
-            <i class="fa-solid fa-chevron-left text-2xl"></i>
-        </div>
-
-        <div class="grow"></div>
-
-        <div id="step-selection" class="w-full max-w-sm flex flex-col items-center">
-            <h1 class="text-2xl font-bold text-darkblue text-center mb-4 uppercase">Verificação</h1>
-            <p class="text-darkblue/70 font-medium text-center mb-8">Escolha como deseja receber seu código de segurança:</p>
+    <section class="grid grid-cols-1 lg:grid-cols-7 h-screen overflow-hidden">
+        <div class="h-full lg:col-span-2 bg-white flex flex-col items-center py-5 px-6 sm:px-10 overflow-y-auto relative" id="auth-container">
             
-            <button onclick="showTwoFactor('email')" class="w-full py-4 mb-4 border-2 border-mainblue rounded-2xl flex items-center px-6 gap-4 hover:bg-mainblue/5 transition-all group">
-                <i class="fa-solid fa-envelope text-2xl text-mainblue"></i>
-                <span class="text-darkblue font-semibold text-lg">Via E-mail</span>
-            </button>
+            <a href="/login" class="absolute top-8 left-6 cursor-pointer text-darkblue hover:text-mainblue transition-colors">
+                <i class="fa-solid fa-chevron-left text-2xl"></i>
+            </a>
 
-            <button onclick="showTwoFactor('phone')" class="w-full py-4 border-2 border-mainblue rounded-2xl flex items-center px-6 gap-4 hover:bg-mainblue/5 transition-all">
-                <i class="fa-solid fa-mobile-screen-button text-2xl text-mainblue"></i>
-                <span class="text-darkblue font-semibold text-lg">Via SMS / Celular</span>
-            </button>
-        </div>
+            <div class="grow"></div>
 
-        <div id="step-verification" class="w-full max-w-sm hidden flex flex-col items-center">
-            <h1 class="text-2xl font-bold text-darkblue text-center mb-2 uppercase leading-tight">Verificação em<br>duas etapas</h1>
-            <p class="text-darkblue/60 text-sm text-center mb-8 px-4" id="verification-text">
-                Sua conta possui verificação em duas etapas, para conseguir entrar insira o código enviado para seu e-mail.
-            </p>
+            <div id="step-verification" class="w-full max-w-sm flex flex-col items-center">
+                <div class="bg-mainblue/10 p-4 rounded-full mb-6">
+                    <i class="fa-solid fa-envelope-shield text-4xl text-mainblue"></i>
+                </div>
+                
+                <h1 class="text-2xl font-bold text-darkblue text-center mb-2 uppercase leading-tight">Verifique seu e-mail</h1>
+                <p class="text-darkblue/60 text-sm text-center mb-8 px-2">
+                    Enviamos um código de segurança de 6 dígitos para o seu e-mail cadastrado.
+                </p>
 
-            <div class="flex gap-2 mb-8">
-                <input type="text" maxlength="1" class="w-12 h-16 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue outline-none" />
-                <input type="text" maxlength="1" class="w-12 h-16 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue outline-none" />
-                <input type="text" maxlength="1" class="w-12 h-16 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue outline-none" />
-                <input type="text" maxlength="1" class="w-12 h-16 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue outline-none" />
-                <input type="text" maxlength="1" class="w-12 h-16 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue outline-none" />
-                <input type="text" maxlength="1" class="w-12 h-16 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue outline-none" />
+                <div class="flex justify-between w-full gap-2 mb-8" id="otp-container">
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-[3rem] h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-[3rem] h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-[3rem] h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-[3rem] h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-[3rem] h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-[3rem] h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                </div>
+
+                <button id="btn-verify" class="w-full py-3 bg-mainblue text-white font-bold rounded-full text-lg shadow-lg hover:bg-blue-700 transition-colors">
+                    VERIFICAR
+                </button>
+
+                <button id="btn-resend" class="mt-6 text-mainblue font-semibold underline text-sm hover:text-darkblue transition-colors">
+                    Não recebi o código. Reenviar.
+                </button>
             </div>
 
-            <button class="w-full py-3 bg-mainblue text-white font-bold rounded-full text-lg shadow-lg hover:bg-blue-700 transition-colors">
-                ENTRAR
-            </button>
-
-            <button class="mt-4 text-mainblue font-semibold underline text-sm">
-                Enviar novo código
-            </button>
+            <div class="grow"></div>
         </div>
 
-        <div class="grow"></div>
-    </div>
-        <div class="h-full col-span-5 bg-[url(../images/login_bg.png)] bg-no-repeat bg-cover hidden lg:flex flex-col justify-center items-center gap-2">
-            <h1 class="font-bold text-4xl lg:text-6xl text-white text-center">Seja bem-vindo(a) ao ReUse!</h1>
-            <p class="font-normal text-2xl text-white text-center max-w-153">Você está a alguns passos de acessar o maior sistema de venda de resíduos eletrônicos do Brasil.</p>
+        <div class="h-full col-span-5 bg-[url('../images/login_bg.png')] bg-no-repeat bg-cover hidden lg:flex flex-col justify-center items-center gap-2 p-10">
+            <h1 class="font-bold text-4xl lg:text-6xl text-white text-center">Proteja sua conta</h1>
+            <p class="font-normal text-2xl text-white text-center max-w-2xl">A verificação em duas etapas garante que apenas você tenha acesso aos seus dados e negociações.</p>
         </div>
     </section>
 
