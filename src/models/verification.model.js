@@ -28,7 +28,6 @@ export async function createVerificationCode(idEmpresa, type, duration, code) {
             code
         ]);
         
-        console.log(`[+] Código ${enumValue} gerado para empresa ${idEmpresa}`);
         return result;
     } catch (error) {
         console.error("[-] Erro ao inserir código de verificação:", error);
@@ -38,8 +37,21 @@ export async function createVerificationCode(idEmpresa, type, duration, code) {
 
 export async function getLastVerificationCode(idEmpresa) {
     const [rows] = await db.query(
-        "SELECT dataCriacao FROM tbCodigosVerificacao WHERE idEmpresa = ? ORDER BY dataCriacao DESC LIMIT 1",
+        "SELECT * FROM tbCodigosVerificacao WHERE idEmpresa = ? ORDER BY dataCriacao DESC LIMIT 1",
         [idEmpresa]
     );
     return rows;
+}
+
+export async function deleteUsedCode(idEmpresa) {
+    try{
+        const result = await db.query(
+            "DELETE FROM tbCodigosVerificacao WHERE idEmpresa = ? AND tipo = '2fauth'",
+            [idEmpresa]
+        );
+        return result;
+    } catch(err) {
+        console.error("[-] Erro ao deletar código de verificação:", err);
+        throw err;
+    }
 }

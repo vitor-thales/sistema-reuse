@@ -28,7 +28,5 @@ export const env = {
     BREVO_LOGIN: required("BREVO_LOGIN"),
     BREVO_PASS: required("BREVO_PASS"),
     MAIL_NAME: required("MAIL_NAME"),
-    MAIL_SENDER: required("MAIL_SENDER"),
-    BREVO_API_KEY: required("BREVO_API_KEY"),
-    SMS_SENDER_NAME: required("SMS_SENDER_NAME")
+    MAIL_SENDER: required("MAIL_SENDER")
 };

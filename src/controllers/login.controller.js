@@ -9,7 +9,7 @@ import { sendTwoFactorEmail } from "../utils/sendMail.js";
 
 import { getEmpresaCredentials, getEmpresa } from "../models/empresas.model.js";
 import { getEmpresaConfig } from "../models/configs.model.js";
-import { createVerificationCode, getLastVerificationCode } from "../models/verification.model.js";
+import { createVerificationCode, getLastVerificationCode, deleteUsedCode } from "../models/verification.model.js";
 
 async function generateAndSendCode(empresaId, email, nome) {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -126,7 +126,40 @@ export default {
     },
 
     async TFAuth(req, res) {
+        const { code } = req.body;
+        const tfToken = req.cookies.reuseTFToken;
 
+        if(!code || code.length !== 6) return res.status(400).json({error: "Código inválido"});
+
+        try {
+            const payload = jwt.verify(tfToken, env.TFAUTH_JWT_SECRET);
+
+            const lastVerificationCode = await getLastVerificationCode(payload.id);
+            const verificationData = lastVerificationCode[0];
+
+            if (!verificationData || verificationData.codigo !== code) 
+                return res.status(401).json({error: "Código inválido."});
+
+            const now = new Date();
+            const expiration = new Date(verificationData.dataExpiracao);
+
+            if(now > expiration) 
+                return res.status(400).json({error: "Código expirado."});
+
+            const finalToken = generateToken({id: payload.id});
+
+            res.clearCookie("reuseTFToken");
+            res.cookie("reuseToken", finalToken, {
+                httpOnly: true,
+                maxAge: env.TOKEN_EXPIRY,
+            });
+
+            await deleteUsedCode(payload.id);
+
+            return res.status(200).json({message: "Autenticação em 2 etapas concluída."});
+        } catch(err) {
+            return res.status(401).json({error: "Código de verificação expirado"});
+        }
     },
 
     async loggedIn(req, res) {

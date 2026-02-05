@@ -76,25 +76,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
     verifyBtn.addEventListener('click', async () => {
         const code = getCode();
-        if (code.length < 6) {
-            return toast.show("Insira o código completo", "error");
+        if(code.length < 6) {
+            toast.show("Insira o código completo", "error");
+            return;
         }
 
+        verifyBtn.disabled = true;
+        verifyBtn.innerText = "PROCESSANDO...";
+
         try {
-            const res = await fetch("/login/api/verify-otp", {
+            const res = await fetch("/login/api/tfAuthLogin", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code }),
+                headers: {'Content-Type': "application/json"},
+                body: JSON.stringify({code})
             });
 
+            const json = await res.json();
+
             if (res.ok) {
-                window.location.href = "/";
+                toast.show("Sucesso! Redirecionando...", "success");
+                setTimeout(() => window.location.href = "/", 1000);
             } else {
-                const errorData = await res.json();
-                toast.show(errorData.message || "Código inválido", "error");
+                toast.show(json.error || "Erro na verificação", "error");
+                verifyBtn.disabled = false;
+                verifyBtn.innerText = "VERIFICAR";
             }
         } catch (err) {
-            toast.show("Erro ao verificar código", "error");
+            toast.show("Erro de conexão com o servidor", "error");
+            verifyBtn.disabled = false;
+            verifyBtn.innerText = "VERIFICAR";
         }
     });
 

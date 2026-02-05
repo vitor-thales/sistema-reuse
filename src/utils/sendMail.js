@@ -76,7 +76,6 @@ export const sendSolicitationEmail = async (userEmail, userName) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log("[+] E-mail de confirmação enviado!");
     } catch(error) {
         console.error("Erro ao enviar e-mail: ", error);
     }
@@ -150,7 +149,6 @@ export const sendTwoFactorEmail = async (userEmail, userName, code) => {
 
     try {
         await transporter.sendMail(mailOptions);
-        console.log(`[+] Código 2FA enviado para ${userEmail}`);
     } catch(error) {
         console.error("Erro ao enviar e-mail de 2FA: ", error);
     }

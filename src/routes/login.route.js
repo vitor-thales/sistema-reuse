@@ -11,6 +11,6 @@ router.get("/api/checkLogin", auth, loginController.loggedIn);
 
 router.post("/api/credentials", notAuth, loginController.login);
 router.post("/api/sendTFCode", tfAuth, loginController.sendTFCode);
-router.post("/api/tfauthLogin", tfAuth, loginController.TFAuth);
+router.post("/api/tfAuthLogin", tfAuth, loginController.TFAuth);
 
 export default router;
