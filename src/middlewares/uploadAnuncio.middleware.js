@@ -2,10 +2,9 @@ import multer from "multer";
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
+import { publicDir } from "../utils/paths.js";
 
-import { srcDir } from "../utils/paths.js";
-
-const BASE_UPLOAD_PATH = path.resolve(path.join(srcDir, "public", "imagens_produto"));
+const BASE_UPLOAD_PATH = path.resolve(path.join(publicDir, "uploads"));
 
 function ensureDir(dir) {
     if (!fs.existsSync(dir)) {

@@ -1,40 +1,60 @@
-const contadorAnuncios = document.getElementById('contador-anuncios');
-const gridAnuncios = document.getElementById('grid-anuncios');
+document.addEventListener("DOMContentLoaded", () => {
 
-function formatCurrency(value) {
-    if (value === null || value === undefined) return 'A combinar';
-    return Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
+  const contadorAnuncios = document.getElementById("contador-anuncios");
+  const gridAnuncios = document.getElementById("listaAnuncios"); // ID correto
+  const anunciosVazio = document.getElementById("anunciosVazio");
 
-function createCard(anuncio) {
-    const card = document.createElement('article');
-    card.className = 'bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col';
+  if (!contadorAnuncios || !gridAnuncios) {
+    console.error("IDs não encontrados no HTML");
+    return;
+  }
 
-    const image = document.createElement('img');
-    image.className = 'w-full h-40 object-cover';
-    image.alt = anuncio.nomeProduto || 'Anúncio';
-    image.src = anuncio.nomeArquivo
-        ? `/imagens_produto/${anuncio.nomeArquivo}`
-        : '/images/adicionar.png';
+  function formatCurrency(value) {
+    if (!value) return "A combinar";
 
-    const body = document.createElement('div');
-    body.className = 'p-4 flex flex-col gap-2';
+    return Number(value).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL"
+    });
+  }
 
-    const title = document.createElement('h4');
-    title.className = 'font-semibold text-darkblue text-sm';
-    title.textContent = anuncio.nomeProduto || 'Produto sem título';
+  function createCard(anuncio) {
 
-    const price = document.createElement('p');
-    price.className = 'text-mainblue font-bold';
+    const card = document.createElement("article");
+    card.className =
+      "bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col";
+
+    const image = document.createElement("img");
+    image.className = "w-full h-40 object-cover";
+    image.alt = anuncio.nomeProduto || "Anúncio";
+
+    if (anuncio.nomeArquivo) {
+      image.src = `/uploads/${anuncio.nomeArquivo}`;
+    } else {
+      image.src = "/images/adicionar.png";
+    }
+
+    const body = document.createElement("div");
+    body.className = "p-4 flex flex-col gap-2";
+
+
+    const title = document.createElement("h4");
+    title.className = "font-semibold text-darkblue text-sm";
+    title.textContent = anuncio.nomeProduto || "Produto sem título";
+
+    const price = document.createElement("p");
+    price.className = "text-mainblue font-bold";
     price.textContent = formatCurrency(anuncio.valorTotal);
 
-    const meta = document.createElement('p');
-    meta.className = 'text-xs text-gray-500';
-    meta.textContent = `${anuncio.quantidade || 0} ${anuncio.unidadeMedida || ''}`.trim();
+    const meta = document.createElement("p");
+    meta.className = "text-xs text-gray-500";
+    meta.textContent =
+      `${anuncio.quantidade || 0} ${anuncio.unidadeMedida || ""}`.trim();
 
-    const company = document.createElement('p');
-    company.className = 'text-xs text-gray-400';
-    company.textContent = anuncio.nomeEmpresa || 'Empresa não informada';
+    const company = document.createElement("p");
+    company.className = "text-xs text-gray-400";
+    company.textContent =
+      anuncio.nomeEmpresa || "Empresa não informada";
 
     body.appendChild(title);
     body.appendChild(price);
@@ -45,27 +65,42 @@ function createCard(anuncio) {
     card.appendChild(body);
 
     return card;
-}
+  }
 
-async function carregarAnuncios() {
+  async function carregarAnuncios() {
     try {
-        const response = await fetch('/api/anuncios');
-        const anuncios = await response.json();
 
-        gridAnuncios.innerHTML = '';
+      const response = await fetch("/anuncie/api/anuncios");
 
-        if (!Array.isArray(anuncios) || anuncios.length === 0) {
-            contadorAnuncios.textContent = 'Nenhum anúncio encontrado.';
-            return;
-        }
+      if (!response.ok) {
+        throw new Error("Erro HTTP " + response.status);
+      }
 
-        contadorAnuncios.textContent = `${anuncios.length} anúncios disponíveis`;
-        anuncios.forEach((anuncio) => {
-            gridAnuncios.appendChild(createCard(anuncio));
-        });
+      const anuncios = await response.json();
+
+      gridAnuncios.innerHTML = "";
+
+      if (!anuncios || anuncios.length === 0) {
+        contadorAnuncios.textContent = "Nenhum anúncio encontrado.";
+        anunciosVazio?.classList.remove("hidden");
+        return;
+      }
+
+      anunciosVazio?.classList.add("hidden");
+      contadorAnuncios.textContent =
+        `${anuncios.length} anúncios disponíveis`;
+
+      anuncios.forEach((anuncio) => {
+        const card = createCard(anuncio);
+        gridAnuncios.appendChild(card);
+      });
+
     } catch (err) {
-        contadorAnuncios.textContent = 'Não foi possível carregar os anúncios.';
+      console.error("Erro ao carregar anúncios:", err);
+      contadorAnuncios.textContent =
+        "Não foi possível carregar os anúncios.";
     }
-}
+  }
 
-carregarAnuncios();
+  carregarAnuncios();
+});

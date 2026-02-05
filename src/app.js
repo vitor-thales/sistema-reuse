@@ -5,13 +5,21 @@ import loginRoute from "./routes/login.route.js"
 import landingPageRoute from "./routes/landingPage.route.js"
 import anuncieRoute from "./routes/anuncie.route.js"
 import cookieParser from 'cookie-parser';
+import anunciosRouter from "./routes/anuncios.route.js";
+
 
 const app = express();
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(publicDir));
 app.use(express.json());
 app.use(express.static(path.join(publicDir)));
 app.use(cookieParser());
+app.use(anunciosRouter);
+app.use(
+  "/uploads",
+  express.static(path.join(process.cwd(), "public", "uploads"))
+);
 
 app.use("/login", loginRoute);
 app.use("/", landingPageRoute);
