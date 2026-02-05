@@ -8,6 +8,14 @@ export async function getEmpresaCredentials(login) {
     return rows;
 }
 
+export async function getEmpresa(id) {
+    const [rows] = await db.query(
+        "SELECT * FROM tbEmpresas WHERE idEmpresa = ?",
+        [id]
+    );
+    return rows;
+}
+
 export async function insertEmpresa(data) {
     try {
         await db.query(

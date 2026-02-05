@@ -177,6 +177,20 @@ CREATE TABLE tbVisualizacoesAnuncios (
 );
 
 ------------------------------------------------------------
+-- TABELA: tbCodigosVerificacao
+------------------------------------------------------------
+CREATE TABLE tbCodigosVerificacao (
+    idCodigo INT AUTO_INCREMENT PRIMARY KEY,
+    idEmpresa INT NOT NULL,
+    dataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    dataExpiracao DATETIME,
+    tipo ENUM("2fauth", "change-pass"),
+    codigo VARCHAR(6),
+    FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
+        ON DELETE CASCADE
+);
+
+------------------------------------------------------------
 -- TABELA: tbTempoRespostaEmpresas
 ------------------------------------------------------------
 

@@ -19,6 +19,7 @@ export const env = {
     DB_NAME: required("DB_NAME"),
 
     JWT_SECRET: required("JWT_SECRET"),
+    TFAUTH_JWT_SECRET: required("TFAUTH_JWT_SECRET"),
     TOKEN_EXPIRY: parseInt(required("TOKEN_EXPIRY")),
     SALT: parseInt(required("SALT")),
 

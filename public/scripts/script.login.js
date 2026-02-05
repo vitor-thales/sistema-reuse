@@ -23,9 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.status == 404) toast.show("Credenciais Inválidas", "error");
             else if (res.status == 500)
                 toast.show("Erro interno do sistema", "error");
-            else {
-                window.location.href = "http://localhost:8080/";
-            }
+            else if (res.status == 301) window.location.href = "http://localhost:8080/login/verificar";
+            else window.location.href = "http://localhost:8080/";
         } catch (err) {
             toast.show(err, "error");
         }

@@ -1,4 +1,5 @@
 import Joi from "joi";
+import fs from "fs";
 import { validateCNPJ, validateCPF } from "../utils/documentValidators.js";
 
 const empresaSchema = Joi.object({
@@ -29,10 +30,22 @@ const empresaSchema = Joi.object({
     iv: Joi.string().required()
 });
 
-export const validateRegistration = (req, res, next) => {
+export const validateRegistration = async (req, res, next) => {
+    console.log();
     const { error } = empresaSchema.validate(req.body, { abortEarly: false });
 
     if (error) {
+        if (req.files) {
+            const allFiles = Object.values(req.files).flat();
+            
+            await Promise.all(allFiles.map(async (file) => {
+                try {
+                    await fs.unlink(file.path);
+                } catch (err) {
+                    console.error(`[-] Failed to delete temp file: ${file.path}`, err);
+                }
+            }));
+        }
         const errorMessages = error.details.map(err => err.message);
         return res.status(400).json({ errors: errorMessages });
     }

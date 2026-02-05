@@ -13,12 +13,12 @@ router.get("/sucesso", notAuth, cadastroController.getSuccess);
 router.post(
     "/api/sendSolicitation", 
     notAuth,
-    validateRegistration,
     upload.fields([
         { name: "comprovante_end", maxCount: 1 },
         { name: "cartao_cnpj", maxCount: 1 },
         { name: "contrato_social", maxCount: 1 }
     ]),
+    validateRegistration,
     cadastroController.sendRequisition
 );
 
