@@ -12,7 +12,7 @@
 <body class="bg-gray-50">
     <div id="header-placeholder"></div>
 
-    <section class="border-b border-darkblue py-10 bg-white">
+    <section class="border-b border-stronggray py-10 bg-white">
         <div class="container mx-auto px-4 md:px-10 flex justify-between items-center">
             <div>
                 <h1 class="font-bold text-3xl text-darkblue">Meus Anúncios</h1>
@@ -77,13 +77,8 @@
                     </div>
                     <div class="flex flex-col gap-1">
                         <label class="font-semibold text-sm text-darkblue">Unidade de Medida *</label>
-                        <select name="unidadeMedida" required
+                        <input name="unidadeMedida" required placeholder="Ex: Quilogramas, Toneladas, etc..."
                             class="bg-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-mainblue outline-none">
-                            <option value="" selected disabled>Quilogramas (Kg)</option>
-                            <option value="kg">Quilogramas (Kg)</option>
-                            <option value="ton">Toneladas (t)</option>
-                            <option value="un">Unidades</option>
-                        </select>
                     </div>
                 </div>
 
@@ -126,8 +121,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="flex flex-col gap-1">
                             <label class="font-semibold text-sm text-darkblue">Origem</label>
-                            <input type="text" name="origem"
-                                placeholder="Ex: Descarte industrial, Equipamentos de TI"
+                            <input type="text" name="origem" placeholder="Ex: Descarte industrial, Equipamentos de TI"
                                 class="bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
                         </div>
                         <div class="flex flex-col gap-1">

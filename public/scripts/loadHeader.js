@@ -3,6 +3,14 @@ fetch('/components/header.html')
   .then(async (data) => {
     document.getElementById('header-placeholder').innerHTML = data;
 
+    const iconeUsuario = document.getElementById("userIcon");
+
+    if (iconeUsuario) {
+      iconeUsuario.addEventListener("click", () => {
+        window.location.href = "/pages/configuracoes.html";
+      });
+    }
+
     const btnAnuncie = document.getElementById('botaoAnuncie');
     const btnEntrar = document.getElementById('botaoEntrar');
     const logo = document.getElementById('logoRetorna');
@@ -30,9 +38,8 @@ fetch('/components/header.html')
 
     btnAnuncie?.addEventListener('click', handleAnuncieClick);
 
-    // ✅ Listener do logo (agora o elemento existe)
     logo?.addEventListener('click', () => {
-      window.location.href = '/'; 
+      window.location.href = '/';
     });
     await atualizarHeader();
   });
@@ -56,6 +63,7 @@ async function verificarLogin() {
 async function atualizarHeader() {
   const botaoEntrar = document.getElementById("botaoEntrar");
   const iconeUser = document.getElementById("userIcon");
+  const iconeNotificacao = document.getElementById("notificacoes")
 
   if (!botaoEntrar || !iconeUser) {
     console.warn("Header: botaoEntrar ou userIcon não encontrado no DOM");
@@ -65,9 +73,11 @@ async function atualizarHeader() {
   const logado = await verificarLogin();
 
   if (logado) {
+    iconeNotificacao.style.display = "inline-block"
     botaoEntrar.style.display = "none";
     iconeUser.style.display = "inline-block";
   } else {
+    iconeNotificacao.style.display = "none"
     botaoEntrar.style.display = "inline-block";
     iconeUser.style.display = "none";
   }

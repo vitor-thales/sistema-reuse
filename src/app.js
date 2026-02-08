@@ -6,6 +6,7 @@ import landingPageRoute from "./routes/landingPage.route.js"
 import anuncieRoute from "./routes/anuncie.route.js"
 import cookieParser from 'cookie-parser';
 import anunciosRouter from "./routes/anuncios.route.js";
+import configuracoesRoute from "./routes/configuracoes.route.js";
 
 
 const app = express();
@@ -21,9 +22,11 @@ app.use(
   express.static(path.join(process.cwd(), "public", "uploads"))
 );
 
+app.use("/api", configuracoesRoute);
 app.use("/login", loginRoute);
 app.use("/", landingPageRoute);
 app.use("/anuncie", anuncieRoute);
+app.use("/configuracoes", configuracoesRoute);
 
 let sessaoAtiva = false; 
 
