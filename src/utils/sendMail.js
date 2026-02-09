@@ -153,3 +153,79 @@ export const sendTwoFactorEmail = async (userEmail, userName, code) => {
         console.error("Erro ao enviar e-mail de 2FA: ", error);
     }
 };
+
+export const sendPasswordResetEmail = async (userId, userEmail, userName, resetToken) => {
+    const resetUrl = `http://localhost:8080/recuperar-senha/${userId}/${resetToken}`;
+
+    const mailOptions = {
+        from: `"${env.MAIL_NAME}" <${env.MAIL_SENDER}>`,
+        to: userEmail,
+        subject: "Redefinição de Senha - ReUse 🔐",
+        html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+                    .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+                    .header { background-color: #2563eb; padding: 30px; text-align: center; }
+                    .header h1 { color: #ffffff; margin: 0; font-size: 28px; letter-spacing: 1px; }
+                    .content { padding: 40px 30px; line-height: 1.6; color: #333333; text-align: center; }
+                    .content h2 { color: #1e3a8a; font-size: 22px; margin-bottom: 10px; }
+                    .btn-container { margin: 35px 0; }
+                    .button { 
+                        background-color: #2563eb; 
+                        color: #ffffff !important; 
+                        padding: 15px 30px; 
+                        text-decoration: none; 
+                        font-size: 18px; 
+                        font-weight: bold; 
+                        border-radius: 25px; 
+                        display: inline-block;
+                        box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+                    }
+                    .footer { background-color: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+                    .divider { border-top: 1px solid #e5e7eb; margin: 20px 0; }
+                    .small-text { font-size: 13px; color: #6b7280; margin-top: 25px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>ReUse</h1>
+                    </div>
+                    <div class="content">
+                        <h2>Recuperação de Acesso</h2>
+                        <p>Olá, <strong>${userName}</strong>!</p>
+                        <p>Recebemos uma solicitação para redefinir a senha da sua conta no <strong>ReUse</strong>. Clique no botão abaixo para escolher uma nova senha:</p>
+                        
+                        <div class="btn-container">
+                            <a href="${resetUrl}" class="button">Redefinir Minha Senha</a>
+                        </div>
+
+                        <p class="small-text">Este link é válido por 24 horas. Se você não solicitou a alteração, pode ignorar este e-mail com segurança.</p>
+                        
+                        <div class="divider"></div>
+                        
+                        <p style="font-size: 12px; color: #9ca3af;">Se o botão não funcionar, copie e cole o link no seu navegador:<br>
+                        <span style="word-break: break-all; color: #2563eb;">${resetUrl}</span></p>
+                    </div>
+                    <div class="footer">
+                        <p>&copy; 2026 ReUse Brasil - Reciclagem Tecnológica Sustentável</p>
+                        <p>Proteja sua conta: Nunca compartilhe este link com ninguém.</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+    } catch(error) {
+        console.error("Erro ao enviar e-mail de recuperação: ", error);
+        throw error;
+    }
+};

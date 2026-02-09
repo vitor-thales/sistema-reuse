@@ -262,9 +262,6 @@
   .z-\[100\] {
     z-index: 100;
   }
-  .col-span-2 {
-    grid-column: span 2 / span 2;
-  }
   .col-span-3 {
     grid-column: span 3 / span 3;
   }
@@ -298,12 +295,6 @@
   .-mt-2 {
     margin-top: calc(var(--spacing) * -2);
   }
-  .mt-1 {
-    margin-top: calc(var(--spacing) * 1);
-  }
-  .mt-1\.5 {
-    margin-top: calc(var(--spacing) * 1.5);
-  }
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
@@ -312,12 +303,6 @@
   }
   .mt-6 {
     margin-top: calc(var(--spacing) * 6);
-  }
-  .mt-8 {
-    margin-top: calc(var(--spacing) * 8);
-  }
-  .mt-9 {
-    margin-top: calc(var(--spacing) * 9);
   }
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
@@ -339,9 +324,6 @@
   }
   .mb-8 {
     margin-bottom: calc(var(--spacing) * 8);
-  }
-  .mb-9 {
-    margin-bottom: calc(var(--spacing) * 9);
   }
   .ml-2 {
     margin-left: calc(var(--spacing) * 2);
@@ -391,11 +373,11 @@
   .max-w-2xl {
     max-width: var(--container-2xl);
   }
+  .max-w-12 {
+    max-width: calc(var(--spacing) * 12);
+  }
   .max-w-153 {
     max-width: calc(var(--spacing) * 153);
-  }
-  .max-w-\[3rem\] {
-    max-width: 3rem;
   }
   .max-w-md {
     max-width: var(--container-md);
@@ -559,6 +541,9 @@
   .bg-white {
     background-color: var(--color-white);
   }
+  .bg-\[url\(\'\.\.\/\.\.\/images\/login_bg\.png\'\)\] {
+    background-image: url('../../images/login_bg.png');
+  }
   .bg-\[url\(\'\.\.\/images\/login_bg\.png\'\)\] {
     background-image: url('../images/login_bg.png');
   }
@@ -591,12 +576,6 @@
   }
   .px-10 {
     padding-inline: calc(var(--spacing) * 10);
-  }
-  .px-17 {
-    padding-inline: calc(var(--spacing) * 17);
-  }
-  .px-20 {
-    padding-inline: calc(var(--spacing) * 20);
   }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
@@ -666,10 +645,6 @@
   .text-4xl {
     font-size: var(--text-4xl);
     line-height: var(--tw-leading, var(--text-4xl--line-height));
-  }
-  .text-6xl {
-    font-size: var(--text-6xl);
-    line-height: var(--tw-leading, var(--text-6xl--line-height));
   }
   .text-8xl {
     font-size: var(--text-8xl);

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Esqueci minha senha</title>
+</head>
+<body>
+    <section class="grid grid-cols-1 lg:grid-cols-7 h-screen">
+        <a href="/login" class="absolute top-5 left-5 text-darkblue text-2xl hover:text-mainblue transition-colors">
+            <i class="fa-solid fa-chevron-left"></i>
+        </a>
+
+        <div class="h-full lg:col-span-2 bg-lightgray flex flex-col items-center py-5 my-auto px-6 overflow-y-auto">
+            <div class="grow min-h-1"></div>
+
+            <form id="form-forgot-password" class="flex flex-col gap-4 w-full max-w-sm mx-auto">
+                <h1 class="text-3xl font-bold text-darkblue text-center mb-2 uppercase">Esqueci minha senha</h1>
+                
+                <p class="text-sm text-darkblue/70 text-center mb-6 px-2">
+                    Insira o CNPJ da sua conta. Enviaremos um e-mail com um link para redefinição da sua senha.
+                </p>
+
+                <div class="relative w-full">
+                    <input 
+                        id="cnpj"
+                        class="pl-13 pt-3 pb-3 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" 
+                        type="text" 
+                        name="cnpj" 
+                        placeholder="CNPJ" 
+                        required
+                    />
+                    <div class="absolute left-3.5 top-3 text-darkblue">
+                        <i class="fa-solid fa-address-card text-3xl"></i>
+                    </div>
+                </div>
+
+                <div class="w-full text-center mt-4">
+                    <button 
+                        type="submit" 
+                        class="w-full py-3 text-xl bg-mainblue text-white font-semibold rounded-[20px] shadow-lg hover:bg-blue-700 hover:cursor-pointer transition-colors"
+                    >
+                        ENVIAR
+                    </button>
+                </div>
+            </form>
+
+            <div class="grow min-h-1"></div>
+        </div>
+
+        <div class="h-full col-span-5 bg-[url('../images/login_bg.png')] bg-no-repeat bg-cover hidden lg:flex flex-col justify-center items-center gap-2 p-10">
+            <h1 class="font-bold text-4xl lg:text-6xl text-white text-center">Bem-vindo(a) de volta ao ReUse!</h1>
+            <p class="font-normal text-2xl text-white text-center max-w-153">O maior sistema de venda de resíduos eletrônicos do Brasil.</p>
+        </div>
+    </section>
+
+    <script type="module" src="../scripts/script.forgot.js"></script>
+</body>
+</html>
