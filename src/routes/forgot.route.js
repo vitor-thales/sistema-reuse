@@ -11,5 +11,6 @@ router.get("/", notAuth, forgotController.getPage);
 router.get("/:id/:code", notAuth, forgotController.getPageChangePass);
 
 router.post("/api/send-mail", notAuth, validateResetPass, forgotController.sendMail);
+router.post("/api/reset", notAuth, forgotController.resetPass);
 
 export default router;

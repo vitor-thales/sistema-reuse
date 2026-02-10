@@ -39,3 +39,16 @@ export async function insertEmpresa(data) {
         return err;
     }
 }
+
+export async function resetPassword(id, pass) {
+    try {
+        await db.query(
+            "UPDATE tbEmpresas SET senhaHash = ? WHERE idEmpresa = ?",
+            [pass, id]
+        );
+        return true;
+    } catch(err) {
+        console.error("[Error]: ", err);
+        return err;
+    }
+}

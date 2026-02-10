@@ -1,13 +1,15 @@
 import { maskInput, stripMaskNumber } from "./utils/script.masks.js";
-import { saveStep, loadProgress, clearProgress } from "./utils/script.localstorage.js";
+import { saveStep, loadProgress } from "./utils/script.localstorage.js";
 import { toast } from "./utils/script.toast.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Variables
     const pageDescription = document.getElementById("page-description");
     const forms = document.getElementById("register-forms").querySelectorAll("form");
     const selectors = document.getElementById("selectors").querySelectorAll("*");
+    const passwordInput = document.getElementById("password-input");
+    const reqContainer = document.getElementById("pass-reqs");
 
+    const stepOrder = ["selector-company", "selector-address", "selector-documents", "selector-terms"];
     const pagesIndex = {
         "selector-company": {
             description: "PREENCHA AS INFORMAÇÕES",
@@ -26,8 +28,34 @@ document.addEventListener("DOMContentLoaded", () => {
             form: forms[3]
         }
     };
+    const passReqs = {
+        len: { el: document.getElementById('req-len'), reg: /.{8,}/ },
+        num: { el: document.getElementById('req-num'), reg: /[0-9]/ },
+        up: { el: document.getElementById('req-up'), reg: /^(?=.*[a-z])(?=.*[A-Z]).+$/ }
+    };
 
-    // Functions
+    function validatePasswordUI() {
+        const val = passwordInput.value;
+        if (val.length > 0) {
+            reqContainer.style.maxHeight = "80px";
+            reqContainer.style.opacity = "1";
+        } else {
+            reqContainer.style.maxHeight = "0";
+            reqContainer.style.opacity = "0";
+        }
+
+        let allMet = true;
+        Object.values(passReqs).forEach(obj => {
+            const met = obj.reg.test(val);
+            obj.el.style.opacity = met ? "0" : "1";
+            obj.el.style.maxHeight = met ? "0" : "20px";
+            if (!met) allMet = false;
+        });
+
+        passwordInput.style.borderColor = (val.length > 0 && !allMet) ? "text-red" : "";
+        return allMet;
+    }
+
     function handleRegisterForm(e, form) {
         e.preventDefault();
 
@@ -55,8 +83,33 @@ document.addEventListener("DOMContentLoaded", () => {
         changeStep(nextPage);
     }
 
-    function changeStep(nextPage) {
+    function changeStep(nextPageSelector) {
+        const targetId = nextPageSelector.id;
+        const targetIndex = stepOrder.indexOf(targetId);
+        
+        for (let i = 0; i < targetIndex; i++) {
+            const prevStepId = stepOrder[i];
+            const prevForm = pagesIndex[prevStepId].form;
+            
+            const isPasswordValid = (i === 0) ? validatePasswordUI() : true;
+            
+            if (!prevForm.checkValidity() || !isPasswordValid) {
+                toast.show("Por favor, preencha corretamente os campos anteriores.", "error");
+                
+                const firstInvalidPage = document.getElementById(prevStepId);
+                executeStepChange(firstInvalidPage);
+                prevForm.reportValidity();
+                return; 
+            }
+        }
+
+        executeStepChange(nextPageSelector);
+    }
+
+    function executeStepChange(nextPage) {
         const currentPage = document.getElementById("selectors").querySelector(".bg-mainblue");
+        if (currentPage === nextPage) return;
+
         const currentPageIndex = pagesIndex[currentPage.id];
         const nextPageIndex = pagesIndex[nextPage.id];
         
@@ -303,13 +356,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Mask necessary inputs
     maskInput(forms[0].querySelector("input[name='cnpj']"), "99.999.999/9999-99");
     maskInput(forms[0].querySelector("input[name='telefone']"), "(99) 99999-9999");
     maskInput(forms[0].querySelector("input[name='cpf-responsavel']"), "999.999.999-99");
     maskInput(forms[1].querySelector("input[name='cep']"), "99999-999");
 
-    // Handle Event Listeners
     forms.forEach((form) => {
         form.addEventListener("submit", (e) => handleRegisterForm(e, form));
     });
@@ -324,6 +375,8 @@ document.addEventListener("DOMContentLoaded", () => {
     forms[2].querySelectorAll('input[type="file"]').forEach((input) => {
         input.addEventListener("change", (e) => fileUpload(e));
     });
+
+    passwordInput.addEventListener("input", validatePasswordUI);
 
     loadLastSession();
 });

@@ -13,12 +13,13 @@
         <div class="h-full lg:col-span-2 bg-lightgray flex flex-col items-center py-5 my-auto px-6 overflow-y-auto">
             <div class="grow min-h-1"></div>
 
-            <form id="form-reset-password" class="flex flex-col gap-4 w-full max-w-sm mx-auto">
+            <form id="form-reset-password" class="flex flex-col gap-2 w-full max-w-sm mx-auto">
                 <h1 class="text-3xl font-bold text-darkblue text-center mb-8 uppercase">Redefinição de Senha</h1>
 
                 <div class="relative w-full">
                     <input 
-                        class="pl-13 pt-3 pb-3 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" 
+                        id="password"
+                        class="pl-13 pt-3 pb-3 pr-3 text-xl w-full focus:outline-none text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px] transition-all duration-300" 
                         type="password" 
                         name="nova-senha" 
                         placeholder="Nova senha" 
@@ -29,9 +30,16 @@
                     </div>
                 </div>
 
-                <div class="relative w-full">
+                <div id="password-requirements" class="overflow-hidden max-h-0 opacity-0 transition-all duration-500 ease-in-out px-2 flex flex-col gap-0">
+                    <p id="req-length" class="text-red text-sm mt-2 transition-all duration-300">• Pelo menos 8 caracteres</p>
+                    <p id="req-number" class="text-red text-sm transition-all duration-300">• Pelo menos 1 número</p>
+                    <p id="req-case" class="text-red text-sm transition-all duration-300">• Letras maiúsculas e minúsculas</p>
+                </div>
+
+                <div class="relative w-full mt-4">
                     <input 
-                        class="pl-13 pt-3 pb-3 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" 
+                        id="confirm-password"
+                        class="pl-13 pt-3 pb-3 pr-3 text-xl w-full focus:outline-none text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px] transition-all duration-300" 
                         type="password" 
                         name="confirmar-senha" 
                         placeholder="Confirmar nova senha" 
@@ -41,11 +49,16 @@
                         <i class="fa-solid fa-lock text-3xl"></i>
                     </div>
                 </div>
+                <p id="match-error" class="text-red text-sm px-2 overflow-hidden max-h-0 opacity-0 transition-all duration-300">
+                    • As senhas não coincidem
+                </p>
 
                 <div class="w-full text-center mt-4">
                     <button 
+                        id="submit-btn"
                         type="submit" 
-                        class="w-full py-3 text-xl bg-mainblue text-white font-semibold rounded-[20px] shadow-lg hover:bg-blue-700 hover:cursor-pointer transition-colors"
+                        disabled
+                        class="w-full py-3 text-xl bg-gray-400 text-white font-semibold rounded-[20px] shadow-lg transition-all duration-300 cursor-not-allowed"
                     >
                         REDEFINIR
                     </button>
@@ -60,5 +73,7 @@
             <p class="font-normal text-2xl text-white text-center max-w-153">O maior sistema de venda de resíduos eletrônicos do Brasil.</p>
         </div>
     </section>
+
+    <script type="module" src="../../scripts/script.reset.js"></script>
 </body>
 </html>

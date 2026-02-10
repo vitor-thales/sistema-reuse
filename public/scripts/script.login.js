@@ -24,7 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (res.status == 500)
                 toast.show("Erro interno do sistema", "error");
             else if (res.status == 301) window.location.href = "http://localhost:8080/login/verificar";
-            else window.location.href = "http://localhost:8080/";
+            else { 
+                toast.show("Login realizado com sucesso! Redirecionando...");
+                setTimeout(() => window.location.href = "/", 2000);
+            }
         } catch (err) {
             toast.show(err, "error");
         }

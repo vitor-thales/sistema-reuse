@@ -1,10 +1,12 @@
 import path from "path";
+import bcrypt from "bcryptjs";
 
 import { publicDir } from "../utils/paths.js";
 import { sendPasswordResetEmail } from "../utils/sendMail.js";
+import { env } from "../config/env.js";
 
 import { createVerificationCode, getLastVerificationCode, deleteUsedCode } from "../models/verification.model.js";
-import { getEmpresaCredentials } from "../models/empresas.model.js";
+import { getEmpresaCredentials, getEmpresa, resetPassword } from "../models/empresas.model.js";
 
 async function generateAndSendCode(empresaId, email, nome) {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -18,8 +20,8 @@ async function generateAndSendCode(empresaId, email, nome) {
 
 async function isRateLimited(empresaId) {
     const lastCode = await getLastVerificationCode(empresaId, 2); 
-    
-    if (!lastCode) return false;
+
+    if (!lastCode || lastCode.length == 0) return false;
 
     const lastSent = new Date(lastCode[0].dataCriacao).getTime();
     const now = new Date().getTime();
@@ -74,5 +76,29 @@ export default {
         } catch (err) {
             return res.status(500).json({error: "Erro ao processar a solicitação."});
         }
+    },
+
+    async resetPass(req, res) {
+        const { novaSenha, confirmarSenha, idUsuario, codigoReset } = req.body;
+        if(!novaSenha || !confirmarSenha || !idUsuario || !codigoReset) 
+            return res.status(400).json({error: "Um ou mais campos inválidos ou não preenchidos!"});
+        
+        if(novaSenha !== confirmarSenha) return res.status(400).json({error: "As senhas devem ser idênticas!"});
+
+        const empresa = await getEmpresa(idUsuario);
+        if(!empresa || empresa.length == 0) return res.status(400).json({error: "Id de usuário inválido!"});
+
+        const code = await getLastVerificationCode(idUsuario, 2);
+
+        if(!code || code.length == 0 || code[0].codigo !== codigoReset) return res.status(400).json({error: "Código inválido!"});
+        
+        const pass = await bcrypt.hash(novaSenha, env.SALT);
+
+        const result = await resetPassword(idUsuario, pass);
+        if(result !== true) return res.status(500).json({error: "Erro ao alterar a senha do usuário"});
+
+        await deleteUsedCode(idUsuario, 2);
+
+        res.status(200).json({message: "Sucesso"});
     }
 }
