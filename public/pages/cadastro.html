@@ -82,11 +82,15 @@
                     </div>
 
                     <div class="relative w-full">
-                        <input class="pl-13 pt-2.5 pb-2.5 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" required type="password" name="senha" placeholder="Senha*" />
-
+                        <input id="password-input" class="pl-13 pt-2.5 pb-2.5 pr-3 text-xl w-full focus:outline-none text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px] transition-all" required type="password" name="senha" placeholder="Senha*" />
                         <div class="absolute left-3.5 top-2.5 text-darkblue">
                             <i class="fa-solid fa-lock text-3xl"></i>
                         </div>
+                    </div>
+                    <div id="pass-reqs" class="overflow-hidden max-h-0 opacity-0 transition-all duration-500 px-2 flex flex-col gap-0">
+                        <p id="req-len" class="text-red text-sm mt-1 transition-all">• Mínimo 8 caracteres</p>
+                        <p id="req-num" class="text-red text-sm transition-all">• Mínimo 1 número</p>
+                        <p id="req-up" class="text-red text-sm transition-all">• Letras maiúsculas e minúsculas</p>
                     </div>
 
                     <div class="w-full text-center mt-4">

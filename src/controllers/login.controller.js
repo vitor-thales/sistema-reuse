@@ -22,7 +22,7 @@ async function generateAndSendCode(empresaId, email, nome) {
 }
 
 async function isRateLimited(empresaId) {
-    const lastCode = await getLastVerificationCode(empresaId); 
+    const lastCode = await getLastVerificationCode(empresaId, 1); 
     
     if (!lastCode) return false;
 
@@ -154,7 +154,7 @@ export default {
                 maxAge: env.TOKEN_EXPIRY,
             });
 
-            await deleteUsedCode(payload.id);
+            await deleteUsedCode(payload.id, 1);
 
             return res.status(200).json({message: "Autenticação em 2 etapas concluída."});
         } catch(err) {

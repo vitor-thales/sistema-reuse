@@ -35,19 +35,19 @@ export async function createVerificationCode(idEmpresa, type, duration, code) {
     }
 }
 
-export async function getLastVerificationCode(idEmpresa) {
+export async function getLastVerificationCode(idEmpresa, type) {
     const [rows] = await db.query(
-        "SELECT * FROM tbCodigosVerificacao WHERE idEmpresa = ? ORDER BY dataCriacao DESC LIMIT 1",
-        [idEmpresa]
+        "SELECT * FROM tbCodigosVerificacao WHERE idEmpresa = ? AND tipo = ? ORDER BY dataCriacao DESC LIMIT 1",
+        [idEmpresa, type]
     );
     return rows;
 }
 
-export async function deleteUsedCode(idEmpresa) {
+export async function deleteUsedCode(idEmpresa, type) {
     try{
         const result = await db.query(
-            "DELETE FROM tbCodigosVerificacao WHERE idEmpresa = ? AND tipo = '2fauth'",
-            [idEmpresa]
+            "DELETE FROM tbCodigosVerificacao WHERE idEmpresa = ? AND tipo = ?",
+            [idEmpresa, type]
         );
         return result;
     } catch(err) {
