@@ -84,10 +84,12 @@ export default {
                     return res.status(301).send();
                 }
                 
-                token = generateToken(payload, env.JWT_SECRET);
+                payload.role = "user";
             } else {
-                token = generateToken(payload, env.ADMIN_JWT_SECRET);
+                payload.role = "admin";
             }
+
+            token = generateToken(payload, env.JWT_SECRET);
 
             res.cookie("reuseToken", token, {
                 httpOnly: true,

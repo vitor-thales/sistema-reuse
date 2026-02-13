@@ -9,6 +9,7 @@ async function loadHeader() {
     header.innerHTML = html;
     setPageTitle();
     setUserInfo();
+    initGlobalSearch();
 }
 
 async function setPageTitle() {
@@ -50,8 +51,34 @@ async function setUserInfo() {
         userCargo.textContent = json.data.cargo;
         userPhoto.textContent = getInitials(json.data.nome);
     } catch (err) {
+        console.log(err);
         toast.show("Erro ao buscar informações do usuário", "error");
     }
+}
+
+function initGlobalSearch() {
+    const searchInput = document.getElementById('globalSearch');
+    if (!searchInput) return;
+
+    const route = window.location.pathname.split("/")[2];
+
+    switch(route) {
+        case "usuarios":
+            window.loadFunction = window.loadUsuarios;
+            break;
+    }
+
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(() => {
+            if (typeof window.loadFunction === 'function') {
+                window.loadFunction(1, searchTerm);
+            }
+        }, 300);
+    });
 }
 
 function getInitials(name) {

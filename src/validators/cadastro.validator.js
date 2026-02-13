@@ -1,4 +1,4 @@
-import Joi from "joi";
+import { JoiHtmlExtension as Joi } from "../utils/joiExtensions.js";
 import fs from "fs";
 import { validateCNPJ, validateCPF } from "../utils/documentValidators.js";
 
@@ -7,32 +7,31 @@ const empresaSchema = Joi.object({
         if (!validateCNPJ(value)) return helpers.message('CNPJ inválido');
         return value;
     }),
-    razao_social: Joi.string().min(3).max(255).required(),
-    nome_fantasia: Joi.string().min(3).max(255).allow('', null),
+    razao_social: Joi.string().min(3).max(255).escapeHTML().required(),
+    nome_fantasia: Joi.string().min(3).max(255).escapeHTML().allow('', null),
     email_corp: Joi.string().email().required(),
-    telefone: Joi.string().min(10).max(11).required(),
-    nome_resp: Joi.string().min(3).max(100).required(),
+    telefone: Joi.string().min(10).max(11).escapeHTML().required(),
+    nome_resp: Joi.string().min(3).max(100).escapeHTML().required(),
     cpf_resp: Joi.string().required().custom((value, helpers) => {
         if (!validateCPF(value)) return helpers.message('CPF inválido');
         return value;
     }),
-    senha: Joi.string().min(8).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).required(),
-    cep: Joi.string().length(8).required(),
-    estado: Joi.string().required(),
-    cidade: Joi.string().required(),
-    bairro: Joi.string().required(),
-    endereco: Joi.string().required(),
-    numero: Joi.string().required(),
-    complemento: Joi.string().allow('', null),
-    publicKey: Joi.string().required(),
-    privateKey: Joi.string().required(),
-    salt: Joi.string().required(),
-    iv: Joi.string().required()
+    senha: Joi.string().min(8).escapeHTML().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).required(),
+    cep: Joi.string().length(8).escapeHTML().required(),
+    estado: Joi.string().escapeHTML().required(),
+    cidade: Joi.string().escapeHTML().required(),
+    bairro: Joi.string().escapeHTML().required(),
+    endereco: Joi.string().escapeHTML().required(),
+    numero: Joi.string().escapeHTML().required(),
+    complemento: Joi.string().escapeHTML().allow('', null),
+    publicKey: Joi.string().escapeHTML().required(),
+    privateKey: Joi.string().escapeHTML().required(),
+    salt: Joi.string().escapeHTML().required(),
+    iv: Joi.string().escapeHTML().required()
 });
 
 export const validateRegistration = async (req, res, next) => {
-    console.log();
-    const { error } = empresaSchema.validate(req.body, { abortEarly: false });
+    const { error, value } = empresaSchema.validate(req.body, { abortEarly: false });
 
     if (error) {
         if (req.files) {
@@ -50,5 +49,7 @@ export const validateRegistration = async (req, res, next) => {
         return res.status(400).json({ errors: errorMessages });
     }
 
+    req.body = value;
+
     next();
-}
+};

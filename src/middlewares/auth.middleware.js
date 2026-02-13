@@ -53,7 +53,8 @@ export async function adminAuth(req, res, next) {
     if (!token) return res.status(401).json({ error: "Token não encontrado" });
 
     try {
-        const payload = jwt.verify(token, env.ADMIN_JWT_SECRET);
+        const payload = jwt.verify(token, env.JWT_SECRET);
+        if(payload.role !== "admin") return res.status(401).json({ error: "Acesso negado." });
 
         const segments = req.path.split("/");
         const target = segments[1];
