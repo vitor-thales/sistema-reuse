@@ -10,9 +10,11 @@ import { checkPermissionLevel } from "../utils/checkPermission.js";
 import { sendWelcomeEmail, sendApprovalEmail, sendDenialEmail } from "../utils/sendMail.js";
 
 import { getAdmin, getManyUsers, getTotalUsers, createAdmin, editAdmin, deleteAdmin } from "../models/admins.model.js";
-import { deleteCategoria, createCategoria, editCategoria, getCategoria, getManyCategories, getTotalCategories } from "../models/categories.model.js";
-import { getCountAnunciosCategoria } from "../models/anuncios.model.js";
-import { getDocuments, getEmpresa, getManySolicitations, getPedido, getPendingSolicitationCount, getTotalSolicitations, updateSolicitationStatus } from "../models/empresas.model.js";
+import { getTotalCategoriesDashboard, deleteCategoria, createCategoria, editCategoria, getCategoria, getManyCategories, getTotalCategories } from "../models/categories.model.js";
+import { getAnunciosPerCategory, getAnunciosPerState, getCountAnunciosCategoria, getSemesterSold, getTotalAnuncios, getWeeklyAnnounced } from "../models/anuncios.model.js";
+import { getRecentSolicitations, getRecentApprovals, getTotalEmpresas, getDocuments, getEmpresa, getManySolicitations, getPedido, getPendingSolicitationCount, getTotalSolicitations, updateSolicitationStatus } from "../models/empresas.model.js";
+import { getMonthTotalMessages } from "../models/messages.model.js";
+import { getVisualizationsByInteractions, getWeeklyVisualizations } from "../models/visualizations.model.js";
 
 function generatePassword(length = 16) {
     const uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -42,46 +44,6 @@ export default {
 
     async getUsuariosPage(req, res) {
         res.sendFile(path.join(publicDir, "pages/admin.usuarios.html"));
-    },
-
-    async getPermissions(req, res) {
-        const token = req.cookies?.reuseToken;
-
-        if (!token) return res.status(401).json({ error: "Token não encontrado" });
-
-        try {
-            const payload = jwt.verify(token, env.JWT_SECRET);
-            if(payload.role !== "admin") return res.status(401).json({ error: "Token não encontrado!" });
-
-            const permissions = await checkPermissionLevel(payload.id);
-
-            res.json({permissions});
-        }catch(err) {
-            return res.status(401).json({ error: "Token inválido" });
-        }
-    },
-
-    async getUserInfo(req, res) {
-        const token = req.cookies?.reuseToken;
-
-        if (!token) return res.status(401).json({ error: "Token não encontrado!" });
-
-        try {
-            const payload = jwt.verify(token, env.JWT_SECRET);
-            if(payload.role !== "admin") return res.status(401).json({ error: "Token não encontrado!" });
-
-            const info = await getAdmin(payload.id);
-            if(!info || info.length == 0) return res.status(400).json({ error: "Usuário não encontrado!" });
-
-            const data = {
-                nome: info[0].nome,
-                cargo: info[0].cargo
-            };
-
-            res.json({ data });
-        } catch(err) {
-            return res.status(401).json({ error: "Token inválido" });
-        }
     },
 
     async getUsers(req, res) {
@@ -371,5 +333,90 @@ export default {
         } else {
             res.status(404).json({ error: "Arquivo não encontrado" });
         }
+    },
+
+    async getPermissions(req, res) {
+        const token = req.cookies?.reuseToken;
+
+        if (!token) return res.status(401).json({ error: "Token não encontrado" });
+
+        try {
+            const payload = jwt.verify(token, env.JWT_SECRET);
+            if(payload.role !== "admin") return res.status(401).json({ error: "Token não encontrado!" });
+
+            const permissions = await checkPermissionLevel(payload.id);
+
+            res.json({permissions});
+        }catch(err) {
+            return res.status(401).json({ error: "Token inválido" });
+        }
+    },
+
+    async getUserInfo(req, res) {
+        const token = req.cookies?.reuseToken;
+
+        if (!token) return res.status(401).json({ error: "Token não encontrado!" });
+
+        try {
+            const payload = jwt.verify(token, env.JWT_SECRET);
+            if(payload.role !== "admin") return res.status(401).json({ error: "Token não encontrado!" });
+
+            const info = await getAdmin(payload.id);
+            if(!info || info.length == 0) return res.status(400).json({ error: "Usuário não encontrado!" });
+
+            const data = {
+                nome: info[0].nome,
+                cargo: info[0].cargo
+            };
+
+            res.json({ data });
+        } catch(err) {
+            return res.status(401).json({ error: "Token inválido" });
+        }
+    },
+
+    async getDashboardCardsInfo(req, res) {
+        const data = {
+            empresas: {},
+            categorias: {},
+            mensagens: {},
+            anuncios: {}
+        };
+
+        const empresas = await getTotalEmpresas();
+        data.empresas.total = empresas[0].total_atual;
+        data.empresas.acrescimo = empresas[0].percentual_crescimento;
+
+        const categories = await getTotalCategoriesDashboard();
+        data.categorias.total = categories[0].total_atual;
+        data.categorias.acrescimo = categories[0].percentual_crescimento;
+
+        const messages = await getMonthTotalMessages();
+        data.mensagens.total = messages[0].total_mes_atual;
+        data.mensagens.acrescimo = messages[0].percentual_crescimento;
+
+        const anuncios = await getTotalAnuncios();
+        data.anuncios.total = anuncios[0].total_atual;
+        data.anuncios.acrescimo = anuncios[0].percentual_crescimento;
+
+        res.json(data);
+    },
+
+    async getDashboardRegistersInfo(req, res) {
+        const solicitations = await getRecentSolicitations();
+        const approvals = await getRecentApprovals();
+
+        res.json({ solicitations, approvals });
+    },
+
+    async getDashboardCharts(req, res) {
+        const weeklyAnnounced = await getWeeklyAnnounced();
+        const densityPerState = await getAnunciosPerState();
+        const semesterSold = await getSemesterSold();
+        const anunciosCategory = await getAnunciosPerCategory();
+        const visByInteractions = await getVisualizationsByInteractions();
+        const weeklyVisualizations = await getWeeklyVisualizations();
+
+        res.json({ weeklyAnnounced, densityPerState, semesterSold, anunciosCategory, visByInteractions, weeklyVisualizations });
     }
 }

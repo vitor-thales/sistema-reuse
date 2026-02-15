@@ -10,6 +10,9 @@ import adminController from "../controllers/admin.controller.js";
 const router = Router();
 
 router.get("/dashboard", adminAuth, adminController.getDashboardPage);
+router.get("/dashboard/getDashboardCards", adminAuth, adminController.getDashboardCardsInfo);
+router.get("/dashboard/getRegistrationInfo", adminAuth, adminController.getDashboardRegistersInfo);
+router.get("/dashboard/getDashboardCharts", adminAuth, adminController.getDashboardCharts);
 
 router.get("/usuarios", adminAuth, adminController.getUsuariosPage);
 router.get("/usuarios/get/:id", adminAuth, adminController.getUser);
@@ -26,7 +29,6 @@ router.get("/pedidos/documents/:type/:idEmpresa", adminAuth, adminController.get
 
 router.get("/permissions", adminAuth, adminController.getPermissions);
 router.get("/api/getInfo", adminAuth, adminController.getUserInfo);
-
 
 router.post("/usuarios/createUser",
     adminAuth,

@@ -75,3 +75,17 @@ export async function deleteCategoria(id) {
         return err;
     }
 }
+
+export async function getTotalCategoriesDashboard() {
+    const [rows] = await db.query(
+        `SELECT 
+            COUNT(*) AS total_atual,
+            COUNT(CASE WHEN dataCriacao < DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') THEN 1 END) AS total_mes_passado,
+            ROUND(
+                ((COUNT(*) - COUNT(CASE WHEN dataCriacao < DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') THEN 1 END)) 
+                / NULLIF(COUNT(CASE WHEN dataCriacao < DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') THEN 1 END), 0)) * 100, 
+            2) AS percentual_crescimento
+        FROM tbCategorias;`
+    );
+    return rows;
+}
