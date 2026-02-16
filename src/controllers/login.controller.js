@@ -96,7 +96,8 @@ export default {
                 maxAge: env.TOKEN_EXPIRY,
             });
             
-            res.json({ message: "Login realizado com sucesso!" });
+            if(isAdmin.length == 0) return res.json({ encryptedPrivateKey: result[0].ikPrivada, salt: result[0].salt, iv: result[0].iv });
+            else return res.json({ message: "Login realizado com sucesso!" });
         } catch (err) {
             res.status(500).json({ error: err });
         }
@@ -145,7 +146,7 @@ export default {
         try {
             const payload = jwt.verify(tfToken, env.TFAUTH_JWT_SECRET);
 
-            const lastVerificationCode = await getLastVerificationCode(payload.id);
+            const lastVerificationCode = await getLastVerificationCode(payload.id, 1);
             const verificationData = lastVerificationCode[0];
 
             if (!verificationData || verificationData.codigo !== code) 
@@ -167,7 +168,9 @@ export default {
 
             await deleteUsedCode(payload.id, 1);
 
-            return res.status(200).json({message: "Autenticação em 2 etapas concluída."});
+            const result = await getEmpresa(payload.id);
+
+            return res.status(200).json({ encryptedPrivateKey: result[0].ikPrivada, salt: result[0].salt, iv: result[0].iv });
         } catch(err) {
             return res.status(401).json({error: "Código de verificação expirado"});
         }

@@ -16,3 +16,117 @@ export async function getMonthTotalMessages() {
     );
     return rows;
 }
+
+export async function createE2EData(payload) {
+    const connection = await db.getConnection(); 
+
+    try {
+        await connection.beginTransaction();
+
+        const [res] = await connection.query(
+            `INSERT INTO tbMensagens (idConversa, idRemetente, idDestinatario, content, iv, sig, entregue)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [
+                payload.idConversa, 
+                payload.idRemetente, 
+                payload.idDestinatario, 
+                payload.content, 
+                payload.iv, 
+                payload.signature,
+                true
+            ]
+        );
+
+        const lastId = res.insertId;
+
+        await connection.query(
+            `INSERT INTO tbMensagensKeys (idMensagem, idEmpresa, wrappedKey)
+            VALUES (?, ?, ?), (?, ?, ?)`,
+            [
+                lastId, payload.idRemetente, payload.keyForSender, 
+                lastId, payload.idDestinatario, payload.keyForRecipient
+            ]
+        );
+
+        await connection.commit();
+        return lastId;
+    } catch (err) {
+        await connection.rollback();
+        console.error("Database Transaction Error:", err);
+        throw err; 
+    } finally {
+        connection.release();
+    }
+}
+
+export async function markAsRead(idConversa, idUsuario, lastMessageId) {
+    try {
+        await db.query(
+            `UPDATE tbMensagens 
+            SET lida = TRUE 
+            WHERE idConversa = ? AND idDestinatario = ? AND idMensagem <= ?`,
+            [idConversa, idUsuario, lastMessageId]
+        );
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
+export const getConversationsWithLastMessage = async (userId) => {
+    const [rows] = await db.query(`
+        SELECT 
+            c.idConversa,
+            e.nomeFantasia AS partnerName,
+            e.razaoSocial AS scndPartnerName,
+            e.idEmpresa AS partnerId,
+            m.content AS lastMessageContent,
+            m.dataEnvio,
+            m.lida,
+            m.idRemetente
+        FROM tbConversas c
+        JOIN tbEmpresas e ON (c.idEmpresa1 = e.idEmpresa OR c.idEmpresa2 = e.idEmpresa) AND e.idEmpresa != ?
+        LEFT JOIN tbMensagens m ON m.idMensagem = (
+            SELECT MAX(idMensagem) 
+            FROM tbMensagens 
+            WHERE idConversa = c.idConversa
+        )
+        WHERE c.idEmpresa1 = ? OR c.idEmpresa2 = ?
+        ORDER BY m.dataEnvio DESC
+    `, [userId, userId, userId]);
+    return rows;
+};
+
+export const getMessagesByConversation = async (idConversa, userId, offset = 0) => {
+    const [rows] = await db.query(`
+        SELECT 
+            m.idMensagem,
+            m.idRemetente,
+            m.idDestinatario,
+            m.content,
+            m.iv,
+            m.sig,
+            m.dataEnvio,
+            m.lida,
+            k.wrappedKey,
+            sender.ikPublica AS senderPublicKey
+        FROM tbMensagens m
+        JOIN tbMensagensKeys k ON m.idMensagem = k.idMensagem AND k.idEmpresa = ?
+        JOIN tbEmpresas sender ON m.idRemetente = sender.idEmpresa
+        WHERE m.idConversa = ?
+        ORDER BY m.idMensagem DESC
+        LIMIT 25 OFFSET ?
+    `, [userId, idConversa, parseInt(offset)]);
+    
+    return rows.reverse();
+};
+
+export async function verifyChatParticipants(idConversa, id1, id2) {
+    const [rows] = await db.query(
+        `SELECT idConversa FROM tbConversas 
+         WHERE idConversa = ? 
+         AND ((idEmpresa1 = ? AND idEmpresa2 = ?) OR (idEmpresa1 = ? AND idEmpresa2 = ?))`,
+        [idConversa, id1, id2, id2, id1]
+    );
+    return rows.length > 0;
+}
