@@ -5,7 +5,7 @@ import loginController from "../controllers/login.controller.js";
 
 const router = Router();
 
-router.get("/", notAuth, loginController.getPage);
+router.get("/",  loginController.getPage);
 router.get("/verificar", tfAuth, loginController.getTFAuthPage);
 router.get("/api/checkLogin", auth, loginController.loggedIn);
 

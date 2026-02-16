@@ -8,6 +8,7 @@ import loginRoute from "./routes/login.route.js";
 import cadastroRoute from "./routes/cadastro.route.js";
 import forgotRoute from "./routes/forgot.route.js";
 import adminRoute from "./routes/admin.route.js";
+import messagesRoute from "./routes/messages.route.js";
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use("/login", loginRoute);
 app.use("/registrar", cadastroRoute);
 app.use("/recuperar-senha", forgotRoute);
 app.use("/admin", adminRoute);
+app.use("/mensagens", messagesRoute);
 
 export default app;

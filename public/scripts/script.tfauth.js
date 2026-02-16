@@ -39,6 +39,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1000);
     }
 
+    async function deriveKeyFromPassword(password, saltBase64) {
+        const salt = Uint8Array.from(atob(saltBase64), c => c.charCodeAt(0));
+        const encoder = new TextEncoder();
+        const baseKey = await crypto.subtle.importKey(
+            "raw", encoder.encode(password), "PBKDF2", false, ["deriveKey"]
+        );
+        return await crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
+            baseKey,
+            { name: "AES-GCM", length: 256 },
+            false, ["decrypt", "encrypt"]
+        );
+    }
+
     inputs.forEach((input, index) => {
         input.addEventListener('input', (e) => {
             if (e.target.value.length > 1) {
@@ -94,6 +108,45 @@ document.addEventListener("DOMContentLoaded", () => {
             const json = await res.json();
 
             if (res.ok) {
+                const { encryptedPrivateKey, salt, iv } = json;
+
+                const wrappingKey = await deriveKeyFromPassword(sessionStorage.getItem("tempReUse"), salt);
+
+                const encryptedBuffer = Uint8Array.from(atob(encryptedPrivateKey), c => c.charCodeAt(0));
+                const ivBuffer = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+
+                const decryptedPrivateKeyBuffer = await crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: ivBuffer },
+                    wrappingKey,
+                    encryptedBuffer
+                );
+
+                const deviceSecret = crypto.getRandomValues(new Uint8Array(32));
+                const deviceSecretBase64 = btoa(String.fromCharCode(...deviceSecret));
+
+                const persistenceKey = await crypto.subtle.importKey(
+                    "raw", 
+                    deviceSecret, 
+                    "AES-GCM", 
+                    false, 
+                    ["encrypt", "decrypt"]
+                );
+
+                const persistenceIv = crypto.getRandomValues(new Uint8Array(12));
+                
+                const reEncryptedKey = await crypto.subtle.encrypt(
+                    { name: "AES-GCM", iv: persistenceIv },
+                    persistenceKey,
+                    decryptedPrivateKeyBuffer
+                );
+
+                localStorage.setItem("persistent_kp", btoa(String.fromCharCode(...new Uint8Array(reEncryptedKey))));
+                localStorage.setItem("persistent_iv", btoa(String.fromCharCode(...persistenceIv)));
+
+                document.cookie = `device_secret=${deviceSecretBase64}; path=/; Max-Age=604800; SameSite=Strict;`;
+
+                sessionStorage.clear();
+
                 toast.show("Sucesso! Redirecionando...", "success");
                 setTimeout(() => window.location.href = "/", 1000);
             } else {
@@ -102,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 verifyBtn.innerText = "VERIFICAR";
             }
         } catch (err) {
+            console.log(err);
             toast.show("Erro de conexão com o servidor", "error");
             verifyBtn.disabled = false;
             verifyBtn.innerText = "VERIFICAR";

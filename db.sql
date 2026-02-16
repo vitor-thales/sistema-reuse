@@ -75,7 +75,9 @@ CREATE TABLE tbMensagens (
     idConversa BIGINT NOT NULL,
     idRemetente INT NOT NULL,
     idDestinatario INT NOT NULL,
-    conteudoCriptografado TEXT NOT NULL,
+    content TEXT NOT NULL,
+    iv TEXT NOT NULL,
+    sig TEXT NOT NULL,
     dataEnvio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     entregue BOOLEAN NOT NULL DEFAULT FALSE,
     lida BOOLEAN NOT NULL DEFAULT FALSE,
@@ -84,6 +86,20 @@ CREATE TABLE tbMensagens (
     FOREIGN KEY (idRemetente) REFERENCES tbEmpresas(idEmpresa)
         ON DELETE CASCADE,
     FOREIGN KEY (idDestinatario) REFERENCES tbEmpresas(idEmpresa)
+        ON DELETE CASCADE
+);
+
+------------------------------------------------------------
+-- TABELA: tbMensagensKeys
+------------------------------------------------------------
+CREATE TABLE tbMensagensKeys (
+    idMensagemKey BIGINT AUTO_INCREMENT PRIMARY KEY,
+    idMensagem BIGINT NOT NULL,
+    idEmpresa INT NOT NULL,
+    wrappedKey TEXT NOT NULL,
+    FOREIGN KEY (idMensagem) REFERENCES tbMensagens(idMensagem)
+        ON DELETE CASCADE,
+    FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
         ON DELETE CASCADE
 );
 
