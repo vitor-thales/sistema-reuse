@@ -5,10 +5,13 @@ import cookieParser from 'cookie-parser';
 import { publicDir } from './utils/paths.js';
 
 import loginRoute from "./routes/login.route.js";
+import logoutRoute from "./routes/logout.route.js";
 import cadastroRoute from "./routes/cadastro.route.js";
 import forgotRoute from "./routes/forgot.route.js";
 import adminRoute from "./routes/admin.route.js";
 import messagesRoute from "./routes/messages.route.js";
+
+import errorsController from './controllers/errors.controller.js';
 
 const app = express();
 
@@ -21,9 +24,13 @@ app.use("/components", express.static(path.join(publicDir, "components")));
 app.use(cookieParser());
 
 app.use("/login", loginRoute);
+app.use("/logout", logoutRoute);
 app.use("/registrar", cadastroRoute);
 app.use("/recuperar-senha", forgotRoute);
 app.use("/admin", adminRoute);
 app.use("/mensagens", messagesRoute);
+
+app.use(errorsController.notFound);
+app.use((err, req, res, next) => errorsController.forbidden(err, req, res, next));
 
 export default app;
