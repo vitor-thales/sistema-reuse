@@ -12,7 +12,7 @@ import { sendWelcomeEmail, sendApprovalEmail, sendDenialEmail } from "../utils/s
 import { getAdmin, getManyUsers, getTotalUsers, createAdmin, editAdmin, deleteAdmin } from "../models/admins.model.js";
 import { getTotalCategoriesDashboard, deleteCategoria, createCategoria, editCategoria, getCategoria, getManyCategories, getTotalCategories } from "../models/categories.model.js";
 import { getAnunciosPerCategory, getAnunciosPerState, getCountAnunciosCategoria, getSemesterSold, getTotalAnuncios, getWeeklyAnnounced } from "../models/anuncios.model.js";
-import { getRecentSolicitations, getRecentApprovals, getTotalEmpresas, getDocuments, getEmpresa, getManySolicitations, getPedido, getPendingSolicitationCount, getTotalSolicitations, updateSolicitationStatus } from "../models/empresas.model.js";
+import { getRecentSolicitations, getRecentApprovals, getTotalEmpresas, getDocuments, getEmpresa, getManySolicitations, getPedido, getPendingSolicitationCount, getTotalSolicitations, updateSolicitationStatus, isEmailTaken } from "../models/empresas.model.js";
 import { getMonthTotalMessages } from "../models/messages.model.js";
 import { getVisualizationsByInteractions, getWeeklyVisualizations } from "../models/visualizations.model.js";
 
@@ -78,6 +78,10 @@ export default {
 
     async createUser(req, res) {
         const data = req.body;
+
+        if (await isEmailTaken(data.email)) {
+            return res.status(400).json({error: "Este e-mail já está em uso por uma empresa ou administrador."});
+        }
 
         if(data.senha === "") {
             data.senha = generatePassword();

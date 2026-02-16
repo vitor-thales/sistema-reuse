@@ -6,15 +6,19 @@ import { checkPermissionLevel } from "../utils/checkPermission.js";
 export function auth(req, res, next) {
     const token = req.cookies?.reuseToken;
 
-    if (!token) return res.status(401).json({ error: "Token não encontrado" });
+    if (!token) {
+        const error = new Error();
+        error.status = 401;
+        return next(error);
+    };
 
     try {
         jwt.verify(token, env.JWT_SECRET);
         next();
     } catch (err) {
-        return res
-            .status(401)
-            .json({ error: "Acesso Negado. Token Inválido." });
+        const error = new Error();
+        error.status = 401;
+        return next(error);
     }
 }
 
@@ -35,26 +39,39 @@ export function notAuth(req, res, next) {
 export function tfAuth(req, res, next) {
     const tfToken = req.cookies?.reuseTFToken;
 
-    if (!tfToken) return res.status(401).json({ error: "Token não encontrado" });
+    if (!tfToken) {
+        const error = new Error();
+        error.status = 401;
+        return next(error);
+    };
 
     try {
         jwt.verify(tfToken, env.TFAUTH_JWT_SECRET);
         next();
     } catch (err) {
-        return res
-            .status(401)
-            .json({ error: "Acesso Negado. Token Inválido." });
+        const error = new Error();
+        error.status = 401;
+        return next(error);
     }
 }
 
 export async function adminAuth(req, res, next) {
     const token = req.cookies?.reuseToken;
+    
 
-    if (!token) return res.status(401).json({ error: "Token não encontrado" });
+    if (!token) {
+        const error = new Error();
+        error.status = 401;
+        return next(error);
+    } 
 
     try {
         const payload = jwt.verify(token, env.JWT_SECRET);
-        if(payload.role !== "admin") return res.status(401).json({ error: "Acesso negado." });
+        if(payload.role !== "admin") {
+            const error = new Error();
+            error.status = 401;
+            return next(error);
+        };
 
         const segments = req.path.split("/");
         const target = segments[1];
@@ -77,9 +94,15 @@ export async function adminAuth(req, res, next) {
                 break;
         }
         
-        if(!permitted) return res.status(401).json({ error: "Acesso negado." });
+        if(!permitted) {
+            const error = new Error();
+            error.status = 401;
+            return next(error);
+        };
         next();
     } catch(err) {
-        return res.status(401).json({ error: "Accesso Negado." });
+        const error = new Error();
+        error.status = 401;
+        return next(error);
     }
 }

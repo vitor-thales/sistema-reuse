@@ -166,3 +166,10 @@ export async function getRecentApprovals() {
     );
     return rows;
 }
+
+export async function isEmailTaken(email) {
+    const [empresa] = await db.query("SELECT 1 FROM tbEmpresas WHERE emailCorporativo = ? LIMIT 1", [email]);
+    const [admin] = await db.query("SELECT 1 FROM tbUsuariosSistema WHERE email = ? LIMIT 1", [email]);
+
+    return empresa.length > 0 || admin.length > 0;
+}

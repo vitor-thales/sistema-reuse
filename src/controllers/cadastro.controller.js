@@ -3,8 +3,10 @@ import bcrypt from "bcryptjs";
 
 import { publicDir } from "../utils/paths.js";
 import { env } from "../config/env.js";
-import { insertEmpresa } from "../models/empresas.model.js";
 import { sendSolicitationEmail } from "../utils/sendMail.js";
+
+import { insertEmpresa, isEmailTaken } from "../models/empresas.model.js";
+
 
 export default {
     async getPage(req, res) {
@@ -18,6 +20,10 @@ export default {
     async sendRequisition(req, res) {
         const data = req.body;
         if(!data) return res.status(500).json({error: "No body was found on the request."});
+
+        if (await isEmailTaken(data.email_corp)) {
+            return res.status(400).json({error: "Este e-mail já está em uso no sistema."});
+        }
 
         data.senha = await bcrypt.hash(data.senha, env.SALT);
 

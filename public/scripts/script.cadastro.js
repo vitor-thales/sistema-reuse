@@ -312,7 +312,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (res.status == 500) toast.show("Erro interno do sistema", "error");
             else if (res.status == 400) toast.show(json.errors[0], "error");
-            else window.location.href = "http://localhost:8080/registrar/sucesso"
+            else { 
+                localStorage.clear();
+                window.location.href = "http://localhost:8080/registrar/sucesso"
+            }
         } catch (err) {
             console.log(err);
             toast.show(err, "error");

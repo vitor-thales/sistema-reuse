@@ -99,4 +99,24 @@ function getInitials(name) {
     }
 }
 
+window.toggleUserMenu = function (event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('logout-dropdown');
+    dropdown.classList.toggle('hidden');
+}
+
+window.onclick = function(event) {
+    const dropdown = document.getElementById('logout-dropdown');
+    const menuButton = document.getElementById('user-menu-button');
+    
+    if (!menuButton.contains(event.target)) {
+        dropdown.classList.add('hidden');
+    }
+}
+
+window.handleLogout = async function() {
+    await fetch("/logout", {method: "POST"});
+    setTimeout(() => window.location.href = "/login", 500);
+}
+
 loadHeader();

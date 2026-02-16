@@ -1,8 +1,0 @@
--- TODO LIST
-
-- Create messages routes
-- 404 Pages
-- 401 Pages
-- Logout for admins
-- Block trying to register with same mail
-- Delete register progress after success finish

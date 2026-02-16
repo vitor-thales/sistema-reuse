@@ -28,21 +28,38 @@
 
     <div class="w-px h-8 bg-cyangrey hidden sm:block"></div>
 
-    <div class="flex items-center gap-3">
+    <div class="relative">
+      <div 
+        onclick="toggleUserMenu(event)" 
+        class="flex items-center gap-3 cursor-pointer hover:bg-black/5 p-1 rounded-lg transition-all"
+        id="user-menu-button"
+      >
+        <div id="user-photo" class="pt-0.75 pr-0.5 w-10 h-10 rounded-full bg-lightgray border border-cyangrey flex items-center justify-center text-mainblue font-semibold shrink-0">
+          CR
+        </div>
 
-      <div id="user-photo" class="w-10 h-10 rounded-full bg-lightgray border border-cyangrey flex items-center justify-center text-mainblue font-semibold shrink-0">
-        NU
+        <div class="leading-tight hidden sm:block">
+          <p id="username" class="text-sm font-medium text-darkblue">
+            Carregando...
+          </p>
+          <p id="user-cargo" class="text-xs text-darkcyangrey">
+            Carregando...
+          </p>
+        </div>
+        <i class="fa-solid fa-chevron-down text-[10px] text-darkcyangrey ml-1"></i>
       </div>
 
-      <div class="leading-tight hidden sm:block">
-        <p id="username" class="text-sm font-medium text-darkblue">
-          Nome Usuário
-        </p>
-        <p id="user-cargo" class="text-xs text-darkcyangrey">
-          Cargo Usuário
-        </p>
+      <div 
+        id="logout-dropdown" 
+        class="hidden absolute right-0 mt-2 w-48 bg-white border border-cyangrey rounded-xl shadow-lg py-2 z-50"
+      >
+        <button 
+          onclick="handleLogout()" 
+          class="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 w-full text-left transition-colors"
+        >
+          <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Sair do Sistema
+        </button>
       </div>
-
     </div>
 
   </div>
