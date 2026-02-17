@@ -18,8 +18,9 @@ function mapCondicao(condicao) {
     "usado-funcional": "Usado - Funcional",
     sucata: "Usado - Não Funcional",
     novo: "Novo",
+    usado: "Usado - Funcional",
   };
-  return mapa[condicao] || "Usado - Funcional";
+  return mapa[condicao] || condicao || "Usado - Funcional";
 }
 
 function mapModalidade(modalidade) {
@@ -65,10 +66,15 @@ export async function getAnuncios() {
       a.status,
       a.dataStatus,
       e.nomeFantasia AS nomeEmpresa,
+      e.cidade AS cidade,
+      e.estado AS estado,
+      c.nome AS categoria,
       img.nomeArquivo
     FROM tbAnuncios a
     LEFT JOIN tbEmpresas e 
       ON a.idEmpresa = e.idEmpresa
+    LEFT JOIN tbCategorias c
+      ON c.idCategoria = a.idCategoria
     LEFT JOIN (
       SELECT i1.idAnuncio, i1.nomeArquivo
       FROM tbImagensAnuncios i1
@@ -87,9 +93,117 @@ export async function getAnuncios() {
 }
 
 /**
- * @param {number} idEmpresa - idEmpresa da empresa logada
- * @param {object} data - dados do form (req.body)
- * @param {Array} files - arquivos do multer (req.files)
+ * @param { object } filtros
+ * @returns { Array }
+ */
+export async function getAnunciosFiltro(filtros = {}) {
+  const {
+    categoria,
+    condicao,
+    uf,
+    cidade,
+    precoMin,
+    precoMax,
+  } = filtros;
+
+  const where = [];
+  const params = [];
+
+  where.push("a.status = 'ativo'");
+
+  if (categoria) {
+    const asNumber = Number(categoria);
+    if (!Number.isNaN(asNumber) && String(asNumber) === String(categoria).trim()) {
+      where.push("v.idCategoria = ?");
+      params.push(asNumber);
+    } else {
+      where.push(`
+        v.idCategoria = (
+          SELECT c.idCategoria
+          FROM tbCategorias c
+          WHERE c.nome = ?
+          LIMIT 1
+        )
+      `);
+      params.push(String(categoria));
+    }
+  }
+
+  if (condicao) {
+    where.push("v.condicao = ?");
+    params.push(mapCondicao(String(condicao)));
+  }
+
+  if (uf) {
+    where.push("v.estadoEmpresa = ?");
+    params.push(String(uf).trim().toUpperCase());
+  }
+
+  if (cidade) {
+    where.push("LOWER(v.cidadeEmpresa) LIKE CONCAT('%', LOWER(?), '%')");
+    params.push(String(cidade).trim());
+  }
+
+  if (precoMin !== undefined && precoMin !== null && precoMin !== "") {
+    const n = Number(precoMin);
+    if (!Number.isNaN(n)) {
+      where.push("v.precoTotal >= ?");
+      params.push(n);
+    }
+  }
+
+  if (precoMax !== undefined && precoMax !== null && precoMax !== "") {
+    const n = Number(precoMax);
+    if (!Number.isNaN(n)) {
+      where.push("v.precoTotal <= ?");
+      params.push(n);
+    }
+  }
+
+  const sql = `
+    SELECT 
+      a.idAnuncio,
+      a.nomeProduto,
+      a.valorTotal,
+      a.quantidade,
+      a.unidadeMedida,
+      a.pesoTotal,
+      a.descricao,
+      a.condicao,
+      a.origem,
+      a.composicao,
+      a.status,
+      a.dataStatus,
+      e.nomeFantasia AS nomeEmpresa,
+      e.cidade AS cidade,
+      e.estado AS estado,
+      c.nome AS categoria,
+      img.nomeArquivo
+    FROM viewFiltroBusca v
+    JOIN tbAnuncios a ON a.idAnuncio = v.idAnuncio
+    JOIN tbEmpresas e ON e.idEmpresa = a.idEmpresa
+    LEFT JOIN tbCategorias c ON c.idCategoria = a.idCategoria
+    LEFT JOIN (
+      SELECT i1.idAnuncio, i1.nomeArquivo
+      FROM tbImagensAnuncios i1
+      INNER JOIN (
+        SELECT idAnuncio, MIN(idImagem) AS minIdImagem
+        FROM tbImagensAnuncios
+        GROUP BY idAnuncio
+      ) x ON x.idAnuncio = i1.idAnuncio AND x.minIdImagem = i1.idImagem
+    ) img ON img.idAnuncio = a.idAnuncio
+    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+    ORDER BY a.dataStatus DESC
+  `;
+
+  const [rows] = await db.query(sql, params);
+  return rows;
+}
+
+/**
+ * @param { number } idEmpresa
+ * @param { object } data
+ * @param { Array } files
  */
 export async function insertAnuncio(idEmpresa, data, files = []) {
   try {
@@ -97,8 +211,7 @@ export async function insertAnuncio(idEmpresa, data, files = []) {
       return "Empresa não identificada. Faça login novamente.";
     }
 
-    // Se seu select manda "placas/cabos/metais" no campo name="tipo",
-    // isso funciona perfeito:
+
     const categoriaId = await resolveCategoriaId(data.tipo);
     if (!categoriaId) return "Categoria não encontrada.";
 
@@ -129,7 +242,7 @@ export async function insertAnuncio(idEmpresa, data, files = []) {
         composicao,
         modalidadeColeta,
         status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)` ,
       [
         idEmpresa,
         data.nomeProduto,

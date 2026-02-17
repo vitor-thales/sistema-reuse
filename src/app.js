@@ -24,7 +24,6 @@ app.use(
 );
 
 app.use("/auth", logoutRoute);
-app.use("/api", configuracoesRoute);
 app.use("/login", loginRoute);
 app.use("/", landingPageRoute);
 app.use("/anuncie", anuncieRoute);

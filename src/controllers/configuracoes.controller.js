@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { publicDir } from "../utils/paths.js";
 import { env } from "../config/env.js";
 import ConfigEmpresasModel from "../models/configuracaoEmpresa.model.js";
+import { updateSenhaEmpresa } from "../models/empresas.model.js";
 import bcrypt from "bcrypt";
 
 export default {
@@ -22,6 +23,44 @@ export default {
 
         } catch {
             return res.json({ loggedIn: false });
+        }
+    },
+
+    async updatePassword(req, res) {
+        try {
+            const token = req.cookies?.reuseToken;
+            if (!token) return res.status(401).json({ message: "Não autenticado" });
+
+            let decoded;
+            try {
+                decoded = jwt.verify(token, env.JWT_SECRET);
+            } catch {
+                return res.status(401).json({ message: "Token inválido" });
+            }
+
+            const { senhaAtual, senhaNova } = req.body;
+
+            if (!senhaAtual || !senhaNova) {
+                return res.status(400).json({ message: "Preencha senha atual e senha nova." });
+            }
+
+            const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!regex.test(senhaNova)) {
+                return res.status(400).json({
+                    message: "A senha nova deve ter no mínimo 8 caracteres, 1 letra maiúscula e 1 número."
+                });
+            }
+
+            const result = await updateSenhaEmpresa(decoded.id, senhaAtual, senhaNova);
+
+            if (result !== true) {
+                return res.status(400).json({ message: result });
+            }
+
+            return res.json({ message: "Senha alterada com sucesso!" });
+        } catch (err) {
+            console.error("updatePassword error:", err);
+            return res.status(500).json({ message: "Erro interno no servidor" });
         }
     },
 
@@ -184,92 +223,44 @@ export default {
     },
 
     async updatePassword(req, res) {
-
-        const token = req.cookies.reuseToken;
-
-        if (!token) {
-            return res.status(401).json({
-                status: "error",
-                message: "Não autenticado"
-            });
-        }
-
-        let decoded;
-
         try {
-            decoded = jwt.verify(token, env.JWT_SECRET);
-        } catch {
-            return res.status(401).json({
-                status: "error",
-                message: "Token inválido"
-            });
-        }
+            const token = req.cookies?.reuseToken;
+            if (!token) return res.status(401).json({ message: "Não autenticado" });
 
-        const { senhaAtual, senhaNova } = req.body;
-
-        if (!senhaAtual || !senhaNova) {
-            return res.status(400).json({
-                status: "validation_error",
-                message: "Preencha a senha atual e a nova"
-            });
-        }
-
-        const regexSenha = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-        if (!regexSenha.test(senhaNova)) {
-            return res.status(400).json({
-                status: "validation_error",
-                message:
-                    "A senha nova deve ter no mínimo 8 caracteres, uma letra maiúscula e um número"
-            });
-        }
-
-        try {
-
-            const [rows] = await req.db.query(
-                "SELECT senha FROM tbEmpresas WHERE idEmpresa = ? LIMIT 1",
-                [decoded.id]
-            );
-
-            if (!rows.length) {
-                return res.status(404).json({
-                    status: "error",
-                    message: "Empresa não encontrada"
-                });
+            let decoded;
+            try {
+                decoded = jwt.verify(token, env.JWT_SECRET);
+            } catch {
+                return res.status(401).json({ message: "Token inválido" });
             }
 
-            const hashBanco = rows[0].senha;
+            const { senhaAtual, senhaNova } = req.body;
 
-            const confere = await bcrypt.compare(senhaAtual, hashBanco);
+            console.log("CONTROLLER → decoded:", decoded);
+            console.log("CONTROLLER → senhaAtual:", senhaAtual);
+            console.log("CONTROLLER → senhaNova:", senhaNova);
+            
+            if (!senhaAtual || !senhaNova) {
+                return res.status(400).json({ message: "Preencha senha atual e senha nova." });
+            }
 
-            if (!confere) {
+            const regex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!regex.test(senhaNova)) {
                 return res.status(400).json({
-                    status: "validation_error",
-                    message: "Senha atual incorreta"
+                    message: "A senha nova deve ter no mínimo 8 caracteres, 1 letra maiúscula e 1 número."
                 });
             }
 
-            const novoHash = await bcrypt.hash(senhaNova, 10);
+            const result = await updateSenhaEmpresa(decoded.id, senhaAtual, senhaNova);
 
-            await req.db.query(
-                "UPDATE tbEmpresas SET senha = ? WHERE idEmpresa = ?",
-                [novoHash, decoded.id]
-            );
+            if (result !== true) {
+                return res.status(400).json({ message: result });
+            }
 
-            return res.json({
-                status: "success",
-                message: "Senha alterada com sucesso"
-            });
-
+            return res.json({ message: "Senha alterada com sucesso!" });
         } catch (err) {
-
-            console.error(err);
-
-            return res.status(500).json({
-                status: "error",
-                message: "Erro interno no servidor"
-            });
-
+            console.error("updatePassword error:", err);
+            return res.status(500).json({ message: "Erro interno no servidor" });
         }
     }
 };

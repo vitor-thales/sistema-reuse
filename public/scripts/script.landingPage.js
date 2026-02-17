@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const precoMinInput = document.getElementById("precoMinInput");
   const precoMaxInput = document.getElementById("precoMaxInput");
   const quantidadeSelect = document.getElementById("quantidadeSelect");
-  const cidadeInput = document.getElementById("cidadeInput");
-  const estadoSelect = document.getElementById("estadoSelect");
+  const cidadeInput = document.getElementById("cidadeInput");     // ✅ precisa existir no HTML
+  const estadoSelect = document.getElementById("estadoSelect");   // ✅ precisa ser o SELECT no HTML
   const applyBtn = document.getElementById("applyFilters");
   const clearBtn = document.getElementById("clearFilters");
 
@@ -22,21 +22,21 @@ document.addEventListener("DOMContentLoaded", () => {
   let filteredAnuncios = [];
 
   function openFilter() {
-    overlay.classList.remove("opacity-0", "pointer-events-none");
-    overlay.classList.add("opacity-100");
+    overlay?.classList.remove("opacity-0", "pointer-events-none");
+    overlay?.classList.add("opacity-100");
 
-    panel.classList.remove("translate-x-full");
-    panel.classList.add("translate-x-0");
+    panel?.classList.remove("translate-x-full");
+    panel?.classList.add("translate-x-0");
 
     document.body.classList.add("overflow-hidden");
   }
 
   function closeFilter() {
-    overlay.classList.add("opacity-0", "pointer-events-none");
-    overlay.classList.remove("opacity-100");
+    overlay?.classList.add("opacity-0", "pointer-events-none");
+    overlay?.classList.remove("opacity-100");
 
-    panel.classList.add("translate-x-full");
-    panel.classList.remove("translate-x-0");
+    panel?.classList.add("translate-x-full");
+    panel?.classList.remove("translate-x-0");
 
     document.body.classList.remove("overflow-hidden");
   }
@@ -59,11 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return Number(value).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   }
 
-  function normalizeUFFromText(text) {
-    const m = String(text || "").match(/-\s*([A-Z]{2})\s*$/);
-    return m ? m[1] : "";
-  }
-
   function getSelectedCategoria() {
     return document.querySelector('input[name="categoria"]:checked')?.value || "";
   }
@@ -80,9 +75,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (minV > maxV) minV = maxV;
 
-    if (precoMinInput) precoMinInput.value = minV;
-    if (precoMaxInput) precoMaxInput.value = maxV;
-    if (precoMaxRange) precoMaxRange.value = maxV;
+    if (precoMinInput) precoMinInput.value = String(minV);
+    if (precoMaxInput) precoMaxInput.value = String(maxV);
+    if (precoMaxRange) precoMaxRange.value = String(maxV);
   }
 
   precoMaxRange?.addEventListener("input", () => {
@@ -92,20 +87,16 @@ document.addEventListener("DOMContentLoaded", () => {
   precoMinInput?.addEventListener("input", normalizePrecoInputs);
   precoMaxInput?.addEventListener("input", normalizePrecoInputs);
 
-  function matchQuantidade(adQtd, filtro) {
-    if (!filtro) return true;
-    const qtd = Number(adQtd ?? 0);
-
-    if (filtro === "1-10") return qtd >= 1 && qtd <= 10;
-    if (filtro === "11-50") return qtd >= 11 && qtd <= 50;
-    if (filtro === "51-100") return qtd >= 51 && qtd <= 100;
-    if (filtro === "100+") return qtd >= 100;
-
-    return true;
+  function strip(s) {
+    return String(s ?? "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
   }
 
   function getFilters() {
-    const categoria = getSelectedCategoria();
+    const categoria = getSelectedCategoria(); // pode ser nome ou id (depende do seu HTML)
     const conservacao = conservacaoSelect?.value || "";
 
     normalizePrecoInputs();
@@ -114,60 +105,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const quantidade = quantidadeSelect?.value || "";
 
-    const estadoText =
-      estadoSelect?.options?.[estadoSelect.selectedIndex]?.textContent || "";
-    const uf = normalizeUFFromText(estadoText);
+    // ✅ aqui é melhor pegar o VALUE do select (UF)
+    const uf = String(estadoSelect?.value || "").trim().toUpperCase();
 
-    const cidade = (cidadeInput?.value || "").trim().toLowerCase();
+    const cidade = (cidadeInput?.value || "").trim();
 
     return { categoria, conservacao, precoMin, precoMax, quantidade, uf, cidade };
   }
 
-  function strip(s) {
-    return String(s ?? "")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "") 
-      .trim()
-      .toLowerCase();
-  }
+  function buildQueryParams(f) {
+    const params = new URLSearchParams();
 
-  const UF_FROM_NAME = {
-    "acre": "AC",
-    "alagoas": "AL",
-    "amapa": "AP",
-    "amazonas": "AM",
-    "bahia": "BA",
-    "ceara": "CE",
-    "distrito federal": "DF",
-    "espirito santo": "ES",
-    "goias": "GO",
-    "maranhao": "MA",
-    "mato grosso": "MT",
-    "mato grosso do sul": "MS",
-    "minas gerais": "MG",
-    "para": "PA",
-    "paraiba": "PB",
-    "parana": "PR",
-    "pernambuco": "PE",
-    "piaui": "PI",
-    "rio de janeiro": "RJ",
-    "rio grande do norte": "RN",
-    "rio grande do sul": "RS",
-    "rondonia": "RO",
-    "roraima": "RR",
-    "santa catarina": "SC",
-    "sergipe": "SE",
-    "sao paulo": "SP",
-    "tocantins": "TO",
-  };
+    // categoria: se você quiser que use a VIEW direto (idCategoria),
+    // o IDEAL é o value do radio ser o ID numérico.
+    if (f.categoria) params.set("categoria", f.categoria);
 
-  function anuncioUF(anuncio) {
-    const raw = String(anuncio.estado ?? "").trim();
+    // sua view usa "condicao". No front você chama "conservacao".
+    if (f.conservacao) params.set("condicao", f.conservacao);
 
-    if (/^[A-Za-z]{2}$/.test(raw)) return raw.toUpperCase();
+    if (f.uf) params.set("uf", f.uf);
 
-    const key = strip(raw);
-    return UF_FROM_NAME[key] || "";
+    if (f.cidade) params.set("cidade", f.cidade);
+
+    const userChangedPrice = (f.precoMin > 0) || (f.precoMax < 50000);
+    if (userChangedPrice) {
+      params.set("precoMin", String(f.precoMin));
+      params.set("precoMax", String(f.precoMax));
+    }
+
+    // quantidade não está na VIEW. Deixei de fora do backend por enquanto.
+    // Se você adicionar quantidade na VIEW, dá pra mandar aqui também.
+
+    return params.toString();
   }
 
   function createCard(anuncio) {
@@ -181,13 +150,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const image = document.createElement("img");
     image.className = "w-full h-40 object-cover";
     image.alt = anuncio.nomeProduto || "Anúncio";
-    image.src = anuncio.nomeArquivo ? `/uploads/${anuncio.nomeArquivo}` : "/images/adicionar.png";
+    image.src = anuncio.nomeArquivo
+      ? `/uploads/${anuncio.nomeArquivo}`
+      : "/images/adicionar.png";
 
     const badge = document.createElement("span");
     const status = (anuncio.status || anuncio.situacao || "disponível").toString().toLowerCase();
-
-    const isPending =
-      status.includes("aguard") || status.includes("pend") || status.includes("coleta");
+    const isPending = status.includes("aguard") || status.includes("pend") || status.includes("coleta");
 
     badge.className =
       "absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-semibold text-white " +
@@ -203,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const chip = document.createElement("span");
     chip.className = "inline-flex w-fit px-3 py-1 rounded-full text-xs bg-indigo-50 text-indigo-600";
-    chip.textContent = anuncio.categoria || anuncio.tipoProduto || "Placas de Circuito";
+    chip.textContent = anuncio.categoria || anuncio.tipoProduto || "Categoria";
 
     const titleWrap = document.createElement("div");
     titleWrap.className = "flex flex-col gap-1";
@@ -214,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const subtitle = document.createElement("p");
     subtitle.className = "text-xs text-gray-500 line-clamp-1";
-    subtitle.textContent = anuncio.descricao || "Lote de Alta Qualidade";
+    subtitle.textContent = anuncio.descricao || "Sem descrição";
 
     titleWrap.appendChild(chip);
     titleWrap.appendChild(title);
@@ -227,14 +196,14 @@ document.addEventListener("DOMContentLoaded", () => {
     companyRow.className = "flex items-center gap-2";
     companyRow.innerHTML = `
       <i class="fa-solid fa-building text-gray-400"></i>
-      <span class="line-clamp-1">${anuncio.nomeEmpresa || "TechCorp Eletrônicos"}</span>
+      <span class="line-clamp-1">${anuncio.nomeEmpresa || "Empresa"}</span>
     `;
 
     const locationRow = document.createElement("div");
     locationRow.className = "flex items-center gap-2";
     locationRow.innerHTML = `
       <i class="fa-solid fa-location-dot text-gray-400"></i>
-      <span class="line-clamp-1">${(anuncio.cidade || "São Paulo")}, ${anuncio.estado || "SP"}</span>
+      <span class="line-clamp-1">${(anuncio.cidade || "")}, ${anuncio.estado || ""}</span>
     `;
 
     meta.appendChild(companyRow);
@@ -283,57 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function aplicarFiltros() {
-    const f = getFilters();
-
-    const fCat = strip(f.categoria);
-    const fCidade = strip(f.cidade);
-    const fConserv = strip(f.conservacao);
-
-    const userChangedPrice = (f.precoMin > 0) || (f.precoMax < 50000);
-
-    filteredAnuncios = allAnuncios.filter((anuncio) => {
-      const adCat = strip(anuncio.categoria || anuncio.tipoProduto);
-      const adCidade = strip(anuncio.cidade);
-      const adUF = anuncioUF(anuncio);
-
-      const adConserv = strip(anuncio.conservacao || anuncio.estadoConservacao);
-      const adQtd = Number(anuncio.quantidade ?? anuncio.qtd ?? anuncio.pesoKg ?? 0);
-
-      const hasPreco =
-        anuncio.valorTotal !== null &&
-        anuncio.valorTotal !== undefined &&
-        anuncio.valorTotal !== "";
-
-      const adPreco = hasPreco ? Number(anuncio.valorTotal) : null;
-
-      if (fCat && !adCat.includes(fCat)) return false;
-
-      if (fConserv && adConserv) {
-        if (!adConserv.includes(fConserv)) return false;
-      }
-
-      if (userChangedPrice) {
-        if (adPreco === null || Number.isNaN(adPreco)) return false;
-        if (adPreco < f.precoMin || adPreco > f.precoMax) return false;
-      }
-
-      if (f.quantidade && adQtd) {
-        if (!matchQuantidade(adQtd, f.quantidade)) return false;
-      }
-
-      if (f.uf) {
-        if (!adUF || adUF !== f.uf) return false;
-      }
-
-      if (fCidade && !adCidade.includes(fCidade)) return false;
-
-      return true;
-    });
-
-    renderAnuncios(filteredAnuncios);
-  }
-
   function limparFiltros() {
     document.querySelectorAll('input[name="categoria"]').forEach((r) => (r.checked = false));
 
@@ -342,12 +260,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (estadoSelect) estadoSelect.value = "";
     if (cidadeInput) cidadeInput.value = "";
 
-    if (precoMinInput) precoMinInput.value = 0;
-    if (precoMaxInput) precoMaxInput.value = 50000;
-    if (precoMaxRange) precoMaxRange.value = 50000;
-
-    filteredAnuncios = [...allAnuncios];
-    renderAnuncios(filteredAnuncios);
+    if (precoMinInput) precoMinInput.value = "0";
+    if (precoMaxInput) precoMaxInput.value = "50000";
+    if (precoMaxRange) precoMaxRange.value = "50000";
   }
 
   function debounce(fn, delay = 250) {
@@ -357,41 +272,13 @@ document.addEventListener("DOMContentLoaded", () => {
       t = setTimeout(() => fn(...args), delay);
     };
   }
-  const aplicarFiltrosDebounced = debounce(() => aplicarFiltros(), 250);
-
-  [conservacaoSelect, quantidadeSelect, estadoSelect, precoMinInput, precoMaxInput, precoMaxRange]
-    .filter(Boolean)
-    .forEach((el) => {
-      el.addEventListener("change", aplicarFiltros);
-      el.addEventListener("input", aplicarFiltros);
-    });
-
-  document.querySelectorAll('input[name="categoria"]').forEach((radio) => {
-    radio.addEventListener("change", aplicarFiltros);
-  });
-
-  cidadeInput?.addEventListener("input", aplicarFiltrosDebounced);
-  cidadeInput?.addEventListener("change", aplicarFiltros);
-
-  applyBtn?.addEventListener("click", (e) => {
-    e.preventDefault();
-
-    try {
-      aplicarFiltros();
-      closeFilter();
-    } catch (err) {
-      console.error("Erro no filtro:", err);
-      alert("Erro ao aplicar filtro. Verifique o console.");
-    }
-  });
-
-  clearBtn?.addEventListener("click", () => {
-    limparFiltros();
-  });
 
   async function carregarAnuncios() {
     try {
-      const response = await fetch("/anuncie/api/anuncios");
+      const filtros = getFilters();
+      const qs = buildQueryParams(filtros);
+
+      const response = await fetch(`/anuncie/api/anuncios${qs ? `?${qs}` : ""}`);
       if (!response.ok) throw new Error("Erro HTTP " + response.status);
 
       const anuncios = await response.json();
@@ -399,21 +286,42 @@ document.addEventListener("DOMContentLoaded", () => {
       allAnuncios = Array.isArray(anuncios) ? anuncios : [];
       filteredAnuncios = [...allAnuncios];
 
-      if (allAnuncios.length === 0) {
-        contadorAnuncios.textContent = "Nenhum anúncio encontrado.";
-        anunciosVazio?.classList.remove("hidden");
-        gridAnuncios.innerHTML = "";
-        return;
-      }
-
       renderAnuncios(filteredAnuncios);
-
-      aplicarFiltros();
     } catch (err) {
       console.error("Erro ao carregar anúncios:", err);
       contadorAnuncios.textContent = "Não foi possível carregar os anúncios.";
+      anunciosVazio?.classList.remove("hidden");
+      gridAnuncios.innerHTML = "";
     }
   }
+
+  const carregarAnunciosDebounced = debounce(() => carregarAnuncios(), 300);
+
+  // ✅ listeners: agora chama backend
+  [conservacaoSelect, estadoSelect, precoMinInput, precoMaxInput, precoMaxRange]
+    .filter(Boolean)
+    .forEach((el) => {
+      el.addEventListener("change", carregarAnuncios);
+      el.addEventListener("input", carregarAnunciosDebounced);
+    });
+
+  document.querySelectorAll('input[name="categoria"]').forEach((radio) => {
+    radio.addEventListener("change", carregarAnuncios);
+  });
+
+  cidadeInput?.addEventListener("input", carregarAnunciosDebounced);
+  cidadeInput?.addEventListener("change", carregarAnuncios);
+
+  applyBtn?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    await carregarAnuncios();
+    closeFilter();
+  });
+
+  clearBtn?.addEventListener("click", async () => {
+    limparFiltros();
+    await carregarAnuncios();
+  });
 
   carregarAnuncios();
 });

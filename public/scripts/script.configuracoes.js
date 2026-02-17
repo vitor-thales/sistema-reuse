@@ -99,26 +99,67 @@ async function enviarConfiguracoes(formData) {
     alert(result.message);
 }
 
+async function trocarSenha() {
+    const senhaAtual = document.getElementById("senhaAtual")?.value;
+    const senhaNova = document.getElementById("senhaNova")?.value;
+
+    if (!senhaAtual || !senhaNova) {
+        alert("Preencha todos os campos.");
+        return;
+    }
+
+    const confirmar = confirm("Deseja realmente alterar sua senha?");
+
+    if (!confirmar) {
+        return;
+    }
+
+    try {
+        const res = await fetch("/configuracoes/senha", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ senhaAtual, senhaNova }),
+        });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(data.message || "Erro ao alterar senha.");
+        return;
+    }
+
+    alert("Senha alterada com sucesso!");
+
+    document.getElementById("senhaAtual").value = "";
+    document.getElementById("senhaNova").value = "";
+
+} catch (err) {
+    console.error(err);
+    alert("Erro ao conectar com o servidor.");
+}
+}
+
 const btnLogout = document.getElementById("btnLogout");
 
 if (btnLogout) {
-  btnLogout.addEventListener("click", async () => {
-    const confirmLogout = confirm("Tem certeza que deseja sair da sua conta?");
-    if (!confirmLogout) return;
+    btnLogout.addEventListener("click", async () => {
+        const confirmLogout = confirm("Tem certeza que deseja sair da sua conta?");
+        if (!confirmLogout) return;
 
-    try {
-      const response = await fetch("/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+        try {
+            const response = await fetch("/auth/logout", {
+                method: "POST",
+                credentials: "include",
+            });
 
-      if (!response.ok) {
-        throw new Error("Erro ao realizar logout");
-      }
+            if (!response.ok) {
+                throw new Error("Erro ao realizar logout");
+            }
 
-      window.location.href = "/login";
-    } catch (err) {
-      alert("Não foi possível sair da conta.");
-    }
-  });
+            window.location.href = "/login";
+        } catch (err) {
+            alert("Não foi possível sair da conta.");
+        }
+    });
 }
