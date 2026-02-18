@@ -7,17 +7,19 @@ USE dbReuse;
 CREATE TABLE tbEmpresas (
     idEmpresa INT AUTO_INCREMENT PRIMARY KEY,
     ikPublica TEXT NOT NULL,
+    ikPrivada TEXT NOT NULL,
+    salt TEXT NOT NULL,
+    iv TEXT NOT NULL,
     cnpj VARCHAR(14) UNIQUE NOT NULL,
     razaoSocial VARCHAR(144) UNIQUE NOT NULL,
     nomeFantasia VARCHAR(55) UNIQUE,
-    inscricaoMunicipal VARCHAR(50) NOT NULL,
     emailCorporativo VARCHAR(255) UNIQUE NOT NULL,
     foneCorporativo VARCHAR(11) UNIQUE NOT NULL,
     nomeResponsavel VARCHAR(80) NOT NULL,
     cpfResponsavel VARCHAR(11) UNIQUE NOT NULL,
     senhaHash VARCHAR(255) NOT NULL,
     cepEmpresa VARCHAR(8) NOT NULL,
-    estado VARCHAR(2) NOT NULL,
+    estado VARCHAR(18) NOT NULL,
     cidade VARCHAR(40) NOT NULL,
     bairro VARCHAR(50) NOT NULL,
     endereco VARCHAR(70) NOT NULL,
@@ -25,10 +27,11 @@ CREATE TABLE tbEmpresas (
     compEndereco VARCHAR(120),
     docComprovanteEndereco VARCHAR(120) UNIQUE NOT NULL,
     docCartaoCNPJ VARCHAR(120) UNIQUE NOT NULL,
-    docContratoSocial VARCHAR(120) UNIQUE NOT NULL,
+    docContratoSocial VARCHAR(120) UNIQUE,
     descricao TEXT,
     dataCadastro DATETIME NOT NULL,
-    cadastroAtivo BOOLEAN NOT NULL
+    cadastroAtivo BOOLEAN NOT NULL,
+    dataAprovacao DATETIME DEFAULT NULL
 );
 
 ------------------------------------------------------------
@@ -47,33 +50,6 @@ CREATE TABLE tbConfigEmpresas (
     privMostrarRazaoSocial BOOLEAN NOT NULL DEFAULT TRUE,
     segAutDuasEtapas BOOLEAN NOT NULL DEFAULT FALSE,
     aparenciaTema INT NOT NULL DEFAULT 1,
-    FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
-        ON DELETE CASCADE
-);
-
-------------------------------------------------------------
--- TABELA: tbSignedPreKeys
-------------------------------------------------------------
-CREATE TABLE tbSignedPreKeys (
-    idSPK INT AUTO_INCREMENT PRIMARY KEY,
-    idEmpresa INT NOT NULL,
-    spkPublica TEXT NOT NULL,
-    dataCriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    dataExpiracao DATETIME NOT NULL,
-    ativo BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
-        ON DELETE CASCADE
-);
-
-------------------------------------------------------------
--- TABELA: tbOneTimePreKeys
-------------------------------------------------------------
-CREATE TABLE tbOneTimePreKeys (
-    idOPK INT AUTO_INCREMENT PRIMARY KEY,
-    idEmpresa INT NOT NULL,
-    opkPublica TEXT NOT NULL,
-    usada BOOLEAN NOT NULL DEFAULT FALSE,
-    dataCriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
         ON DELETE CASCADE
 );
@@ -99,9 +75,9 @@ CREATE TABLE tbMensagens (
     idConversa BIGINT NOT NULL,
     idRemetente INT NOT NULL,
     idDestinatario INT NOT NULL,
-    conteudoCriptografado TEXT NOT NULL,
-    ekPublica TEXT NOT NULL,
-    idOPKUtilizada INT NULL,
+    content TEXT NOT NULL,
+    iv TEXT NOT NULL,
+    sig TEXT NOT NULL,
     dataEnvio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     entregue BOOLEAN NOT NULL DEFAULT FALSE,
     lida BOOLEAN NOT NULL DEFAULT FALSE,
@@ -110,21 +86,19 @@ CREATE TABLE tbMensagens (
     FOREIGN KEY (idRemetente) REFERENCES tbEmpresas(idEmpresa)
         ON DELETE CASCADE,
     FOREIGN KEY (idDestinatario) REFERENCES tbEmpresas(idEmpresa)
-        ON DELETE CASCADE,
-    FOREIGN KEY (idOPKUtilizada) REFERENCES tbOneTimePreKeys(idOPK)
-        ON DELETE SET NULL
+        ON DELETE CASCADE
 );
 
 ------------------------------------------------------------
--- TABELA: tbBackupsMsgs
+-- TABELA: tbMensagensKeys
 ------------------------------------------------------------
-CREATE TABLE tbBackupsMsgs (
-    idBackup INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE tbMensagensKeys (
+    idMensagemKey BIGINT AUTO_INCREMENT PRIMARY KEY,
+    idMensagem BIGINT NOT NULL,
     idEmpresa INT NOT NULL,
-    nomeArquivo VARCHAR(255) NOT NULL,
-    hashArquivo VARCHAR(128) NOT NULL,
-    dataCriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    valido BOOLEAN NOT NULL DEFAULT TRUE,
+    wrappedKey TEXT NOT NULL,
+    FOREIGN KEY (idMensagem) REFERENCES tbMensagens(idMensagem)
+        ON DELETE CASCADE,
     FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
         ON DELETE CASCADE
 );
@@ -142,22 +116,6 @@ CREATE TABLE tbUsuariosSistema (
     pGerenciarCategorias BOOLEAN NOT NULL,
     pGerenciarPedidos BOOLEAN NOT NULL,
     senhaHash VARCHAR(255) NOT NULL
-);
-
-------------------------------------------------------------
--- TABELA: tbMasterWraps
-------------------------------------------------------------
-CREATE TABLE tbMasterWraps (
-    idWrap INT AUTO_INCREMENT PRIMARY KEY,
-    idUsuario INT NOT NULL,
-    wrap BLOB NOT NULL,
-    salt VARBINARY(16),
-    kdf_params JSON NOT NULL,
-    nonce VARBINARY(12) NOT NULL,
-    tag VARBINARY(16),
-    criadoEm DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (idUsuario) REFERENCES tbUsuariosSistema(idUsuario)
-        ON DELETE CASCADE
 );
 
 ------------------------------------------------------------
@@ -182,7 +140,8 @@ CREATE TABLE tbNotificacoes (
 CREATE TABLE tbCategorias (
     idCategoria INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(60) NOT NULL,
-    descricao TEXT NOT NULL
+    descricao TEXT NOT NULL,
+    dataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 ------------------------------------------------------------
@@ -231,6 +190,20 @@ CREATE TABLE tbVisualizacoesAnuncios (
     dataVisualizacao DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (idAnuncio) REFERENCES tbAnuncios(idAnuncio)
         ON DELETE CASCADE,
+    FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
+        ON DELETE CASCADE
+);
+
+------------------------------------------------------------
+-- TABELA: tbCodigosVerificacao
+------------------------------------------------------------
+CREATE TABLE tbCodigosVerificacao (
+    idCodigo INT AUTO_INCREMENT PRIMARY KEY,
+    idEmpresa INT NOT NULL,
+    dataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP,
+    dataExpiracao DATETIME,
+    tipo ENUM("2fauth", "change-pass"),
+    codigo VARCHAR(6),
     FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
         ON DELETE CASCADE
 );
@@ -374,6 +347,104 @@ FROM tbAnuncios a
 JOIN tbEmpresas e ON e.idEmpresa = a.idEmpresa;
 
 ------------------------------------------------------------
+-- VIEW: viewVendasUltimos6Meses
+------------------------------------------------------------
+CREATE VIEW viewVendasUltimos6Meses AS
+SELECT 
+    DATE_FORMAT(dataStatus, '%Y-%m') AS mesAno,
+    COUNT(*) AS totalVendido
+FROM tbAnuncios
+WHERE status = 'vendido'
+  AND dataStatus >= DATE_SUB(LAST_DAY(CURRENT_DATE()), INTERVAL 6 MONTH)
+GROUP BY DATE_FORMAT(dataStatus, '%Y-%m')
+ORDER BY mesAno ASC;
+
+------------------------------------------------------------
+-- VIEW: viewItensAnunciadosUltimas4Semanas
+------------------------------------------------------------
+CREATE VIEW viewItensAnunciadosUltimas4Semanas AS
+SELECT 
+    CONCAT(YEAR(dataStatus), '-', WEEK(dataStatus, 1)) AS anoSemana,
+    COUNT(*) AS totalAnunciado
+FROM tbAnuncios
+WHERE status = 'ativo'
+  AND dataStatus >= DATE_SUB(CURRENT_DATE(), INTERVAL 4 WEEK)
+GROUP BY CONCAT(YEAR(dataStatus), '-', WEEK(dataStatus, 1))
+ORDER BY anoSemana ASC;
+
+------------------------------------------------------------
+-- VIEW: viewItensAnunciadosUltimas5Semanas
+------------------------------------------------------------
+CREATE OR REPLACE VIEW viewItensAnunciadosUltimas5Semanas AS
+SELECT 
+    CONCAT(YEAR(dataStatus), '-', WEEK(dataStatus, 1)) AS anoSemana,
+    COUNT(*) AS totalAnunciado
+FROM tbAnuncios
+WHERE status = 'ativo'
+  AND dataStatus >= DATE_SUB(CURRENT_DATE(), INTERVAL 5 WEEK)
+GROUP BY anoSemana
+ORDER BY anoSemana ASC;
+
+------------------------------------------------------------
+-- VIEW: viewDensidadePorEstado
+------------------------------------------------------------
+CREATE VIEW viewDensidadePorEstado AS
+SELECT 
+    e.estado,
+    COUNT(a.idAnuncio) AS totalAnuncios
+FROM tbEmpresas e
+JOIN tbAnuncios a ON e.idEmpresa = a.idEmpresa
+WHERE a.status = 'ativo'
+GROUP BY e.estado
+ORDER BY totalAnuncios DESC;
+
+------------------------------------------------------------
+-- VIEW: viewFunilConversaoTotal
+------------------------------------------------------------
+CREATE VIEW viewFunilConversaoTotal AS
+SELECT 
+    'Visualizações' AS etapa,
+    COUNT(*) AS quantidade
+FROM tbVisualizacoesAnuncios
+UNION ALL
+SELECT 
+    'Interesses (Chat)' AS etapa,
+    COUNT(DISTINCT idConversa) AS quantidade
+FROM tbMensagens;
+
+------------------------------------------------------------
+-- VIEW: viewItensPorCategoriaTop5
+------------------------------------------------------------
+CREATE OR REPLACE VIEW viewItensPorCategoriaTop5 AS
+SELECT * FROM (
+    SELECT 
+        c.nome AS categoria,
+        COUNT(a.idAnuncio) AS totalAtivos
+    FROM tbCategorias c
+    INNER JOIN tbAnuncios a ON c.idCategoria = a.idCategoria
+    WHERE a.status = 'ativo'
+    GROUP BY c.idCategoria, c.nome
+    ORDER BY totalAtivos DESC
+    LIMIT 5
+) AS top5
+
+UNION ALL
+SELECT 
+    'Outros' AS categoria,
+    SUM(sub.totalAtivos) AS totalAtivos
+FROM (
+    SELECT 
+        COUNT(a.idAnuncio) AS totalAtivos
+    FROM tbCategorias c
+    INNER JOIN tbAnuncios a ON c.idCategoria = a.idCategoria
+    WHERE a.status = 'ativo'
+    GROUP BY c.idCategoria
+    ORDER BY COUNT(a.idAnuncio) DESC
+    LIMIT 18446744073709551615 OFFSET 5 
+) AS sub
+HAVING totalAtivos > 0;
+
+------------------------------------------------------------
 -- TRIGGER: criar config padrão ao registrar empresa
 ------------------------------------------------------------
 DELIMITER $$
@@ -398,7 +469,5 @@ BEGIN
         SET NEW.dataStatus = CURRENT_TIMESTAMP;
     END IF;
 END$$
+
 DELIMITER ;
-
-
-

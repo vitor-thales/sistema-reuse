@@ -2,8 +2,12 @@ import { Router } from "express";
 
 const router = Router();
 
-router.post("/logout", (req, res) => {
+router.post("/", (req, res) => {
   res.clearCookie("reuseToken", {
+    httpOnly: true,
+    sameSite: "lax",
+  });
+  res.clearCookie("device_secret", {
     httpOnly: true,
     sameSite: "lax",
   });

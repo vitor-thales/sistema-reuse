@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    <link href="/styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Acesso Negado</title>
+</head>
+<body class="bg-lightgray min-h-screen flex items-center justify-center p-6">
+
+    <div class="max-w-md w-full text-center space-y-8">
+        
+        <div class="relative flex justify-center">
+            <div class="w-48 h-48 bg-mediumred/10 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-shield-halved text-red text-7xl"></i>
+            </div>
+            <div class="absolute -top-2 -right-2 bg-darkblue text-white text-2xl font-bold px-4 py-1 rounded-full shadow-lg">
+                401
+            </div>
+        </div>
+
+        <div class="space-y-3">
+            <h1 class="text-4xl font-bold text-darkblue">Acesso Restrito</h1>
+            <p class="text-darkcyangrey text-lg">
+                Sua sessão expirou ou você não tem permissão para acessar esta área do ReUse.
+            </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-[30px] border border-cyangrey shadow-sm space-y-4">
+            <p class="text-sm font-semibold text-darkblue/70">O QUE ACONTECEU?</p>
+            
+            <div class="flex flex-col gap-3">
+                <a 
+                    href="/login" 
+                    class="w-full py-3 text-lg bg-mainblue text-white font-semibold rounded-[20px] shadow-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                >
+                    <i class="fa-solid fa-right-to-bracket"></i> Ir para o Login
+                </a>
+            </div>
+        </div>
+
+        <p class="text-xs text-darkgray font-medium uppercase tracking-widest">
+            Segurança ReUse &copy; 2026
+        </p>
+    </div>
+
+</body>
+</html>
