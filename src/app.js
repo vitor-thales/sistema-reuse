@@ -18,28 +18,24 @@ app.use(express.json());
 app.use(express.static(path.join(publicDir)));
 app.use(cookieParser());
 app.use(anunciosRouter);
-app.use(
-  "/uploads",
-  express.static(path.join(process.cwd(), "public", "uploads"))
-);
+app.use("/uploads", express.static(path.join(publicDir, "uploads")));
 
 app.use("/auth", logoutRoute);
 app.use("/login", loginRoute);
 app.use("/", landingPageRoute);
 app.use("/anuncie", anuncieRoute);
-app.use("/uploads", express.static("uploads"));
 app.use("/configuracoes", configuracoesRoute);
 app.use("/detalhes", detalhesRoute);
 
-let sessaoAtiva = false; 
+let sessaoAtiva = false;
 
 app.get('/api/verificar-login', (req, res) => {
-    res.json({ logado: sessaoAtiva });
+  res.json({ logado: sessaoAtiva });
 });
 
 app.post('/api/login', (req, res) => {
-    sessaoAtiva = true; 
-    res.send("Login realizado!");
+  sessaoAtiva = true;
+  res.send("Login realizado!");
 });
 
 export default app;

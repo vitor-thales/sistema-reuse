@@ -45,7 +45,7 @@ export default {
         return res.status(401).json({ error: "Empresa não identificada. Faça login novamente." });
       }
 
-      const files = req.files?.imagens_produto || [];
+      const files = req.files || [];
 
       const result = await insertAnuncio(idEmpresa, req.body, files);
 

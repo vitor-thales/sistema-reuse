@@ -64,6 +64,7 @@ async function atualizarHeader() {
   const botaoEntrar = document.getElementById("botaoEntrar");
   const iconeUser = document.getElementById("userIcon");
   const iconeNotificacao = document.getElementById("notificacoes")
+  const iconeChat = document.getElementById("mensagens");
 
   if (!botaoEntrar || !iconeUser) {
     console.warn("Header: botaoEntrar ou userIcon não encontrado no DOM");
@@ -73,10 +74,12 @@ async function atualizarHeader() {
   const logado = await verificarLogin();
 
   if (logado) {
+    iconeChat.style.display = "inline-block"
     iconeNotificacao.style.display = "inline-block"
     botaoEntrar.style.display = "none";
     iconeUser.style.display = "inline-block";
   } else {
+    iconeChat.style.display = "none"
     iconeNotificacao.style.display = "none"
     botaoEntrar.style.display = "inline-block";
     iconeUser.style.display = "none";

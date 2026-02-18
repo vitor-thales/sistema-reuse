@@ -91,9 +91,10 @@ export async function getAnuncios() {
         GROUP BY idAnuncio
       ) x ON x.idAnuncio = i1.idAnuncio AND x.minIdImagem = i1.idImagem
     ) img ON img.idAnuncio = a.idAnuncio
-    WHERE a.status IN ('ativo','pausado')
+    WHERE a.status = 'ativo'
     ORDER BY a.dataStatus DESC
   `;
+
   const [rows] = await db.query(sql);
   return rows;
 }
@@ -150,13 +151,71 @@ export async function insertAnuncio(idEmpresa, data, files = []) {
 }
 
 export async function getDashboardMeusAnuncios(idEmpresa) {
-  const [meus] = await db.query(
-    `SELECT visualizacoesMensais, vendasMes, anunciosAtivos
-     FROM viewMeusAnuncios
-     WHERE idEmpresa = ?
-     LIMIT 1`,
+  const pctDelta = (current, previous) => {
+    const cur = Number(current) || 0;
+    const prev = Number(previous) || 0;
+
+    if (prev === 0 && cur === 0) return 0;
+    if (prev === 0 && cur > 0) return 100;
+    return ((cur - prev) / prev) * 100;
+  };
+
+  const [viewsRows] = await db.query(
+    `
+    SELECT
+      SUM(CASE
+            WHEN YEAR(v.dataVisualizacao) = YEAR(CURRENT_DATE())
+             AND MONTH(v.dataVisualizacao) = MONTH(CURRENT_DATE())
+            THEN 1 ELSE 0
+          END) AS viewsAtual,
+      SUM(CASE
+            WHEN YEAR(v.dataVisualizacao) = YEAR(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
+             AND MONTH(v.dataVisualizacao) = MONTH(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
+            THEN 1 ELSE 0
+          END) AS viewsAnterior
+    FROM tbVisualizacoesAnuncios v
+    JOIN tbAnuncios a ON a.idAnuncio = v.idAnuncio
+    WHERE a.idEmpresa = ?
+    `,
     [idEmpresa]
   );
+
+  const viewsAtual = Number(viewsRows?.[0]?.viewsAtual || 0);
+  const viewsAnterior = Number(viewsRows?.[0]?.viewsAnterior || 0);
+
+  const [salesRows] = await db.query(
+    `
+    SELECT
+      SUM(CASE
+            WHEN a.status = 'vendido'
+             AND YEAR(a.dataStatus) = YEAR(CURRENT_DATE())
+             AND MONTH(a.dataStatus) = MONTH(CURRENT_DATE())
+            THEN 1 ELSE 0
+          END) AS vendasAtual,
+      SUM(CASE
+            WHEN a.status = 'vendido'
+             AND YEAR(a.dataStatus) = YEAR(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
+             AND MONTH(a.dataStatus) = MONTH(DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH))
+            THEN 1 ELSE 0
+          END) AS vendasAnterior
+    FROM tbAnuncios a
+    WHERE a.idEmpresa = ?
+    `,
+    [idEmpresa]
+  );
+
+  const vendasAtual = Number(salesRows?.[0]?.vendasAtual || 0);
+  const vendasAnterior = Number(salesRows?.[0]?.vendasAnterior || 0);
+
+  const [activeRows] = await db.query(
+    `
+    SELECT COUNT(*) AS ativos
+    FROM tbAnuncios
+    WHERE idEmpresa = ? AND status = 'ativo'
+    `,
+    [idEmpresa]
+  );
+  const ativos = Number(activeRows?.[0]?.ativos || 0);
 
   const [semana] = await db.query(
     `SELECT dom, seg, ter, qua, qui, sex, sab
@@ -167,7 +226,13 @@ export async function getDashboardMeusAnuncios(idEmpresa) {
   );
 
   return {
-    cards: meus?.[0] || { visualizacoesMensais: 0, vendasMes: 0, anunciosAtivos: 0 },
+    cards: {
+      visualizacoesMensais: viewsAtual,
+      vendasMes: vendasAtual,
+      anunciosAtivos: ativos,
+      viewsDeltaPct: pctDelta(viewsAtual, viewsAnterior),
+      salesDeltaPct: pctDelta(vendasAtual, vendasAnterior),
+    },
     semana: semana?.[0] || { dom: 0, seg: 0, ter: 0, qua: 0, qui: 0, sex: 0, sab: 0 },
   };
 }
@@ -325,7 +390,7 @@ export async function updateMeuAnuncio(idEmpresa, idAnuncio, data, files = [], r
 }
 
 export async function updateStatusMeuAnuncio(idEmpresa, idAnuncio, status) {
-  const allowed = new Set(["ativo", "pausado"]);
+  const allowed = new Set(["ativo", "vendido"]);
   if (!allowed.has(status)) return "Status inválido.";
 
   const [result] = await db.query(
@@ -345,10 +410,8 @@ export async function getAnunciosFiltro(filtros = {}) {
   const where = [];
   const params = [];
 
-  // landing: só ativo/pausado (não mostra vendido)
-  where.push("a.status IN ('ativo','pausado')");
+  where.push("a.status = 'ativo'");
 
-  // categoria pode vir como id (número) ou nome (string)
   if (categoria) {
     const asNumber = Number(categoria);
     if (!Number.isNaN(asNumber) && String(asNumber) === String(categoria).trim()) {
@@ -368,7 +431,6 @@ export async function getAnunciosFiltro(filtros = {}) {
   }
 
   if (condicao) {
-    // usa seu mapCondicao pra padronizar
     where.push("v.condicao = ?");
     params.push(mapCondicao(String(condicao)));
   }

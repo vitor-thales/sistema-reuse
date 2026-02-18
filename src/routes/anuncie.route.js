@@ -41,6 +41,7 @@ router.post(
   anuncieController.sendRequisition
 );
 
+router.patch("/api/meus-anuncios/:idAnuncio/toggle", auth, anuncieController.toggleMeuAnuncio);
 router.patch(
   "/api/meus-anuncios/:idAnuncio",
   auth,

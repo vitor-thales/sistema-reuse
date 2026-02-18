@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const precoMinInput = document.getElementById("precoMinInput");
   const precoMaxInput = document.getElementById("precoMaxInput");
   const quantidadeSelect = document.getElementById("quantidadeSelect");
-  const cidadeInput = document.getElementById("cidadeInput");     // ✅ precisa existir no HTML
-  const estadoSelect = document.getElementById("estadoSelect");   // ✅ precisa ser o SELECT no HTML
+  const cidadeInput = document.getElementById("cidadeInput");     
+  const estadoSelect = document.getElementById("estadoSelect");   
   const applyBtn = document.getElementById("applyFilters");
   const clearBtn = document.getElementById("clearFilters");
 
@@ -147,18 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
       ? `/uploads/${anuncio.nomeArquivo}`
       : "/images/adicionar.png";
 
-    const badge = document.createElement("span");
-    const status = (anuncio.status || anuncio.situacao || "disponível").toString().toLowerCase();
-    const isPending = status.includes("aguard") || status.includes("pend") || status.includes("coleta");
-
-    badge.className =
-      "absolute top-3 right-3 px-3 py-1 rounded-full text-[10px] font-semibold text-white " +
-      (isPending ? "bg-amber-500" : "bg-green-500");
-
-    badge.textContent = isPending ? "aguardando coleta" : "disponível";
-
     media.appendChild(image);
-    media.appendChild(badge);
 
     const body = document.createElement("div");
     body.className = "p-4 flex flex-col gap-3 flex-1";
@@ -203,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
     meta.appendChild(locationRow);
 
     const footer = document.createElement("div");
-    footer.className = "mt-auto pt-2 flex items-center justify-between";
+    footer.className = "mt-auto pt-6 flex items-center justify-between border-t border-stronggray";
 
     const price = document.createElement("p");
     price.className = "text-lg font-semibold text-darkblue";

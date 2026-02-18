@@ -60,13 +60,6 @@ async function listarAnuncios(req, res) {
   }
 }
 
-/* =========================
-   DASHBOARD splitado (pro seu JS)
-   - /api/meus-anuncios/resumo -> {visualizacoesMensais, vendasMes, anunciosAtivos}
-   - /api/meus-anuncios/semana -> {seg, ter, qua, qui, sex, sab, dom}
-   - /api/meus-anuncios/lista  -> array de anúncios
-========================= */
-
 async function meusAnunciosResumo(req, res) {
   try {
     const idEmpresa = getEmpresaIdFromReq(req);
@@ -75,7 +68,6 @@ async function meusAnunciosResumo(req, res) {
     }
 
     const dash = await getDashboardMeusAnuncios(idEmpresa);
-    // seu model retorna { cards, semana }
     return res.status(200).json(dash.cards);
   } catch (err) {
     console.error(err);
@@ -107,8 +99,6 @@ async function meusAnunciosLista(req, res) {
 
     const rows = await getMeusAnuncios(idEmpresa);
 
-    // seu JS usa "visualizacoesMes". Seu SQL atual devolve "totalVisualizacoes".
-    // pra não mexer no SQL agora, eu só normalizo aqui:
     const normalized = rows.map((a) => ({
       ...a,
       visualizacoesMes: a.visualizacoesMes ?? a.totalVisualizacoes ?? 0,
@@ -120,10 +110,6 @@ async function meusAnunciosLista(req, res) {
     return res.status(500).json({ error: "Erro ao carregar seus anúncios." });
   }
 }
-
-/* =========================
-   Endpoints já existentes (mantidos)
-========================= */
 
 async function dashboardMeusAnuncios(req, res) {
   try {
@@ -179,9 +165,9 @@ async function editarMeuAnuncio(req, res) {
     const removerImagensIds = Array.isArray(removeIdsRaw)
       ? removeIdsRaw.map((x) => Number(x)).filter(Number.isFinite)
       : String(removeIdsRaw || "")
-          .split(",")
-          .map((x) => Number(x.trim()))
-          .filter(Number.isFinite);
+        .split(",")
+        .map((x) => Number(x.trim()))
+        .filter(Number.isFinite);
 
     const result = await updateMeuAnuncio(idEmpresa, idAnuncio, req.body, files, removerImagensIds);
 
@@ -212,6 +198,36 @@ async function alterarStatusMeuAnuncio(req, res) {
   }
 }
 
+async function toggleMeuAnuncio(req, res) {
+  try {
+    const idEmpresa = getEmpresaIdFromReq(req);
+    if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+    const idAnuncio = Number(req.params.idAnuncio);
+    if (!Number.isFinite(idAnuncio)) {
+      return res.status(400).json({ ok: false, error: "idAnuncio inválido." });
+    }
+
+    // busca o anúncio pra saber o status atual
+    const data = await getMeuAnuncioDetalhe(idEmpresa, idAnuncio);
+    if (!data?.anuncio) {
+      return res.status(404).json({ ok: false, error: "Anúncio não encontrado." });
+    }
+
+    const atual = String(data.anuncio.status || "").toLowerCase();
+    const novoStatus = atual === "pausado" ? "ativo" : "pausado";
+
+    const result = await updateStatusMeuAnuncio(idEmpresa, idAnuncio, novoStatus);
+
+    if (result === true) return res.status(200).json({ ok: true, status: novoStatus });
+
+    return res.status(400).json({ ok: false, error: result });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ ok: false, error: "Erro ao alternar status." });
+  }
+}
+
 async function excluirMeuAnuncio(req, res) {
   try {
     const idEmpresa = getEmpresaIdFromReq(req);
@@ -230,7 +246,6 @@ async function excluirMeuAnuncio(req, res) {
       try {
         await fs.unlink(path.join(uploadDir, nomeArquivo));
       } catch {
-        // ignore
       }
     }
 
@@ -245,16 +260,12 @@ const anuncieController = {
   getPage,
   sendRequisition,
   listarAnuncios,
-
-  // NOVOS endpoints pro dashboard do JS
   meusAnunciosResumo,
   meusAnunciosSemana,
   meusAnunciosLista,
-
-  // antigos (mantidos)
+  toggleMeuAnuncio,
   dashboardMeusAnuncios,
   listarMeusAnuncios,
-
   detalheMeuAnuncio,
   editarMeuAnuncio,
   alterarStatusMeuAnuncio,

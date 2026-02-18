@@ -1,4 +1,4 @@
-console.log("✅ script.anuncie.js carregou");
+console.log("script.anuncie.js carregou");
 
 const btnAbrir = document.getElementById("botaoNovoAnuncio");
 const btnFechar = document.getElementById("botaoFecharModal");
@@ -11,10 +11,6 @@ const previewAnexos = document.getElementById("previewAnexos");
 const MAX_FILES = 5;
 let selectedFiles = [];
 let previewUrls = [];
-
-/* =========================
-   HELPERS
-   ========================= */
 
 function clampNonNegativeNumber(el, { integer = false } = {}) {
   if (!el) return;
@@ -84,12 +80,8 @@ function attachNoHtml(el) {
   });
 }
 
-/* =========================
-   VALOR TOTAL (CENTAVOS AUTO + LIMITE 50K)
-   ========================= */
-
-const MAX_BRL = 50000; // R$ 50.000,00
-const MAX_DIGITS = String(Math.round(MAX_BRL * 100)); // "5000000"
+const MAX_BRL = 50000; 
+const MAX_DIGITS = String(Math.round(MAX_BRL * 100));
 
 function clampDigitsToMax(digits) {
   if (!digits) return "";
@@ -118,26 +110,19 @@ function digitsToNumberString(digits) {
   return clamped.toFixed(2); // "0.55"
 }
 
-/**
- * BLINDAGEM: sempre clona e substitui o input no DOM.
- * Isso remove QUALQUER listener antigo que esteja preso nele.
- */
 function hardResetInput(input) {
   if (!input) return null;
 
   const clone = input.cloneNode(true);
 
-  // forçamos text pra poder mostrar "R$ 0,55"
   clone.setAttribute("type", "text");
   clone.setAttribute("inputmode", "numeric");
   clone.setAttribute("autocomplete", "off");
 
-  // remove atributos do number que atrapalham
   clone.removeAttribute("step");
   clone.removeAttribute("min");
   clone.removeAttribute("max");
 
-  // limpa valor inicial e dataset
   clone.value = "";
   clone.dataset.digits = "";
 
@@ -148,11 +133,10 @@ function hardResetInput(input) {
 function attachCentavosMask(valorInput) {
   if (!valorInput) return null;
 
-  // BLINDA e substitui o elemento (mata máscaras antigas)
   valorInput = hardResetInput(valorInput);
   if (!valorInput) return null;
 
-  let digits = ""; // buffer interno
+  let digits = ""; 
 
   const render = () => {
     if (!digits || digits === "0") {
@@ -188,7 +172,6 @@ function attachCentavosMask(valorInput) {
       return;
     }
 
-    // bloqueia todo o resto
     e.preventDefault();
   });
 
@@ -203,15 +186,8 @@ function attachCentavosMask(valorInput) {
 
   render();
 
-  // LOG pra você ter certeza de que esse campo foi substituído
-  console.log("✅ valorTotal blindado (clone aplicado):", valorInput);
-
   return valorInput;
 }
-
-/* =========================
-   SETUP VALIDATIONS
-   ========================= */
 
 let valorTotalRef = null;
 
@@ -231,10 +207,6 @@ let valorTotalRef = null;
   attachNoHtml(form.querySelector('[name="composicao"]'));
   attachNoHtml(form.querySelector('[name="descricao"]'));
 })();
-
-/* =========================
-   IMAGENS
-   ========================= */
 
 function updateFileInput() {
   if (!fileInput) return;
@@ -303,10 +275,6 @@ fileInput?.addEventListener("change", (event) => {
   renderPreviews();
 });
 
-/* =========================
-   MODAL
-   ========================= */
-
 if (btnAbrir && modal) {
   btnAbrir.onclick = () => {
     modal.style.display = "flex";
@@ -318,10 +286,6 @@ if (btnFechar && modal) {
     modal.style.display = "none";
   };
 }
-
-/* =========================
-   SUBMIT
-   ========================= */
 
 if (form) {
   form.onsubmit = async (e) => {
@@ -340,10 +304,9 @@ if (form) {
 
     const valorInput = valorTotalRef || form.querySelector('[name="valorTotal"]');
 
-    // converte do buffer -> "0.55"
     if (valorInput) {
       const digits = valorInput.dataset.digits || "";
-      valorInput.value = digitsToNumberString(digits); // pode virar "" (a combinar)
+      valorInput.value = digitsToNumberString(digits);
     }
 
     const formData = new FormData(form);
@@ -368,7 +331,6 @@ if (form) {
       updateFileInput();
       renderPreviews();
 
-      // reseta valorTotal
       if (valorInput) {
         valorInput.dataset.digits = "";
         valorInput.value = "";
