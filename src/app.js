@@ -23,6 +23,8 @@ app.use("/scripts", express.static(path.join(publicDir , "scripts")));
 app.use("/components", express.static(path.join(publicDir, "components")));
 app.use(cookieParser());
 
+app.get("/", (req, res) => res.sendFile(path.join(publicDir, "pages/temp.html")));
+
 app.use("/login", loginRoute);
 app.use("/logout", logoutRoute);
 app.use("/registrar", cadastroRoute);

@@ -79,7 +79,7 @@ export default {
                     const tfToken = generateToken(payload, env.TFAUTH_JWT_SECRET);
                     res.cookie("reuseTFToken", tfToken, {
                         httpOnly: true,
-                        maxAge: env.TOKEN_EXPIRY
+                        maxAge: env.TOKEN_EXPIRY * 1000
                     });
                     return res.status(301).send();
                 }
@@ -93,7 +93,7 @@ export default {
 
             res.cookie("reuseToken", token, {
                 httpOnly: true,
-                maxAge: env.TOKEN_EXPIRY,
+                maxAge: env.TOKEN_EXPIRY * 1000,
             });
             
             if(isAdmin.length == 0) return res.json({ encryptedPrivateKey: result[0].ikPrivada, salt: result[0].salt, iv: result[0].iv });
@@ -163,7 +163,7 @@ export default {
             res.clearCookie("reuseTFToken");
             res.cookie("reuseToken", finalToken, {
                 httpOnly: true,
-                maxAge: env.TOKEN_EXPIRY,
+                maxAge: env.TOKEN_EXPIRY * 1000,
             });
 
             await deleteUsedCode(payload.id, 1);
