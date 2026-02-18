@@ -3,6 +3,7 @@ import detalhesController from "../controllers/detalhesAnuncio.controller.js";
 
 const router = Router();
 
-router.get("/", detalhesController.getPage);
+router.get("/api/:id", detalhesController.getDetalhesApi);
+router.get("/:id", detalhesController.getPage);
 
 export default router;

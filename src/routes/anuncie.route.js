@@ -5,10 +5,34 @@ import { uploadAnuncio } from "../middlewares/uploadAnuncio.middleware.js";
 
 const router = Router();
 
-router.get("/", anuncieController.getPage);
+router.get("/", auth, anuncieController.getPage);
 router.get("/novo", auth, anuncieController.getPage);
 
 router.get("/api/anuncios", anuncieController.listarAnuncios);
+
+router.get(
+  "/api/meus-anuncios/resumo",
+  auth,
+  anuncieController.meusAnunciosResumo
+);
+
+router.get(
+  "/api/meus-anuncios/semana",
+  auth,
+  anuncieController.meusAnunciosSemana
+);
+
+router.get(
+  "/api/meus-anuncios/lista",
+  auth,
+  anuncieController.meusAnunciosLista
+);
+
+router.get(
+  "/api/meus-anuncios/:idAnuncio",
+  auth,
+  anuncieController.detalheMeuAnuncio
+);
 
 router.post(
   "/",
@@ -17,11 +41,23 @@ router.post(
   anuncieController.sendRequisition
 );
 
-router.post(
-  "/api/sendSolicitation",
+router.patch(
+  "/api/meus-anuncios/:idAnuncio",
   auth,
   uploadAnuncio.fields([{ name: "imagens_produto", maxCount: 5 }]),
-  anuncieController.sendRequisition
+  anuncieController.editarMeuAnuncio
+);
+
+router.patch(
+  "/api/meus-anuncios/:idAnuncio/status",
+  auth,
+  anuncieController.alterarStatusMeuAnuncio
+);
+
+router.delete(
+  "/api/meus-anuncios/:idAnuncio",
+  auth,
+  anuncieController.excluirMeuAnuncio
 );
 
 export default router;

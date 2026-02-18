@@ -1,45 +1,43 @@
-const root = document.documentElement;
-const key = "theme";
+document.addEventListener("DOMContentLoaded", () => {
+  const radioClaro = document.getElementById("tema-claro");
+  const radioEscuro = document.getElementById("tema-escuro");
 
-function applyTheme(theme) {
-  if (theme === "dark") root.classList.add("dark");
-  else root.classList.remove("dark");
-}
+  // Mesmo se não tiver os radios (ou estiver em outra página), ainda aplica tema salvo
+  const temaSalvo = localStorage.getItem("tema"); // "claro" | "escuro"
+  const isDark = temaSalvo === "escuro";
 
-let saved = localStorage.getItem(key);
+  function aplicarTema(dark) {
+    document.documentElement.classList.toggle("dark", dark);
+    localStorage.setItem("tema", dark ? "escuro" : "claro");
 
-if (!saved) {
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  saved = prefersDark ? "dark" : "light";
-  localStorage.setItem(key, saved);
-}
-
-applyTheme(saved);
-
-function bindThemeControls() {
-  const claro = document.getElementById("tema-claro");
-  const escuro = document.getElementById("tema-escuro");
-
-  if (!claro || !escuro) return;
-
-  if (saved === "dark") escuro.checked = true;
-  else claro.checked = true;
-
-  claro.addEventListener("change", () => {
-    if (claro.checked) {
-      saved = "light";
-      localStorage.setItem(key, saved);
-      applyTheme(saved);
+    // mantém os radios sincronizados quando existirem
+    if (radioClaro && radioEscuro) {
+      radioClaro.checked = !dark;
+      radioEscuro.checked = dark;
     }
+  }
+
+  // aplica tema inicial
+  aplicarTema(isDark);
+
+  // se não tiver os radios, só sai (tema já foi aplicado)
+  if (!radioClaro || !radioEscuro) return;
+
+  // Evento: tema claro
+  radioClaro.addEventListener("change", () => {
+    if (radioClaro.checked) aplicarTema(false);
   });
 
-  escuro.addEventListener("change", () => {
-    if (escuro.checked) {
-      saved = "dark";
-      localStorage.setItem(key, saved);
-      applyTheme(saved);
-    }
+  // Evento: tema escuro
+  radioEscuro.addEventListener("change", () => {
+    if (radioEscuro.checked) aplicarTema(true);
   });
-}
 
-document.addEventListener("DOMContentLoaded", bindThemeControls);
+  // Se em algum lugar do projeto você disparar isso:
+  // window.dispatchEvent(new CustomEvent("tema:toggle", { detail: { dark: true } }))
+  // ele também troca o tema sem depender dos radios.
+  window.addEventListener("tema:toggle", (e) => {
+    const dark = Boolean(e?.detail?.dark);
+    aplicarTema(dark);
+  });
+});

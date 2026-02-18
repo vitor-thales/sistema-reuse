@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getFilters() {
-    const categoria = getSelectedCategoria(); // pode ser nome ou id (depende do seu HTML)
+    const categoria = getSelectedCategoria(); 
     const conservacao = conservacaoSelect?.value || "";
 
     normalizePrecoInputs();
@@ -105,7 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const quantidade = quantidadeSelect?.value || "";
 
-    // ✅ aqui é melhor pegar o VALUE do select (UF)
     const uf = String(estadoSelect?.value || "").trim().toUpperCase();
 
     const cidade = (cidadeInput?.value || "").trim();
@@ -116,11 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function buildQueryParams(f) {
     const params = new URLSearchParams();
 
-    // categoria: se você quiser que use a VIEW direto (idCategoria),
-    // o IDEAL é o value do radio ser o ID numérico.
     if (f.categoria) params.set("categoria", f.categoria);
 
-    // sua view usa "condicao". No front você chama "conservacao".
     if (f.conservacao) params.set("condicao", f.conservacao);
 
     if (f.uf) params.set("uf", f.uf);
@@ -132,9 +128,6 @@ document.addEventListener("DOMContentLoaded", () => {
       params.set("precoMin", String(f.precoMin));
       params.set("precoMax", String(f.precoMax));
     }
-
-    // quantidade não está na VIEW. Deixei de fora do backend por enquanto.
-    // Se você adicionar quantidade na VIEW, dá pra mandar aqui também.
 
     return params.toString();
   }
@@ -220,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.className =
       "px-4 py-2 rounded-full bg-mainblue text-white text-xs font-semibold hover:opacity-90 transition";
     btn.textContent = "Ver Detalhes";
-    btn.href = `/anuncios/${anuncio.idAnuncio || anuncio.id || ""}`;
+    btn.href = `/detalhes/${anuncio.idAnuncio || anuncio.id || ""}`;
 
     footer.appendChild(price);
     footer.appendChild(btn);
@@ -297,7 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const carregarAnunciosDebounced = debounce(() => carregarAnuncios(), 300);
 
-  // ✅ listeners: agora chama backend
   [conservacaoSelect, estadoSelect, precoMinInput, precoMaxInput, precoMaxRange]
     .filter(Boolean)
     .forEach((el) => {

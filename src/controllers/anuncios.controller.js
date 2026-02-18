@@ -3,7 +3,6 @@ import { env } from "../config/env.js";
 import { getAnuncios, getAnunciosFiltro, insertAnuncio } from "../models/anuncios.model.js";
 
 export default {
-
   async listarAnuncios(req, res) {
     try {
       const anuncios = await getAnuncios();
@@ -42,12 +41,13 @@ export default {
       }
 
       const idEmpresa = decoded?.id;
-
       if (!idEmpresa) {
         return res.status(401).json({ error: "Empresa não identificada. Faça login novamente." });
       }
 
-      const result = await insertAnuncio(idEmpresa, req.body, req.files);
+      const files = req.files?.imagens_produto || [];
+
+      const result = await insertAnuncio(idEmpresa, req.body, files);
 
       if (result === true) {
         return res.status(201).json({ message: "Anúncio publicado com sucesso!" });

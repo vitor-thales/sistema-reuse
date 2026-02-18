@@ -2,11 +2,12 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="/styles/styles.output.css" rel="stylesheet" type="text/css" />
     <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
-    <title>ReUse - Criar Anúncio</title>
+    <title>ReUse - Detalhes do Anúncio</title>
 </head>
 
 <body class="bg-gray-50">
@@ -24,6 +25,96 @@
             </button>
         </div>
     </section>
+
+    <main class="container mx-auto px-4 md:px-10 py-8 space-y-6">
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div class="bg-white border border-stronggray rounded-2xl p-5 flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-mainblue/10 flex items-center justify-center">
+                        <i class="fa-solid fa-eye text-mainblue"></i>
+                    </div>
+                    <div>
+                        <p id="dash-views-month" class="text-lg font-bold text-darkblue leading-none">—</p>
+                        <p class="text-xs text-gray-500 mt-1">Visualizações Mensais</p>
+                    </div>
+                </div>
+                <span id="dash-views-badge"
+                    class="text-[0.7rem] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 font-semibold">
+                    —
+                </span>
+            </div>
+
+            <div class="bg-white border border-stronggray rounded-2xl p-5 flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-mainblue/10 flex items-center justify-center">
+                        <i class="fa-solid fa-bag-shopping text-mainblue"></i>
+                    </div>
+                    <div>
+                        <p id="dash-sales-month" class="text-lg font-bold text-darkblue leading-none">—</p>
+                        <p class="text-xs text-gray-500 mt-1">Vendas no Mês</p>
+                    </div>
+                </div>
+                <span id="dash-sales-badge"
+                    class="text-[0.7rem] px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 font-semibold">
+                    —
+                </span>
+            </div>
+
+            <div class="bg-white border border-stronggray rounded-2xl p-5 flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-mainblue/10 flex items-center justify-center">
+                        <i class="fa-solid fa-box text-mainblue"></i>
+                    </div>
+                    <div>
+                        <p id="dash-active" class="text-lg font-bold text-darkblue leading-none">—</p>
+                        <p class="text-xs text-gray-500 mt-1">Anúncios Ativos</p>
+                    </div>
+                </div>
+                <span class="text-[0.7rem] px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 font-semibold">
+                    Ativos
+                </span>
+            </div>
+        </section>
+
+        <section class="bg-white border border-stronggray rounded-2xl p-6">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-sm font-bold text-darkblue">Visualizações da Semana</h2>
+                    <p class="text-xs text-gray-500">Acompanhe o engajamento dos seus anúncios</p>
+                </div>
+
+                <button id="dash-refresh" type="button"
+                    class="px-4 py-2 rounded-xl border border-stronggray text-darkblue bg-white hover:bg-gray-50 transition text-sm font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-rotate"></i>
+                    Atualizar
+                </button>
+            </div>
+
+            <div class="w-full">
+                <canvas id="chartSemana" class="w-full"></canvas>
+            </div>
+        </section>
+
+        <section class="bg-white border border-stronggray rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-stronggray flex items-center justify-between">
+                <h2 class="text-sm font-bold text-darkblue">Todos os anúncios</h2>
+
+                <div class="flex items-center gap-2">
+                    <input id="dash-search" type="text" placeholder="Buscar anúncio..."
+                        class="h-10 w-64 max-w-full rounded-xl bg-gray-100 px-4 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none" />
+                </div>
+            </div>
+
+            <div id="dash-list" class="divide-y divide-stronggray">
+                <div class="p-6 text-sm text-gray-500">
+                    Carregando anúncios...
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <div id="telaNovoAnuncio" style="display: none;"
         class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -67,8 +158,8 @@
                         <label class="font-semibold text-sm text-darkblue">Valor Total <span
                                 class="text-stronggray font-normal">(opcional)</span></label>
 
-                        <input type="number" id="valorTotal" name="valorTotal" placeholder="0,00" min="0" max="50000" step="0.01"
-                            inputmode="decimal"
+                        <input type="text" id="valorTotal" name="valorTotal" inputmode="numeric" autocomplete="off"
+                            placeholder="R$ 0,00"
                             class="bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
 
                         <span class="text-xs text-gray-400">Deixe vazio para “a combinar”</span>
@@ -167,7 +258,12 @@
 
     <script src="../scripts/tema.js"></script>
     <script src="../scripts/script.loadHeader.js"></script>
-    <script src="../scripts/script.anuncie.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script src="../scripts/script.anuncie.js" defer></script>
+
+    <script src="../scripts/script.dashboardMeusAnuncios.js" defer></script>
 </body>
 
 </html>
