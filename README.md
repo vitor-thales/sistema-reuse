@@ -81,7 +81,7 @@ O projeto foi desenvolvido pela dupla **Vitor** e **Thales**.
 ## 🔧 Como Rodar o Projeto
 1. **Clone o repositório:**
 ```bash
-git clone [https://github.com/vitor-thales/sistema-reuse.git](https://github.com/vitor-thales/sistema-reuse.git)
+git clone https://github.com/vitor-thales/sistema-reuse.git
 ```
 2. **Instale as Dependências:**
 ```bash
@@ -117,5 +117,6 @@ npm start
 * **MAIL_NAME:** Nome do e-mail utilizado no sistema
 
 ---
+
 
 **Projeto desenvolvido para fins acadêmicos - SENAI 2026.**
