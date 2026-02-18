@@ -80,10 +80,13 @@ export const getConversationsWithLastMessage = async (userId) => {
             e.nomeFantasia AS partnerName,
             e.razaoSocial AS scndPartnerName,
             e.idEmpresa AS partnerId,
+            e.ikPublica AS partnerPublicKey,
             m.content AS lastMessageContent,
+            m.iv AS lastMessageIv,
             m.dataEnvio,
             m.lida,
-            m.idRemetente
+            m.idRemetente,
+            k.wrappedKey
         FROM tbConversas c
         JOIN tbEmpresas e ON (c.idEmpresa1 = e.idEmpresa OR c.idEmpresa2 = e.idEmpresa) AND e.idEmpresa != ?
         LEFT JOIN tbMensagens m ON m.idMensagem = (
@@ -91,11 +94,30 @@ export const getConversationsWithLastMessage = async (userId) => {
             FROM tbMensagens 
             WHERE idConversa = c.idConversa
         )
+        LEFT JOIN tbMensagensKeys k ON m.idMensagem = k.idMensagem AND k.idEmpresa = ?
         WHERE c.idEmpresa1 = ? OR c.idEmpresa2 = ?
         ORDER BY m.dataEnvio DESC
-    `, [userId, userId, userId]);
+    `, [userId, userId, userId, userId]);
     return rows;
 };
+
+export async function findOrCreateConversation(id1, id2) {
+    const [existing] = await db.query(
+        `SELECT idConversa FROM tbConversas 
+         WHERE (idEmpresa1 = ? AND idEmpresa2 = ?) OR (idEmpresa1 = ? AND idEmpresa2 = ?)`,
+        [id1, id2, id2, id1]
+    );
+    
+    if (existing.length > 0) {
+        return existing[0].idConversa;
+    }
+
+    const [res] = await db.query(
+        `INSERT INTO tbConversas (idEmpresa1, idEmpresa2) VALUES (?, ?)`,
+        [id1, id2]
+    );
+    return res.insertId;
+}
 
 export const getMessagesByConversation = async (idConversa, userId, offset = 0) => {
     const [rows] = await db.query(`
@@ -107,6 +129,7 @@ export const getMessagesByConversation = async (idConversa, userId, offset = 0) 
             m.iv,
             m.sig,
             m.dataEnvio,
+            m.entregue,
             m.lida,
             k.wrappedKey,
             sender.ikPublica AS senderPublicKey
@@ -129,4 +152,12 @@ export async function verifyChatParticipants(idConversa, id1, id2) {
         [idConversa, id1, id2, id2, id1]
     );
     return rows.length > 0;
+}
+
+export async function getUserPublicKey(id) {
+    const [rows] = await db.query(
+        "SELECT ikPublica FROM tbEmpresas WHERE idEmpresa = ?",
+        [id]
+    );
+    return rows;
 }

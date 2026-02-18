@@ -415,34 +415,34 @@ FROM tbMensagens;
 ------------------------------------------------------------
 -- VIEW: viewItensPorCategoriaTop5
 ------------------------------------------------------------
-CREATE VIEW viewItensPorCategoriaTop5 AS
-(
+CREATE OR REPLACE VIEW viewItensPorCategoriaTop5 AS
+SELECT * FROM (
     SELECT 
         c.nome AS categoria,
         COUNT(a.idAnuncio) AS totalAtivos
     FROM tbCategorias c
     INNER JOIN tbAnuncios a ON c.idCategoria = a.idCategoria
     WHERE a.status = 'ativo'
-    GROUP BY c.idCategoria
+    GROUP BY c.idCategoria, c.nome
     ORDER BY totalAtivos DESC
     LIMIT 5
-)
+) AS top5
+
 UNION ALL
-(
+SELECT 
+    'Outros' AS categoria,
+    SUM(sub.totalAtivos) AS totalAtivos
+FROM (
     SELECT 
-        'Outros' AS categoria,
-        SUM(totalAtivos) as totalAtivos
-    FROM (
-        SELECT COUNT(a.idAnuncio) AS totalAtivos
-        FROM tbCategorias c
-        INNER JOIN tbAnuncios a ON c.idCategoria = a.idCategoria
-        WHERE a.status = 'ativo'
-        GROUP BY c.idCategoria
-        ORDER BY totalAtivos DESC
-        OFFSET 5 ROWS FETCH NEXT 999999 ROWS ONLY
-    ) AS subquery
-    HAVING totalAtivos > 0
-);
+        COUNT(a.idAnuncio) AS totalAtivos
+    FROM tbCategorias c
+    INNER JOIN tbAnuncios a ON c.idCategoria = a.idCategoria
+    WHERE a.status = 'ativo'
+    GROUP BY c.idCategoria
+    ORDER BY COUNT(a.idAnuncio) DESC
+    LIMIT 18446744073709551615 OFFSET 5 
+) AS sub
+HAVING totalAtivos > 0;
 
 ------------------------------------------------------------
 -- TRIGGER: criar config padrão ao registrar empresa
@@ -469,4 +469,5 @@ BEGIN
         SET NEW.dataStatus = CURRENT_TIMESTAMP;
     END IF;
 END$$
+
 DELIMITER ;

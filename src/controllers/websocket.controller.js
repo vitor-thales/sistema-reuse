@@ -1,4 +1,5 @@
-import { createE2EData, markAsRead, verifyChatParticipants } from "../models/messages.model.js";
+import { createE2EData, getUserPublicKey, markAsRead, verifyChatParticipants } from "../models/messages.model.js";
+import { getEmpresa } from "../models/empresas.model.js";
 
 export default {
     io: null,
@@ -29,11 +30,15 @@ export default {
             }
 
             const msgId = await createE2EData(data);
+            const senderPublicKey = await getUserPublicKey(idRemetente);
+            const remetente = await getEmpresa(idRemetente);
             
             const messageToPush = {
                 idMensagem: msgId,
                 ...data,
-                dataEnvio: new Date()
+                dataEnvio: new Date(),
+                senderPublicKey: remetente[0].ikPublica,
+                partnerName: remetente[0].nomeFantasia || remetente[0].razaoSocial
             };
 
             this.io.to(`user_${data.idDestinatario}`).emit("receive_message", messageToPush);
