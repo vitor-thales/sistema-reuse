@@ -27,7 +27,6 @@ export const toast = {
         const style = styles[type] || styles.success;
 
         const el = document.createElement('div');
-
         el.className = `flex items-center p-4 min-w-[300px] rounded-lg border-l-4 shadow-lg transform transition-all duration-300 translate-x-full opacity-0 ${style.bg} ${style.text} ${style.border}`;
 
         el.innerHTML = `

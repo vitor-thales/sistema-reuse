@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="/styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Detalhes do Anúncio</title>
+</head>
+
+<body class="bg-white text-darkblue">
+    <div id="header-placeholder"></div>
+
+    <main class="container mx-auto px-4 md:px-8 py-6">
+        <div class="flex items-center gap-3 text-sm text-stronggray mb-5">
+            <a href="/" class="inline-flex items-center gap-2 hover:text-darkblue">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Voltar para o marketplace</span>
+            </a>
+        </div>
+
+        <section class="flex flex-col lg:flex-row gap-6 lg:items-stretch">
+            <div class="lg:w-7/12">
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="relative rounded-2xl overflow-hidden border border-stronggray bg-gray-50">
+                        <img id="img-principal" src="../images/adicionar.png" alt="Imagem principal"
+                            class="w-full h-88 md:h-122 object-cover" />
+
+                        <span id="badge-status"
+                            class="absolute top-4 right-4 text-[0.7rem] font-semibold px-3 py-1 rounded-full bg-green-500 text-white">
+                            disponível
+                        </span>
+                    </div>
+
+                    <div id="thumbs" class="grid grid-cols-4 gap-3">
+                    </div>
+                </div>
+            </div>
+
+            <aside class="lg:w-5/12">
+                <div class="flex flex-col gap-5">
+
+                    <div class="flex items-center gap-2">
+                        <span id="chip-categoria"
+                            class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-semibold">
+                            Categoria
+                        </span>
+                    </div>
+
+                    <h1 id="titulo" class="text-2xl font-bold leading-snug">
+                        Título do anúncio
+                    </h1>
+
+                    <div class="rounded-2xl border border-stronggray bg-white p-5">
+                        <div class="flex items-end justify-between gap-4">
+                            <p id="preco" class="text-4xl font-bold text-darkblue leading-none">
+                                R$ 0,00
+                            </p>
+                            <p id="preco-unidade" class="text-sm text-gray-500"></p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="rounded-2xl border border-stronggray bg-white p-5 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div
+                                class="w-14 h-14 rounded-xl bg-mainblue text-white flex items-center justify-center font-bold">
+                                <span id="empresa-iniciais">RE</span>
+                            </div>
+
+                            <div class="min-w-0">
+                                <p id="empresa-nome" class="font-semibold text-base truncate">Empresa</p>
+                                <p id="empresa-local" class="text-sm text-gray-500 flex items-center gap-2">
+                                    <i class="fa-solid fa-location-dot text-stronggray"></i>
+                                    <span>—</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <button type="button"
+                            class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl border border-stronggray hover:bg-gray-50">
+                            <i class="fa-solid fa-share-nodes text-stronggray"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="rounded-2xl border border-stronggray bg-white p-2 text-center">
+                            <i class="fa-solid fa-box-open text-mainblue mb-1"></i>
+                            <p class="text-sm text-gray-500">Quantidade</p>
+                            <p id="meta-quantidade" class="text-base font-semibold">—</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-stronggray bg-white p-2 text-center">
+                            <i class="fa-solid fa-weight-scale text-mainblue mb-1"></i>
+                            <p class="text-sm text-gray-500">Peso Total</p>
+                            <p id="meta-peso" class="text-base font-semibold">—</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-stronggray bg-white p-2 text-center">
+                            <i class="fa-solid fa-calendar-days text-mainblue mb-1"></i>
+                            <p class="text-sm text-gray-500">Publicado</p>
+                            <p id="meta-data" class="text-base font-semibold">—</p>
+                        </div>
+                    </div>
+
+                    <button id="btn-contato"
+                        class="w-full h-14 rounded-2xl bg-mainblue text-white font-bold text-base hover:opacity-95 transition">
+                        Entrar em Contato
+                    </button>
+
+                    <div
+                        class="rounded-2xl border border-mainblue/30 bg-mainblue/5 p-5 text-sm text-gray-600 flex gap-3">
+                        <i class="fa-regular fa-message text-mainblue mt-1"></i>
+                        <p class="leading-relaxed">
+                            Este é um marketplace B2B. Clique em <b>“Entrar em Contato”</b> para iniciar uma conversa
+                            com o vendedor e negociar condições, agendamento e detalhes da transação.
+                        </p>
+                    </div>
+
+                </div>
+            </aside>
+
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
+            <div class="lg:col-span-7">
+                <div class="rounded-2xl bg-white p-5 ring-1 ring-stronggray/70">
+                    <h2 class="text-sm font-bold text-darkblue mb-3">Descrição do Produto</h2>
+                    <p id="descricao" class="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                        —
+                    </p>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5">
+                <div class="rounded-2xl bg-white p-5 ring-1 ring-stronggray/70">
+                    <h2 class="text-sm font-bold text-darkblue mb-3">Especificações</h2>
+
+                    <div class="divide-y divide-stronggray/70 text-sm">
+                        <div class="py-3">
+                            <p class="text-xs text-gray-500">Categoria</p>
+                            <p id="spec-categoria" class="font-semibold">—</p>
+                        </div>
+
+                        <div class="py-3">
+                            <p class="text-xs text-gray-500">Condição</p>
+                            <p id="spec-condicao" class="font-semibold">—</p>
+                        </div>
+
+                        <div class="py-3">
+                            <p class="text-xs text-gray-500">Origem</p>
+                            <p id="spec-origem" class="font-semibold">—</p>
+                        </div>
+
+                        <div class="py-3">
+                            <p class="text-xs text-gray-500">Composição</p>
+                            <p id="spec-composicao" class="font-semibold">—</p>
+                        </div>
+
+                        <div class="py-3">
+                            <p class="text-xs text-gray-500">Coleta</p>
+                            <p id="spec-coleta" class="font-semibold">—</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <script src="../scripts/script.anuncie.js"></script>
+    <script src="../scripts/tema.js"></script>
+    <script src="/scripts/script.loadHeader.js" defer></script>
+    <script src="/scripts/script.detalhesAnuncio.js" defer></script>
+</body>
+
+</html>
