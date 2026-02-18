@@ -134,7 +134,7 @@ export const getMessagesByConversation = async (idConversa, userId, offset = 0) 
             k.wrappedKey,
             sender.ikPublica AS senderPublicKey
         FROM tbMensagens m
-        JOIN tbMensagensKeys k ON m.idMensagem = k.idMensagem AND k.idEmpresa = ?
+        LEFT JOIN tbMensagensKeys k ON m.idMensagem = k.idMensagem AND k.idEmpresa = ?
         JOIN tbEmpresas sender ON m.idRemetente = sender.idEmpresa
         WHERE m.idConversa = ?
         ORDER BY m.idMensagem DESC
@@ -160,4 +160,17 @@ export async function getUserPublicKey(id) {
         [id]
     );
     return rows;
+}
+
+export async function deleteUserMessageKeys(idEmpresa) {
+    try {
+        const [result] = await db.query(
+            `DELETE FROM tbMensagensKeys WHERE idEmpresa = ?`,
+            [idEmpresa]
+        );
+        return result.affectedRows;
+    } catch (err) {
+        console.error("Erro ao deletar chaves de mensagens do usuário:", err);
+        throw err;
+    }
 }

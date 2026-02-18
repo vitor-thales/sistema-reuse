@@ -40,11 +40,12 @@ export async function insertEmpresa(data) {
     }
 }
 
-export async function resetPassword(id, pass) {
+export async function resetPasswordAndKeys(id, pass, keys) {
     try {
         await db.query(
-            "UPDATE tbEmpresas SET senhaHash = ? WHERE idEmpresa = ?",
-            [pass, id]
+            `UPDATE tbEmpresas SET senhaHash = ?, ikPublica = ?, 
+            ikPrivada = ?, salt = ?, iv = ? WHERE idEmpresa = ?`,
+            [pass, keys.publicKey, keys.privateKey, keys.salt, keys.iv, id]
         );
         return true;
     } catch(err) {

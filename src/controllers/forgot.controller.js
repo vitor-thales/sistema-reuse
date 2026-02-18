@@ -4,9 +4,11 @@ import bcrypt from "bcryptjs";
 import { publicDir } from "../utils/paths.js";
 import { sendPasswordResetEmail } from "../utils/sendMail.js";
 import { env } from "../config/env.js";
+import { generateEncryptedKeyPair } from "../utils/crypto.js";
 
 import { createVerificationCode, getLastVerificationCode, deleteUsedCode } from "../models/verification.model.js";
-import { getEmpresaCredentials, getEmpresa, resetPassword } from "../models/empresas.model.js";
+import { getEmpresaCredentials, getEmpresa, resetPasswordAndKeys } from "../models/empresas.model.js";
+import { deleteUserMessageKeys } from "../models/messages.model.js";
 
 async function generateAndSendCode(empresaId, email, nome) {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
@@ -94,9 +96,12 @@ export default {
         
         const pass = await bcrypt.hash(novaSenha, env.SALT);
 
-        const result = await resetPassword(idUsuario, pass);
+        const keys = await generateEncryptedKeyPair(novaSenha);
+
+        const result = await resetPasswordAndKeys(idUsuario, pass, keys);
         if(result !== true) return res.status(500).json({error: "Erro ao alterar a senha do usuário"});
 
+        await deleteUserMessageKeys(idUsuario);
         await deleteUsedCode(idUsuario, 2);
 
         res.status(200).json({message: "Sucesso"});

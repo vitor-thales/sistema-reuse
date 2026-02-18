@@ -1,11 +1,5 @@
 import { io } from "https://cdn.socket.io/4.7.2/socket.io.esm.min.js";
 
-/*
-* Opa, eu tentei deixar alguns comentários que explicam exatamente onde você deve por seu código e o que vai em cada lugar
-* pode excluir eles, incluindo esse, depois :)
-* Mesma coisa pros console.log, eles tão ai só enquanto eu tava testando pode exlcuir eles depois que integrar com o front
-*/
-
 const ChatEngine = {
     privateKey: null,
     myPublicKey: null,
@@ -186,7 +180,6 @@ const ChatEngine = {
         });
 
         this.socket.on('message_confirm', async (data) => {
-            // Dispara evento de confirmação para o front-end
             window.dispatchEvent(new CustomEvent('chat:confirmed', { detail: data }));
         });
 
@@ -195,7 +188,6 @@ const ChatEngine = {
         });
 
         this.socket.on('messages_read_update', (data) => {
-            // Dispara evento de que as mensagens foram lidas
             window.dispatchEvent(new CustomEvent('chat:read', { detail: data }));
         });
     },
@@ -214,20 +206,28 @@ const ChatEngine = {
 
             const isMe = data.idRemetente === userId;
             const keyToUse = isMe ? data.keyForSender : data.keyForRecipient;
-            const text = await this.decryptMessage(data.content, keyToUse, data.iv);
             
-            // DISPARO DO EVENTO CUSTOMIZADO
-            // O front-end vai ouvir isso para colocar a mensagem na tela
+            if (!keyToUse) {
+                return; 
+            }
+
+            let text;
+            try {
+                text = await this.decryptMessage(data.content, keyToUse, data.iv);
+            } catch (decryptionError) {
+                return;
+            }
+            
             window.dispatchEvent(new CustomEvent('chat:message', { 
                 detail: { 
                     ...data, 
                     decryptedText: text, 
-                    type: type // 'received'
+                    type: type 
                 } 
             }));
 
         } catch (e) {
-            console.error("Failed to process message:", e);
+            console.error("Erro ao processar a imagem:", e);
         }
     },
 
