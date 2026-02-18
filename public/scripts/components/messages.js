@@ -1,36 +1,23 @@
-import ChatEngine from '../utils/script.chat.engine.js'; // Adjust path if needed
+import ChatEngine from '../utils/script.chat.engine.js';
 import { toast } from "../utils/script.toast.js";
 
-// --- State ---
-let myUserId = null; 
-let activeChatId = null;
-let activePartnerId = null;
-let activePartnerPublicKey = null;
+const messagesTab = document.getElementById("messages-tab");
 
-// --- DOM Elements ---
 var overlay;
 var body;
 var convView;
 var chatView;
 var convList;
 var msgArea;
+
+let myUserId = null; 
+let activeChatId = null;
+let activePartnerId = null;
+let activePartnerPublicKey = null;
 let scrollBottomBtn;
-let currentOffset = 0; // Track pagination
-let isLoadingMore = false; // Prevent multiple simultaneous fetches
-let hasMoreMessages = true; // Stop fetching if we hit the end
-
-const messagesTab = document.getElementById("messages-tab");
-
-// --- Initialization ---
-// Call this function when the user logs in / loads the page.
-// You need to provide their ID and Base64 Public Key.
-async function initializeMessagingSystem(userId, myPublicKeyBase64) {
-    myUserId = userId;
-    await ChatEngine.init(userId, myPublicKeyBase64);
-    
-    await loadMessagesHtml();
-    toggleOverlay();
-}
+let currentOffset = 0;
+let isLoadingMore = false;
+let hasMoreMessages = true;
 
 export async function loadUserDataAndStart() {
     const res = await fetch("/mensagens/api/userData");
@@ -38,6 +25,13 @@ export async function loadUserDataAndStart() {
     const {id, pk} = json;
 
     initializeMessagingSystem(id, pk);
+}
+
+async function initializeMessagingSystem(userId, myPublicKeyBase64) {
+    myUserId = userId;
+    await ChatEngine.init(userId, myPublicKeyBase64);
+    
+    await loadMessagesHtml();
 }
 
 async function loadMessagesHtml() {
@@ -109,17 +103,14 @@ async function loadMoreMessages() {
             return;
         }
 
-        // messages come from DB ordered DESC, so we reverse to keep chronological order within the batch
         for (const msg of messages.reverse()) { 
             const isMe = msg.idRemetente === myUserId;
             const decryptedText = await ChatEngine.decryptMessage(msg.content, msg.wrappedKey, msg.iv);
             const dbStatus = isMe ? (msg.lida ? 'read' : 'sent') : 'received';
             
-            // Call our updated function with the 'true' flag for prepending
             renderMessageBubble(decryptedText, isMe, msg.idMensagem, dbStatus, msg.dataEnvio, true);
         }
 
-        // Maintain scroll position so the user doesn't lose their place
         msgArea.scrollTop = msgArea.scrollHeight - oldHeight;
 
     } catch (err) {
@@ -183,7 +174,6 @@ function createBubbleElement(text, isMe, messageId, status, date) {
 
 function setupScrollListener() {
     msgArea.addEventListener('scroll', async () => {
-        // If scrolled to top (top is 0) and we have more to load
         if (msgArea.scrollTop === 0 && !isLoadingMore && hasMoreMessages) {
             await loadMoreMessages();
         }
@@ -206,39 +196,12 @@ function showNoMoreMessagesIndicator() {
     msgArea.prepend(div);
 }
 
-// --- Overlay Controls ---
-window.toggleOverlay = function () {
-    const isHidden = overlay.classList.contains('hidden');
-    if (isHidden) {
-        overlay.classList.remove('hidden');
-        body.style.overflow = 'hidden'; 
-        fetchAndRenderConversations(); // Refresh list on open
-    } else {
-        overlay.classList.add('hidden');
-        body.style.overflow = 'auto'; 
-    }
-}
-
-window.closeMessages = function (event) {
-    if (event.target === overlay) toggleOverlay();
-}
-
-window.closeActiveChat = function () {
-    activeChatId = null;
-    activePartnerId = null;
-    activePartnerPublicKey = null;
-    chatView.classList.add('translate-x-full'); // Slide out
-    convView.classList.remove('-translate-x-full'); // Slide in
-}
-
-// --- Fetch & Render Logic ---
-// --- Updated Fetch & Render (Now decrypts the sidebar preview!) ---
 async function fetchAndRenderConversations() {
     try {
         const res = await fetch('/mensagens/api/getConversations');
         const conversations = await res.json();
         
-        convList.innerHTML = ''; // Only clear on initial load or manual refresh
+        convList.innerHTML = '';
         
         if(conversations.length === 0) {
             convList.innerHTML = `
@@ -252,7 +215,7 @@ async function fetchAndRenderConversations() {
         }
 
         for (const conv of conversations) {
-            renderConversationRow(conv, false); // false = append to bottom
+            renderConversationRow(conv, false);
         }
     } catch (err) {
         console.error("Erro ao carregar conversas:", err);
@@ -278,17 +241,13 @@ async function renderConversationRow(conv, prepend = false) {
         } catch (err) { snippet = '🔒 Mensagem criptografada'; }
     }
 
-    // --- FIX 1: Accurate Unread Dot Logic ---
-    // Show dot ONLY if there's a last message AND it's not read AND I am not the sender
     const isUnread = conv.lastMessageContent && !conv.lida && conv.idRemetente !== myUserId;
     const unreadDot = isUnread ? `<div class="unread-dot w-2 h-2 rounded-full bg-mainblue mt-2"></div>` : '';
 
-    // --- ADD 1: Time Formatting for Sidebar ---
     const msgTime = conv.dataEnvio ? new Date(conv.dataEnvio).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
     const el = document.createElement('div');
     el.setAttribute('data-conv-id', conv.idConversa);
-    // Add data-search attribute for the search feature
     el.setAttribute('data-search-name', conv.partnerName.toLowerCase());
     el.className = "p-4 flex items-start gap-3 hover:bg-lightgray/50 cursor-pointer transition-colors group";
     el.onclick = () => openChat(conv.idConversa, conv.partnerId, conv.partnerName, initials, conv.partnerPublicKey);
@@ -312,7 +271,6 @@ async function renderConversationRow(conv, prepend = false) {
     }
 }
 
-// --- Updated openChat (Accepts publicKey so we can send msgs on empty chats) ---
 async function openChat(idConversa, partnerId, partnerName, initials, partnerPublicKey) {
     activeChatId = idConversa;
     activePartnerId = partnerId;
@@ -346,9 +304,6 @@ async function openChat(idConversa, partnerId, partnerName, initials, partnerPub
             const isMe = msg.idRemetente === myUserId;
             const decryptedText = await ChatEngine.decryptMessage(msg.content, msg.wrappedKey, msg.iv);
             
-            // FIX: Pass the 'lida' status from DB
-            // If isMe is true and lida is true -> 'read'
-            // If isMe is true and lida is false -> 'sent'
             const dbStatus = isMe ? (msg.lida ? 'read' : 'sent') : 'received';
             
             renderMessageBubble(decryptedText, isMe, msg.idMensagem, dbStatus, msg.dataEnvio);
@@ -358,7 +313,6 @@ async function openChat(idConversa, partnerId, partnerName, initials, partnerPub
 
         if (lastMessageId) {
             ChatEngine.markConversationAsRead(idConversa, lastMessageId, partnerId, myUserId);
-            // Immediate UI fix: find the row and remove the dot
             const row = document.querySelector(`[data-conv-id="${idConversa}"]`);
             if (row) {
                 const dot = row.querySelector('.unread-dot');
@@ -371,47 +325,12 @@ async function openChat(idConversa, partnerId, partnerName, initials, partnerPub
     }
 }
 
-// --- NEW: Function to trigger a new chat from anywhere in your app ---
-// You can call this from a "Contact Company" button on a product page, for example.
-window.startNewChat = async function(partnerId, partnerName, partnerPublicKey) {
-    try {
-        // 1. Tell backend to find or create the conversation ID
-        const res = await fetch('/mensagens/api/startConversation', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ partnerId })
-        });
-        
-        const data = await res.json();
-        
-        if (data.error) {
-            alert(data.error);
-            return;
-        }
-
-        // 2. Open the overlay if it's closed
-        const isHidden = overlay.classList.contains('hidden');
-        if (isHidden) {
-            overlay.classList.remove('hidden');
-            body.style.overflow = 'hidden';
-        }
-
-        // 3. Immediately open the chat thread view with this user
-        const initials = partnerName.substring(0, 2).toUpperCase();
-        openChat(data.idConversa, partnerId, partnerName, initials, partnerPublicKey);
-
-    } catch (err) {
-        console.error("Erro ao iniciar nova conversa:", err);
-    }
-}
-
 function toggleHistoryLoader(show) {
     let loader = document.getElementById('history-loader');
     if (show) {
         if (!loader) {
             loader = document.createElement('div');
             loader.id = 'history-loader';
-            // Centers the loader and gives it some breathing room
             loader.className = 'w-full flex justify-center py-4 transition-all opacity-100';
             loader.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-mainblue text-xl"></i>';
             msgArea.prepend(loader);
@@ -422,7 +341,6 @@ function toggleHistoryLoader(show) {
 }
 
 function renderMessageBubble(text, isMe, messageId = null, status = 'sending', date = null, isPrepend = false) {
-    // 1. Update status if already exists
     if (messageId && messageId !== "pending") {
         let existing = document.querySelector(`[data-msg-id="${messageId}"]`);
         if (existing) {
@@ -431,7 +349,6 @@ function renderMessageBubble(text, isMe, messageId = null, status = 'sending', d
         }
     }
 
-    // 2. Remove pending
     if (messageId !== "pending") {
         const pendingMsg = document.querySelector(`[data-msg-id="pending"]`);
         if (pendingMsg) {
@@ -441,9 +358,8 @@ function renderMessageBubble(text, isMe, messageId = null, status = 'sending', d
         }
     }
 
-    // 3. Handle Date Grouping
     const msgDate = date ? new Date(date) : new Date();
-    const groupKey = msgDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    const groupKey = msgDate.toISOString().split('T')[0]; 
     let group = document.querySelector(`[data-date-group="${groupKey}"]`);
 
     if (!group) {
@@ -451,13 +367,11 @@ function renderMessageBubble(text, isMe, messageId = null, status = 'sending', d
         group.setAttribute('data-date-group', groupKey);
         group.className = "date-section flex flex-col w-full";
         
-        // Create Header
         const header = document.createElement('div');
-        header.className = "text-center my-6 sticky top-0 z-10"; // sticky top-0 is optional, remove if you want it purely inline
+        header.className = "text-center my-6 sticky top-0 z-10";
         header.innerHTML = `<span class="bg-lightgray/50 text-darkgray text-[11px] px-3 py-1 rounded-full uppercase tracking-wider font-semibold">${getFriendlyDate(msgDate)}</span>`;
         group.appendChild(header);
 
-        // Place group in the main area
         if (isPrepend) {
             msgArea.prepend(group);
         } else {
@@ -465,11 +379,9 @@ function renderMessageBubble(text, isMe, messageId = null, status = 'sending', d
         }
     }
 
-    // 4. Create and add bubble
     const bubble = createBubbleElement(text, isMe, messageId, status, date);
     
     if (isPrepend) {
-        // When prepending history, the header must stay at the top of the group
         const header = group.firstChild;
         header.after(bubble);
     } else {
@@ -488,8 +400,6 @@ function updateMessageStatusUI(wrapper, status, date = null) {
         } else if (status === 'read') {
             iconContainer.innerHTML = '<i class="fa-solid fa-check-double text-green"></i>';
         } else if (status === 'received') {
-            // Received messages usually don't have status icons, 
-            // but we clear it just in case of status switches
             iconContainer.innerHTML = ''; 
         }
     }
@@ -506,7 +416,30 @@ function sanitize(text) {
     return div.innerHTML;
 }
 
-// --- Sending & Receiving ---
+window.toggleOverlay = function () {
+    const isHidden = overlay.classList.contains('hidden');
+    if (isHidden) {
+        overlay.classList.remove('hidden');
+        body.style.overflow = 'hidden'; 
+        fetchAndRenderConversations();
+    } else {
+        overlay.classList.add('hidden');
+        body.style.overflow = 'auto'; 
+    }
+}
+
+window.closeMessages = function (event) {
+    if (event.target === overlay) toggleOverlay();
+}
+
+window.closeActiveChat = function () {
+    activeChatId = null;
+    activePartnerId = null;
+    activePartnerPublicKey = null;
+    chatView.classList.add('translate-x-full'); 
+    convView.classList.remove('-translate-x-full'); 
+}
+
 window.handleSendMessage = async function(e) {
     e.preventDefault();
     const input = document.getElementById('message-input');
@@ -515,7 +448,6 @@ window.handleSendMessage = async function(e) {
 
     input.value = '';
     
-    // Render with 'pending' status
     renderMessageBubble(sanitize(text), true, "pending", 'sending', new Date());
 
     try {
@@ -528,9 +460,37 @@ window.handleSendMessage = async function(e) {
             ...encryptedPayload
         });
     } catch(err) {
-        // If encryption fails, remove the pending bubble or show error
         document.querySelector(`[data-msg-id="pending"]`)?.remove();
         alert("Falha na criptografia. Mensagem não enviada.");
+    }
+}
+
+window.startNewChat = async function(partnerId, partnerName, partnerPublicKey) {
+    try {
+        const res = await fetch('/mensagens/api/startConversation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ partnerId })
+        });
+        
+        const data = await res.json();
+        
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        const isHidden = overlay.classList.contains('hidden');
+        if (isHidden) {
+            overlay.classList.remove('hidden');
+            body.style.overflow = 'hidden';
+        }
+
+        const initials = partnerName.substring(0, 2).toUpperCase();
+        openChat(data.idConversa, partnerId, partnerName, initials, partnerPublicKey);
+
+    } catch (err) {
+        console.error("Erro ao iniciar nova conversa:", err);
     }
 }
 
@@ -545,11 +505,8 @@ window.scrollToBottom = function(smooth = false) {
     }
 }
 
-// 1. Confirmed by Server (The message was saved in DB)
 window.addEventListener('chat:confirmed', (e) => {
     const data = e.detail;
-    // Find the bubble that was "sending" and mark as "sent"
-    // We match by temporary logic or ID if you pass it back
     const pendingMsg = document.querySelector(`[data-msg-id="pending"]`);
     if (pendingMsg) {
         pendingMsg.setAttribute('data-msg-id', data.idMensagem);
@@ -558,7 +515,6 @@ window.addEventListener('chat:confirmed', (e) => {
 
     const existingRow = document.querySelector(`[data-conv-id="${data.idConversa}"]`);
     if (existingRow) {
-        // We re-render the row to move it to the top and update the text
         const currentName = existingRow.querySelector('h4').innerText;
         renderConversationRow({
             idConversa: data.idConversa,
@@ -568,14 +524,13 @@ window.addEventListener('chat:confirmed', (e) => {
             lastMessageContent: data.content,
             wrappedKey: data.keyForSender,
             lastMessageIv: data.iv,
-            lida: true, // It's our own message, so it's "read" for us
+            lida: true, 
             idRemetente: myUserId,
             dataEnvio: data.dataEnvio
-        }, true); // Prepend to top
+        }, true);
     }
 });
 
-// 2. Incoming Message (From the other person)
 window.addEventListener('chat:message', async (e) => {
     const data = e.detail;
     
@@ -586,7 +541,6 @@ window.addEventListener('chat:message', async (e) => {
         }
     }
 
-    // FIX: Grab the existing name from the UI so we don't rename them to "Contato"
     const existingRow = document.querySelector(`[data-conv-id="${data.idConversa}"]`);
     const currentName = existingRow 
         ? existingRow.querySelector('h4').innerText 
@@ -608,11 +562,9 @@ window.addEventListener('chat:message', async (e) => {
     renderConversationRow(mockConv, true); 
 });
 
-// 3. Recipient Read our Messages
 window.addEventListener('chat:read', (e) => {
     const { idConversa, lastReadId } = e.detail;
     if (activeChatId === idConversa) {
-        // Mark all our messages up to lastReadId as "read" (double check)
         const allMyMessages = document.querySelectorAll(`[data-msg-id]`);
         allMyMessages.forEach(msg => {
             const msgId = parseInt(msg.getAttribute('data-msg-id'));
