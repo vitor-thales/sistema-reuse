@@ -216,8 +216,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     companyRow.innerHTML = `
       <i class="fa-solid fa-building text-gray-400"></i>
-      <span class="line-clamp-1">${anuncio.nomeEmpresa || "Empresa"}</span>
+      <a href="/detalhes-empresa/${anuncio.idEmpresa}" class="line-clamp-1">${anuncio.nomeEmpresa || "Empresa"}</a>
     `;
+    console.log(anuncio);
 
     const locationRow = document.createElement("div");
     locationRow.className = "flex items-center gap-2";

@@ -1,4 +1,4 @@
-import { toast } from "./utils/script.toast.js"
+import { toast } from "./utils/script.toast.js";
 
 (function () {
     const elViewsMonth = document.getElementById("dash-views-month");

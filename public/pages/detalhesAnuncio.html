@@ -71,7 +71,7 @@
                             </div>
 
                             <div class="min-w-0">
-                                <p id="empresa-nome" class="font-semibold text-base truncate">Empresa</p>
+                                <p id="empresa-nome" class="cursor-pointer hover:underline font-semibold text-base truncate">Empresa</p>
                                 <p id="empresa-local" class="text-sm text-gray-500 flex items-center gap-2">
                                     <i class="fa-solid fa-location-dot text-stronggray"></i>
                                     <span>—</span>
@@ -80,6 +80,7 @@
                         </div>
 
                         <button type="button"
+                            onclick="copyLink()"
                             class="shrink-0 inline-flex items-center justify-center w-12 h-12 rounded-xl border border-stronggray hover:bg-gray-50">
                             <i class="fa-solid fa-share-nodes text-stronggray"></i>
                         </button>
@@ -169,10 +170,9 @@
         </section>
     </main>
     
-    <script src="../scripts/script.anuncie.js"></script>
     <script src="../scripts/tema.js"></script>
     <script type="module" src="/scripts/script.loadHeader.js" defer></script>
-    <script src="/scripts/script.detalhesAnuncio.js" defer></script>
+    <script type="module" src="/scripts/script.detalhesAnuncio.js" defer></script>
 </body>
 
 </html>

@@ -1,4 +1,5 @@
 import { loadUserDataAndStart } from "./components/messages.js";
+import { toast } from "./utils/script.toast.js";
 
 fetch('/components/header.html')
   .then(response => response.text())

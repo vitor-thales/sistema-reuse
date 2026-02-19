@@ -183,6 +183,27 @@ export async function getAnuncio(id) {
   return rows;
 }
 
+export async function getAnunciosByEmpresa(idEmpresa) {
+  const query = `
+    SELECT 
+      a.*, 
+      COALESCE(e.nomeFantasia, e.razaoSocial) AS nomeEmpresa,
+      e.cidade,
+      e.estado,
+      (SELECT i.nomeArquivo 
+       FROM tbImagensAnuncios i 
+       WHERE i.idAnuncio = a.idAnuncio 
+       LIMIT 1) AS nomeArquivo
+    FROM tbAnuncios a
+    JOIN tbEmpresas e ON a.idEmpresa = e.idEmpresa
+    WHERE a.idEmpresa = ? AND a.status = 'ativo'
+    ORDER BY a.dataStatus DESC
+  `;
+
+  const [rows] = await db.query(query, [idEmpresa]);
+  return rows;
+}
+
 export async function insertAnuncio(idEmpresa, data, files = []) {
   try {
     if (!idEmpresa) return "Empresa não identificada. Faça login novamente.";

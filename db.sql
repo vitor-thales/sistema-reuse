@@ -241,13 +241,15 @@ END$$
 DELIMITER ;
 
 
-CREATE VIEW viewPerfilEmpresas AS
+CREATE OR REPLACE VIEW viewPerfilEmpresas AS
 SELECT 
     e.idEmpresa,
     COALESCE(e.nomeFantasia, e.razaoSocial) AS nomeEmpresa,
-    CASE c.privMostrarEndCompleto
-        WHEN TRUE THEN CONCAT(e.estado, ', ', e.cidade, ', ', e.bairro, ', ', e.endereco, ', ', e.numEndereco)
-        ELSE CONCAT(e.estado, ', ', e.cidade)
+    CASE 
+        WHEN c.privMostrarEndCompleto = TRUE THEN 
+            CONCAT(e.estado, ', ', e.cidade, ', ', e.bairro, ', ', e.endereco, ', ', e.numEndereco)
+        ELSE 
+            CONCAT(e.estado, ', ', e.cidade)
     END AS enderecoEmpresa,
     DATE_FORMAT(e.dataCadastro, '%Y-%m') AS membroDesde,
     (SELECT COUNT(*) FROM tbAnuncios a WHERE a.idEmpresa = e.idEmpresa AND a.status = 'ativo') AS anunciosAtivos,
@@ -265,6 +267,8 @@ SELECT
     t.tempoRespostaMedio AS tempoResposta,
     CASE WHEN c.privMostrarEmail = TRUE THEN e.emailCorporativo ELSE NULL END AS emailEmpresa,
     CASE WHEN c.privMostrarFone = TRUE THEN e.foneCorporativo ELSE NULL END AS foneEmpresa,
+    CASE WHEN c.privMostrarRazaoSocial = TRUE THEN e.razaoSocial ELSE NULL END AS razaoSocialEmpresa,
+    CASE WHEN c.privMostrarCNPJ = TRUE THEN e.cnpj ELSE NULL END AS cnpjEmpresa,
     e.descricao AS sobreEmpresa
 FROM tbEmpresas e
 LEFT JOIN tbConfigEmpresas c ON c.idEmpresa = e.idEmpresa
