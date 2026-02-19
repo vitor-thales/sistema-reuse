@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Login</title>
+</head>
+<body>
+    <section class="grid grid-cols-1 lg:grid-cols-7 h-screen">
+        <div class="h-full lg:col-span-2 bg-lightgray flex flex-col items-center py-5 my-auto px-6 overflow-y-auto">
+            <div class="grow min-h-1"></div>
+
+            <form id="form-login" class="flex flex-col gap-4 w-full max-w-sm mx-auto">
+                <h1 class="text-4xl font-bold text-darkblue text-center mb-6">LOGIN</h1>
+
+                <div class="relative w-full">
+                    <input 
+                        class="pl-13 pt-3 pb-3 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" 
+                        type="text" 
+                        name="login" 
+                        placeholder="E-mail ou CNPJ" 
+                        required
+                    />
+                    <div class="absolute left-3.5 top-3 text-darkblue">
+                        <i class="fa-solid fa-user text-3xl"></i>
+                    </div>
+                </div>
+
+                <div class="relative w-full">
+                    <input 
+                        class="pl-13 pt-3 pb-3 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" 
+                        type="password" 
+                        name="senha" 
+                        placeholder="Senha" 
+                        required
+                    />
+                    <div class="absolute left-3.5 top-3 text-darkblue">
+                        <i class="fa-solid fa-lock text-3xl"></i>
+                    </div>
+                </div>
+
+                <a class="text-sm text-gray-400 text-right underline -mt-2 pr-2" href="/recuperar-senha">
+                    Não lembro a minha senha
+                </a>
+
+                <div class="w-full text-center mt-2">
+                    <button 
+                        type="submit" 
+                        id="login"
+                        class="w-full py-3 text-xl bg-mainblue text-white font-semibold rounded-[20px] shadow-lg hover:bg-blue-700 hover:cursor-pointer transition-colors"
+                    >
+                        ENTRAR
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-7 items-center mt-4 px-2">
+                    <div class="bg-darkblue/30 col-span-3 h-px"></div>
+                    <p class="text-darkblue/60 text-lg font-bold text-center">ou</p>
+                    <div class="bg-darkblue/30 col-span-3 h-px"></div>
+                </div>
+
+                <div class="w-full text-center mt-2">
+                    <button 
+                        type="button" 
+                        onclick="window.location.href='/registrar'" 
+                        class="w-full py-3 text-xl bg-white text-darkblue border-2 border-mainblue font-semibold rounded-[20px] hover:bg-mainblue/5 transition-colors hover:cursor-pointer"
+                    >
+                        Criar uma Conta
+                    </button>
+                </div>
+            </form>
+
+            <div class="grow min-h-1"></div>
+        </div>
+        <div class="h-full col-span-5 bg-[url('../images/login_bg.png')] bg-no-repeat bg-cover hidden lg:flex flex-col justify-center items-center gap-2 p-10">
+            <h1 class="font-bold text-4xl lg:text-6xl text-white text-center">Bem-vindo(a) de volta ao ReUse!</h1>
+            <p class="font-normal text-2xl text-white text-center max-w-153">O maior sistema de venda de resíduos eletrônicos do Brasil.</p>
+        </div>
+    </section>
+
+    <script type="module" src="../scripts/script.login.js"></script>
+</body>
+</html>

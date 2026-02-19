@@ -1,0 +1,62 @@
+import jwt from "jsonwebtoken";
+import { env } from "../config/env.js";
+import { getAnuncios, getAnunciosFiltro, insertAnuncio } from "../models/anuncios.model.js";
+
+export default {
+  async listarAnuncios(req, res) {
+    try {
+      const anuncios = await getAnuncios();
+      return res.json(anuncios);
+    } catch (err) {
+      console.error("Erro ao listar anúncios:", err);
+      return res.status(500).json({ error: "Erro ao buscar anúncios" });
+    }
+  },
+
+  async listarAnunciosFiltro(req, res) {
+    try {
+      const anuncios = await getAnunciosFiltro(req.query);
+      return res.json(anuncios);
+    } catch (err) {
+      console.error("Erro ao buscar anúncios (filtro):", err);
+      return res.status(500).json({
+        status: "error",
+        message: "Erro ao buscar anúncios"
+      });
+    }
+  },
+
+  async criarAnuncio(req, res) {
+    try {
+      const token = req.cookies?.reuseToken;
+      if (!token) {
+        return res.status(401).json({ error: "Empresa não identificada. Faça login novamente." });
+      }
+
+      let decoded;
+      try {
+        decoded = jwt.verify(token, env.JWT_SECRET);
+      } catch {
+        return res.status(401).json({ error: "Token inválido. Faça login novamente." });
+      }
+
+      const idEmpresa = decoded?.id;
+      if (!idEmpresa) {
+        return res.status(401).json({ error: "Empresa não identificada. Faça login novamente." });
+      }
+
+      const files = req.files || [];
+
+      const result = await insertAnuncio(idEmpresa, req.body, files);
+
+      if (result === true) {
+        return res.status(201).json({ message: "Anúncio publicado com sucesso!" });
+      }
+
+      return res.status(400).json({ error: result || "Erro ao salvar anúncio." });
+    } catch (err) {
+      console.error("Erro ao criar anúncio:", err);
+      return res.status(500).json({ error: "Erro interno ao criar anúncio" });
+    }
+  }
+};

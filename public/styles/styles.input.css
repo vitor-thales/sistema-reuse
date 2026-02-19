@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+@theme {
+    --color-lightgray: #FBFBFD;
+    --color-darkgray: #B1B1B1;
+    --color-darkblue: #343C6A;
+    --color-mainblue: #2D60FF;
+    --color-darkergray: #F1F1F1;
+    --color-stronggray: #ADADAD;
+    --color-lightgreen: #DCFAF8;
+    --color-green: #16DBCC;
+    --color-darkgreen: #343C6A;
+    --color-lightred: #FFE0EB;
+    --color-mediumred: #FF82AC;
+    --color-red: #FE5C73;
+    --color-darkred: #343C6A;
+    --color-cyangrey: #CFDCE5;
+    --color-darkcyangrey: #ACB0C3;
+    --color-lightgreen: #DCFAF8;
+    --color-green: #16DBCC;
+    --color-lightyellow: #FFF5D9;
+    --color-yellow: #FFBB38;
+}
+
+@font-face {
+    font-family: Gilroy;
+    src: url("../fonts/Gilroy-Light.ttf");
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: Gilroy;
+    src: url("../fonts/Gilroy-Regular.ttf");
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Gilroy;
+    src: url("../fonts/Gilroy-Medium.ttf");
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: Gilroy;
+    src: url("../fonts/Gilroy-SemiBold.ttf");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Gilroy;
+    src: url("../fonts/Gilroy-Bold.ttf");
+    font-weight: 700;
+}
+
+html, body {
+    height: 100%;
+    font-family: Gilroy;
+}
+
+:root {
+  --bg-main: #ffffff;
+  --bg-card: #f9fafb;
+  --bg-input: #f3f4f6;
+
+  --text-main: #0f172a;
+  --text-muted: #6b7280;
+
+  --border-main: #d1d5db;
+
+  --primary: #2563eb;
+}
+
+.dark {
+  --bg-main: #0b1220;
+  --bg-card: #111827;
+  --bg-input: #1f2933;
+
+  --text-main: #f9fafb;
+  --text-muted: #9ca3af;
+
+  --border-main: #1f2937;
+
+  --primary: #3b82f6;
+}
+
+.bg-app { background: var(--bg-main); }
+.card { background: var(--bg-card); border: 1px solid var(--border-main); }
+.text-main { color: var(--text-main); }
+.text-muted { color: var(--text-muted); }
+.input { background: var(--bg-input); color: var(--text-main); }
+
+@layer base {
+  html.dark body {
+    background-color: #0b1220; 
+    color: #e5e7eb;            
+  }
+}
+
+@layer utilities {
+  html.dark .bg-white { background-color: #0f172a !important; }
+  html.dark .bg-lightgray { background-color: #0f172a !important; }
+  html.dark .bg-darkergray { background-color: #111827 !important; }
+  html.dark .bg-gray-50 { background-color: #0f172a !important; }
+  html.dark .bg-gray-100 { background-color: #2a304d !important; }
+  html.dark .bg-mainblue\/5 { background-color: rgba(59,130,246,0.10) !important; }
+  html.dark .bg-mainblue\/10 { background-color: rgba(59,130,246,0.14) !important; }
+  html.dark .bg-darkergray\/70 { background-color: rgba(17, 24, 39, 0.397) !important; }
+
+  html.dark .text-darkblue { color: #e5e7eb !important; }
+  html.dark .text-gray-500 { color: #9ca3af !important; }
+  html.dark .text-gray-600 { color: #a1a1aa !important; }
+  html.dark .text-stronggray { color: #9ca3af !important; }
+
+  html.dark .border-stronggray { border-color: #1f2937 !important; }
+  html.dark .divide-stronggray\/70 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(31,41,55,0.7) !important;
+  }
+
+  html.dark .text-darkblue\/70 { color: #e5e7eb5e !important; }
+
+  html.dark input,
+  html.dark textarea,
+  html.dark select {
+    color: #e5e7eb !important;
+  }
+  html.dark input::placeholder,
+  html.dark textarea::placeholder {
+    color: #6b7280 !important;
+  }
+
+  html.dark .shadow-sm { box-shadow: none !important; }
+}
