@@ -3,10 +3,15 @@ import { loadUserDataAndStart } from "./components/messages.js";
 fetch('/components/header.html')
   .then(response => response.text())
   .then(async (data) => {
-    document.getElementById('header-placeholder').innerHTML = data;
+    const holder = document.getElementById('header-placeholder');
+    if (!holder) {
+      console.warn("header-placeholder não encontrado no DOM");
+      return;
+    }
+
+    holder.innerHTML = data;
 
     const iconeUsuario = document.getElementById("userIcon");
-
     if (iconeUsuario) {
       iconeUsuario.addEventListener("click", () => {
         window.location.href = "/configuracoes";
@@ -27,15 +32,24 @@ fetch('/components/header.html')
           return;
         }
 
-        toast.show('Você precisa estar logado para anunciar.', "error");
-        window.location.href = '/pages/login.html';
+        if (window.toast?.show) {
+          window.toast.show('Você precisa estar logado para anunciar.', "error");
+        } else {
+          console.warn("toast.show não encontrado, redirecionando para /login");
+        }
+
+        window.location.href = '/login';
       } catch (err) {
-        toast.show('Não foi possível verificar o login. Tente novamente.', "error");
+        if (window.toast?.show) {
+          window.toast.show('Não foi possível verificar o login. Tente novamente.', "error");
+        } else {
+          console.error("Erro ao verificar login:", err);
+        }
       }
     }
 
     btnEntrar?.addEventListener('click', () => {
-      window.location.href = '/pages/login.html';
+      window.location.href = '/login';
     });
 
     btnAnuncie?.addEventListener('click', handleAnuncieClick);
@@ -43,8 +57,15 @@ fetch('/components/header.html')
     logo?.addEventListener('click', () => {
       window.location.href = '/';
     });
-    await atualizarHeader();
 
+    const barraPesquisa = document.getElementById("barraPesquisa");
+
+    barraPesquisa?.addEventListener("input", () => {
+      const q = (barraPesquisa.value || "").trim().toLowerCase();
+      window.dispatchEvent(new CustomEvent("reuse:search", { detail: { q } }));
+    });
+
+    await atualizarHeader();
     loadUserDataAndStart();
   });
 
@@ -65,8 +86,8 @@ async function atualizarHeader() {
   const iconeUser = document.getElementById("userIcon");
   const iconeChat = document.getElementById("mensagens");
 
-  if (!botaoEntrar || !iconeUser) {
-    console.warn("Header: botaoEntrar ou userIcon não encontrado no DOM");
+  if (!botaoEntrar || !iconeUser || !iconeChat) {
+    console.warn("Header: botaoEntrar/userIcon/mensagens não encontrado no DOM");
     return;
   }
 

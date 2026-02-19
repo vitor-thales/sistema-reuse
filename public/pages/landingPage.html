@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
     <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
@@ -19,7 +19,7 @@
         <section
             class="relative w-full h-55 md:h-75 rounded-[30px] overflow-hidden flex items-center justify-center shadow-sm">
             <div class="absolute inset-0">
-                <img src="images/imagemSaudacao.png" class="w-full h-full object-cover" alt="Background ReUse">
+                <img src="images/imagemSaudacao.png" class="w-full h-full object-cover" alt="Background ReUse" />
                 <div class="absolute inset-0 mix-blend-multiply"></div>
             </div>
 
@@ -50,15 +50,21 @@
         <p id="anunciosVazio" class="hidden text-gray-500 mt-4">
             Nenhum anúncio disponível no momento.
         </p>
+
+        <div class="flex justify-center mt-6">
+            <button id="toggleMore"
+                class="hidden px-6 py-2 rounded-xl text-mainblue font-semibold hover:bg-blue-50 transition mb-10">
+                Ver mais ↓
+            </button>
+        </div>
     </main>
 
-    <div id="filterOverlay" class="fixed inset-0 bg-black/25 backdrop-blur-md backdrop-saturate-150 backdrop-brightness-90
-         opacity-0 pointer-events-none transition-all duration-300 z-40">
+    <div id="filterOverlay"
+        class="fixed inset-0 bg-black/25 backdrop-blur-md backdrop-saturate-150 backdrop-brightness-90 opacity-0 pointer-events-none transition-all duration-300 z-40">
     </div>
 
-    <aside id="filterPanel" class="fixed top-0 right-0 h-dvh w-90 max-w-[92vw] bg-white shadow-2xl z-50
-               translate-x-full transition-transform duration-200
-               flex flex-col">
+    <aside id="filterPanel"
+        class="fixed top-0 right-0 h-dvh w-90 max-w-[92vw] bg-white shadow-2xl z-50 translate-x-full transition-transform duration-200 flex flex-col">
 
         <div class="p-4 border-b border-stronggray flex items-center justify-between">
             <h2 class="text-lg font-semibold text-gray-800">Filtros Avançados</h2>
@@ -71,37 +77,9 @@
 
             <div>
                 <p class="font-semibold text-darkblue mb-3">Categoria</p>
-                <div class="space-y-2 text-darkblue">
-                    <label class="flex items-center gap-3">
-                        <input type="radio" name="categoria" value="Placas de Circuito"
-                            class="h-4 w-4 accent-mainblue" />
-                        <span>Placas de Circuito</span>
-                    </label>
 
-                    <label class="flex items-center gap-3">
-                        <input type="radio" name="categoria" value="Computadores" class="h-4 w-4 accent-mainblue" />
-                        <span>Computadores</span>
-                    </label>
-
-                    <label class="flex items-center gap-3">
-                        <input type="radio" name="categoria" value="Baterias" class="h-4 w-4 accent-mainblue" />
-                        <span>Baterias</span>
-                    </label>
-
-                    <label class="flex items-center gap-3">
-                        <input type="radio" name="categoria" value="Cabos e Fios" class="h-4 w-4 accent-mainblue" />
-                        <span>Cabos e Fios</span>
-                    </label>
-
-                    <label class="flex items-center gap-3">
-                        <input type="radio" name="categoria" value="Monitores" class="h-4 w-4 accent-mainblue" />
-                        <span>Monitores</span>
-                    </label>
-
-                    <label class="flex items-center gap-3">
-                        <input type="radio" name="categoria" value="Periféricos" class="h-4 w-4 accent-mainblue" />
-                        <span>Periféricos</span>
-                    </label>
+                <div id="categoriasContainer" class="space-y-2 text-darkblue">
+                    <p class="text-sm text-gray-500">Carregando categorias...</p>
                 </div>
             </div>
 
@@ -155,43 +133,43 @@
             </div>
 
             <div>
-                <p id="estadoSelect" class="font-semibold text-darkblue mb-3">Estado</p>
-                <select
+                <p class="font-semibold text-darkblue mb-3">Estado</p>
+                <select id="estadoSelect"
                     class="w-full bg-darkergray focus:outline-none focus:ring-2 focus:ring-mainblue rounded-lg p-2 text-darkblue">
                     <option value="">Todos</option>
-                    <option value="SP">Acre - AC</option>
-                    <option value="RJ">Alagoas - AL</option>
-                    <option value="AP">Amapá - AP</option>
-                    <option value="AM">Amazonas - AM</option>
-                    <option value="BA">Bahia - BA</option>
-                    <option value="CE">Ceará - CE</option>
-                    <option value="DF">Distrito Federal - DF</option>
-                    <option value="ES">Espírito Santo - ES</option>
-                    <option value="GO">Goiás - GO</option>
-                    <option value="MA">Maranhão - MA</option>
-                    <option value="MT">Mato Grosso - MT</option>
-                    <option value="MS">Mato Grosso do Sul - MS</option>
-                    <option value="MG">Minas Gerais - MG</option>
-                    <option value="PA">Pará - PA</option>
-                    <option value="PB">Paraíba - PB</option>
-                    <option value="PR">Paraná - PR</option>
-                    <option value="PE">Pernambuco - PE</option>
-                    <option value="PI">Piauí - PI</option>
-                    <option value="RJ">Rio de Janeiro - RJ</option>
-                    <option value="RN">Rio Grande do Norte - RN</option>
-                    <option value="RS">Rio Grande do Sul - RS</option>
-                    <option value="RO">Rondônia - RO</option>
-                    <option value="RR">Roraima - RR</option>
-                    <option value="SC">Santa Catarina - SC</option>
-                    <option value="SE">Sergipe - SE</option>
-                    <option value="SP">São Paulo - SP</option>
-                    <option value="TO">Tocantins - TO</option>
+                    <option value="Acre">Acre - AC</option>
+                    <option value="Alagoas">Alagoas - AL</option>
+                    <option value="Amapá">Amapá - AP</option>
+                    <option value="Amazonas">Amazonas - AM</option>
+                    <option value="Bahia">Bahia - BA</option>
+                    <option value="Ceará">Ceará - CE</option>
+                    <option value="Distrito Federal">Distrito Federal - DF</option>
+                    <option value="Espírito Santo">Espírito Santo - ES</option>
+                    <option value="Goiás">Goiás - GO</option>
+                    <option value="Maranhão">Maranhão - MA</option>
+                    <option value="Mato Grosso">Mato Grosso - MT</option>
+                    <option value="Mato Grosso do Sul">Mato Grosso do Sul - MS</option>
+                    <option value="Minas Gerais">Minas Gerais - MG</option>
+                    <option value="Pará">Pará - PA</option>
+                    <option value="Paraíba">Paraíba - PB</option>
+                    <option value="Paraná">Paraná - PR</option>
+                    <option value="Pernambuco">Pernambuco - PE</option>
+                    <option value="Piauí">Piauí - PI</option>
+                    <option value="Rio de Janeiro">Rio de Janeiro - RJ</option>
+                    <option value="Rio Grande do Norte">Rio Grande do Norte - RN</option>
+                    <option value="Rio Grande do Sul">Rio Grande do Sul - RS</option>
+                    <option value="Rondônia">Rondônia - RO</option>
+                    <option value="Roraima">Roraima - RR</option>
+                    <option value="Santa Catarina">Santa Catarina - SC</option>
+                    <option value="Sergipe">Sergipe - SE</option>
+                    <option value="São Paulo">São Paulo - SP</option>
+                    <option value="Tocantins">Tocantins - TO</option>
                 </select>
             </div>
 
             <div>
-                <p class="font-semibold text-darkblue mb-3">Localização</p>
-                <input type="text" placeholder="Digite cidade ou estado"
+                <p class="font-semibold text-darkblue mb-3">Cidade</p>
+                <input id="cidadeInput" type="text" placeholder="Digite a cidade"
                     class="w-full bg-darkergray focus:outline-none focus:ring-2 focus:ring-mainblue rounded-lg p-2 text-darkblue" />
             </div>
 

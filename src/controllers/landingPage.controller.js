@@ -6,7 +6,7 @@ import { publicDir } from "../utils/paths.js";
 import { env } from "../config/env.js";
 import { generateToken } from "../utils/generateToken.js";
 
-import { getAnuncios } from "../models/anuncios.model.js";
+import { getAnuncios, getAnunciosFiltro } from "../models/anuncios.model.js";
 import { getEmpresaCredentials } from "../models/empresas.model.js";
 
 export default {
@@ -61,10 +61,20 @@ export default {
 
     async list(req, res) {
         try {
-            const anuncios = await getAnuncios();
-            res.json(anuncios);
+            const { categoria, condicao, quantidade, uf, cidade, precoMin, precoMax } = req.query;
+
+            const temFiltros =
+                categoria || condicao || quantidade || uf || cidade || precoMin || precoMax;
+
+            const anuncios = temFiltros
+                ? await getAnunciosFiltro({ categoria, condicao, quantidade, uf, cidade, precoMin, precoMax })
+                : await getAnuncios();
+
+            return res.json(anuncios);
         } catch (err) {
-            res.status(500).json(err);
+            console.error(err);
+            return res.status(500).json({ error: "Erro ao listar anúncios" });
         }
     }
+
 };
