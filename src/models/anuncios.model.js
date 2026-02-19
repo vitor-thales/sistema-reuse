@@ -41,24 +41,6 @@ function mapModalidade(modalidade) {
   return mapa[modalidade] || "Disponível para Agendamento";
 }
 
-async function resolveCategoriaId(tipo) {
-  if (!tipo) return null;
-
-  const [rows] = await db.query(
-    "SELECT idCategoria FROM tbCategorias WHERE nome = ? LIMIT 1",
-    [tipo]
-  );
-
-  if (rows.length > 0) return rows[0].idCategoria;
-
-  const [result] = await db.query(
-    "INSERT INTO tbCategorias (nome, descricao) VALUES (?, ?)",
-    [tipo, `Categoria ${tipo}`]
-  );
-
-  return result.insertId;
-}
-
 export async function getAnuncios() {
   const sql = `
     SELECT 
@@ -99,12 +81,14 @@ export async function getAnuncios() {
   return rows;
 }
 
+export async function getAnuncio(id) {
+  const [rows] = await db.query("SELECT * FROM tbAnuncios WHERE idAnuncio = ?", [id]);
+  return rows;
+}
+
 export async function insertAnuncio(idEmpresa, data, files = []) {
   try {
     if (!idEmpresa) return "Empresa não identificada. Faça login novamente.";
-
-    const categoriaId = await resolveCategoriaId(data.tipo);
-    if (!categoriaId) return "Categoria não encontrada.";
 
     const valorTotal = parseCurrency(data.valorTotal);
 
@@ -127,7 +111,7 @@ export async function insertAnuncio(idEmpresa, data, files = []) {
         data.unidadeMedida,
         pesoFinal,
         data.descricao,
-        categoriaId,
+        data.tipo,
         mapCondicao(data.condicao),
         data.origem || null,
         data.composicao || null,
@@ -291,7 +275,7 @@ export async function getMeuAnuncioDetalhe(idEmpresa, idAnuncio) {
       a.modalidadeColeta,
       a.status,
       a.dataStatus,
-      c.nome AS categoria
+      c.idCategoria AS categoria
     FROM tbAnuncios a
     LEFT JOIN tbCategorias c ON c.idCategoria = a.idCategoria
     WHERE a.idAnuncio = ? AND a.idEmpresa = ?
@@ -320,9 +304,6 @@ export async function updateMeuAnuncio(idEmpresa, idAnuncio, data, files = [], r
       [idAnuncio, idEmpresa]
     );
     if (!own.length) return "Anúncio não encontrado para sua empresa.";
-
-    const categoriaId = await resolveCategoriaId(data.tipo);
-    if (!categoriaId) return "Categoria não encontrada.";
 
     const valorTotal = parseCurrency(data.valorTotal);
 
@@ -365,7 +346,7 @@ export async function updateMeuAnuncio(idEmpresa, idAnuncio, data, files = [], r
         data.unidadeMedida,
         pesoFinal,
         data.descricao,
-        categoriaId,
+        data.tipo,
         mapCondicao(data.condicao),
         data.origem || null,
         data.composicao || null,
@@ -390,7 +371,7 @@ export async function updateMeuAnuncio(idEmpresa, idAnuncio, data, files = [], r
 }
 
 export async function updateStatusMeuAnuncio(idEmpresa, idAnuncio, status) {
-  const allowed = new Set(["ativo", "vendido"]);
+  const allowed = new Set(["ativo", "vendido", "pausado"]);
   if (!allowed.has(status)) return "Status inválido.";
 
   const [result] = await db.query(

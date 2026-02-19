@@ -1,5 +1,10 @@
 import { db } from "../config/database.js";
 
+export async function getAllCategorias() {
+    const [rows] = await db.query("SELECT * FROM tbCategorias ORDER BY nome ASC");
+    return rows;
+}
+
 export async function getCategoria(id) {
     const [rows] = await db.query(
         "SELECT * FROM tbCategorias WHERE idCategoria = ?",

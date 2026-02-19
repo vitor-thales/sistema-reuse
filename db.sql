@@ -119,22 +119,6 @@ CREATE TABLE tbUsuariosSistema (
 );
 
 ------------------------------------------------------------
--- TABELA: tbNotificacoes
-------------------------------------------------------------
-CREATE TABLE tbNotificacoes (
-    idNotificacao INT AUTO_INCREMENT PRIMARY KEY,
-    idEmpresa INT NOT NULL,
-    titulo VARCHAR(100) NOT NULL,
-    mensagem TEXT NOT NULL,
-    dataLida DATETIME,
-    dataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-    tipo VARCHAR(40) NOT NULL,
-    lida TINYINT(1) NOT NULL DEFAULT 0,
-    FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)
-        ON DELETE CASCADE
-);
-
-------------------------------------------------------------
 -- TABELA: tbCategorias
 ------------------------------------------------------------
 CREATE TABLE tbCategorias (

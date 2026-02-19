@@ -1,5 +1,26 @@
 import { db } from "../config/database.js";
 
+export async function sawPublication(idAnuncio, idEmpresa) {
+    const [rows] = await db.query(
+        "SELECT * FROM tbVisualizacoesAnuncios WHERE idAnuncio = ? AND idEmpresa = ?",
+        [idAnuncio, idEmpresa]
+    );
+    return rows;
+}
+
+export async function registerVisualization(idAnuncio, idEmpresa) {
+    try {
+        await db.query(
+            "INSERT INTO tbVisualizacoesAnuncios (idAnuncio, idEmpresa) VALUES (?, ?)",
+            [idAnuncio, idEmpresa]
+        );
+        return true;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+
 export async function getVisualizationsByInteractions() {
     const [rows] = await db.query(
         'SELECT * FROM viewFunilConversaoTotal'
