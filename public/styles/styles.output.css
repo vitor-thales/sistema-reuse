@@ -1320,6 +1320,12 @@
       background-color: color-mix(in oklab, var(--color-mainblue) 15%, transparent);
     }
   }
+  .bg-mainblue\/60 {
+    background-color: color-mix(in srgb, #2D60FF 60%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-mainblue) 60%, transparent);
+    }
+  }
   .bg-mediumred {
     background-color: var(--color-mediumred);
   }

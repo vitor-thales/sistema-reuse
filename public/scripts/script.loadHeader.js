@@ -27,10 +27,10 @@ fetch('/components/header.html')
           return;
         }
 
-        alert('Você precisa estar logado para anunciar.');
+        toast.show('Você precisa estar logado para anunciar.', "error");
         window.location.href = '/pages/login.html';
       } catch (err) {
-        alert('Não foi possível verificar o login. Tente novamente.');
+        toast.show('Não foi possível verificar o login. Tente novamente.', "error");
       }
     }
 
@@ -48,10 +48,6 @@ fetch('/components/header.html')
     loadUserDataAndStart();
   });
 
-function exibirNotificacao(mensagem) {
-  alert(mensagem);
-}
-
 async function verificarLogin() {
   try {
     const r = await fetch("/login/api/checkLogin");
@@ -67,7 +63,6 @@ async function verificarLogin() {
 async function atualizarHeader() {
   const botaoEntrar = document.getElementById("botaoEntrar");
   const iconeUser = document.getElementById("userIcon");
-  const iconeNotificacao = document.getElementById("notificacoes")
   const iconeChat = document.getElementById("mensagens");
 
   if (!botaoEntrar || !iconeUser) {
@@ -78,13 +73,11 @@ async function atualizarHeader() {
   const logado = await verificarLogin();
 
   if (logado) {
-    iconeChat.style.display = "inline-block"
-    iconeNotificacao.style.display = "inline-block"
+    iconeChat.style.display = "inline-block";
     botaoEntrar.style.display = "none";
     iconeUser.style.display = "inline-block";
   } else {
-    iconeChat.style.display = "none"
-    iconeNotificacao.style.display = "none"
+    iconeChat.style.display = "none";
     botaoEntrar.style.display = "inline-block";
     iconeUser.style.display = "none";
   }

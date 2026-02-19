@@ -85,11 +85,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const id = parts[parts.length - 1];
 
   if (!id) {
-    alert("ID do anúncio não encontrado na URL.");
+    toast.show("ID do anúncio não encontrado na URL.", "error");
     return;
   }
 
   try {
+    await fetch(`/detalhes/view/${id}`, {method: "POST"});
+
     const r = await fetch(`/detalhes/api/${id}`);
     if (!r.ok) throw new Error("HTTP " + r.status);
     const data = await r.json();
@@ -141,6 +143,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   } catch (err) {
     console.error(err);
-    alert("Não foi possível carregar os detalhes do anúncio.");
+    const notFound = await fetch("/404");
+    const text = await notFound.text();
+    document.body.innerHTML = new DOMParser().parseFromString(text, "text/html").body.innerHTML;
+    document.body.classList.add("flex", "items-center", "justify-center", "p-6");
   }
 });

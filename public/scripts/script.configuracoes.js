@@ -197,18 +197,17 @@ btnLogout.addEventListener("click", async () => {
     if (!confirmLogout) return;
 
     try {
-        const response = await fetch("/auth/logout", {
-            method: "POST",
-            credentials: "include",
+        const response = await fetch("/logout", {
+            method: "POST"
         });
-
+        
         if (!response.ok) {
             throw new Error("Erro ao realizar logout");
         }
-
+        localStorage.clear();
         window.location.href = "/login";
     } catch (err) {
-        alert("Não foi possível sair da conta.");
+        toast.show("Não foi possível sair da conta.", "error");
     }
 });
 
