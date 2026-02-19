@@ -22,7 +22,6 @@ export default {
         return res.status(404).json({ message: "Empresa não encontrada." });
       }
 
-      // Produtos recentes: só ATIVOS (pra bater com seu protótipo)
       const produtosRecentes = await getProdutosRecentesEmpresa(idEmpresa, {
         status: "ativo",
         limit: 6,

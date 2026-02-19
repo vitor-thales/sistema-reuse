@@ -1,7 +1,5 @@
 import { db } from "../config/database.js";
 
-<<<<<<< HEAD
-=======
 export async function sawPublication(idAnuncio, idEmpresa) {
     const [rows] = await db.query(
         "SELECT * FROM tbVisualizacoesAnuncios WHERE idAnuncio = ? AND idEmpresa = ?",
@@ -23,7 +21,6 @@ export async function registerVisualization(idAnuncio, idEmpresa) {
     }
 }
 
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 export async function getVisualizationsByInteractions() {
     const [rows] = await db.query(
         'SELECT * FROM viewFunilConversaoTotal'

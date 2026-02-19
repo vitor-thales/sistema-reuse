@@ -8,11 +8,8 @@ const router = Router();
 router.get("/", auth, anuncieController.getPage);
 router.get("/novo", auth, anuncieController.getPage);
 
-<<<<<<< HEAD
-=======
 router.get("/categorias", auth, anuncieController.getCategorias);
 
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 router.get("/api/anuncios", anuncieController.listarAnuncios);
 
 router.get(

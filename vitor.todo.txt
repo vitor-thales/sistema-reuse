@@ -1,4 +1,3 @@
 // TODO: EU NÃO AGUENTO MAIS ALGUÉM ME AJUDAAAAAAAAAAAAA
 
-- Verificar anúncios :)
 - Talvez adicionar alertas que vai perder as menasgens ao redefinir senha??

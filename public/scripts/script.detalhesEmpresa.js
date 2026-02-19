@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
     const getIdEmpresaFromUrl = () => {
-        // /detalhes-empresa/123
         const parts = window.location.pathname.split("/").filter(Boolean);
         const last = parts[parts.length - 1];
         const id = Number(last);
@@ -127,7 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
     async function load() {
         const idEmpresa = getIdEmpresaFromUrl();
         if (!idEmpresa) {
-            alert("URL inválida (idEmpresa não encontrado).");
+            toast.show("URL inválida (idEmpresa não encontrado).", "error");
             return;
         }
 
@@ -137,29 +136,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!res.ok) {
             const msg = `Erro ${res.status}`;
-            alert(msg);
+            toast.show(msg, "error");
             return;
         }
 
         const { perfil, produtosRecentes } = await res.json();
 
-        // Header do perfil
         setText("empresa-nome", perfil?.nomeEmpresa);
         setText("empresa-local", perfil?.enderecoEmpresa);
         setText("empresa-membro", perfil?.membroDesde ? `Membro desde ${perfil.membroDesde}` : "");
         setText("empresa-iniciais", buildIniciais(perfil?.nomeEmpresa));
 
-        // Cards
         setText("empresa-card-ativos", fmtInt(perfil?.anunciosAtivos || 0));
         setText("empresa-card-vendas", fmtInt(perfil?.vendasRealizadas || 0));
         setText("empresa-card-taxa", `${Number(perfil?.taxaResposta || 0)}%`);
 
-        // Sobre / contato
         setText("empresa-sobre", perfil?.sobreEmpresa, "Sem descrição.");
         setText("empresa-email", perfil?.emailEmpresa, "—");
         setText("empresa-telefone", perfil?.foneEmpresa, "—");
 
-        // Performance
         const taxa = Number(perfil?.taxaResposta || 0);
         setText("empresa-taxa-label", `${taxa}%`);
         const bar = el("empresa-taxa-bar");
@@ -167,18 +162,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setText("empresa-tempo-resposta", tempoRespostaLabel(perfil?.tempoResposta));
 
-        // Badge "X ativos" (sem aqueles badges do produto; esse é o do topo do grid)
         setText("empresa-produtos-badge", `${fmtInt(perfil?.anunciosAtivos || 0)} ativos`);
 
-        // Link "Ver todos"
         setHref("empresa-ver-todos", `/buscar?empresa=${idEmpresa}`);
 
-        // Produtos recentes
         renderProdutos(el("empresa-produtos-grid"), perfil, produtosRecentes);
     }
 
     load().catch((e) => {
         console.error(e);
-        alert("Falha ao carregar detalhes da empresa.");
+        toast.show("Falha ao carregar detalhes da empresa.", "error");
     });
 });

@@ -1,8 +1,4 @@
 import path from "path";
-<<<<<<< HEAD
-import { publicDir } from "../utils/paths.js";
-import { getDetalhesAnuncioById } from "../models/detalhesAnuncio.model.js";
-=======
 import jwt from "jsonwebtoken";
 
 import { publicDir } from "../utils/paths.js";
@@ -11,7 +7,6 @@ import { env } from "../config/env.js";
 import { getDetalhesAnuncioById } from "../models/detalhesAnuncio.model.js";
 import { registerVisualization, sawPublication } from "../models/visualizations.model.js";
 import { getAnuncio } from "../models/anuncios.model.js";
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 
 export default {
   async getPage(req, res) {
@@ -37,8 +32,6 @@ export default {
       return res.status(500).json({ message: "Erro interno ao buscar anúncio." });
     }
   },
-<<<<<<< HEAD
-=======
 
   async viewAnuncio(req, res) {
     const idAnuncio = parseInt(req.params.id);
@@ -61,5 +54,4 @@ export default {
       return res.status(500).json({ error: err });
     }
   }
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 };

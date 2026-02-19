@@ -153,11 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
     body.className = "p-4 flex flex-col gap-3 flex-1";
 
     const chip = document.createElement("span");
-<<<<<<< HEAD
-    chip.className = "inline-flex w-fit px-3 py-1 rounded-full text-xs bg-indigo-50 text-indigo-600";
-=======
     chip.className = "inline-flex w-fit px-3 py-1 rounded-full text-xs bg-mainblue/15 text-mainblue";
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     chip.textContent = anuncio.categoria || anuncio.tipoProduto || "Categoria";
 
     const titleWrap = document.createElement("div");

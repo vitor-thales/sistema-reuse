@@ -197,20 +197,6 @@ btnLogout.addEventListener("click", async () => {
     if (!confirmLogout) return;
 
     try {
-<<<<<<< HEAD
-        const response = await fetch("/auth/logout", {
-            method: "POST",
-            credentials: "include",
-        });
-
-        if (!response.ok) {
-            throw new Error("Erro ao realizar logout");
-        }
-
-        window.location.href = "/login";
-    } catch (err) {
-        alert("Não foi possível sair da conta.");
-=======
         const response = await fetch("/logout", {
             method: "POST"
         });
@@ -222,7 +208,6 @@ btnLogout.addEventListener("click", async () => {
         window.location.href = "/login";
     } catch (err) {
         toast.show("Não foi possível sair da conta.", "error");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     }
 });
 

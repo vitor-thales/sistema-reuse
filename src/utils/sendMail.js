@@ -174,6 +174,20 @@ export const sendPasswordResetEmail = async (userId, userEmail, userName, resetT
                     .header h1 { color: #ffffff; margin: 0; font-size: 28px; letter-spacing: 1px; }
                     .content { padding: 40px 30px; line-height: 1.6; color: #333333; text-align: center; }
                     .content h2 { color: #1e3a8a; font-size: 22px; margin-bottom: 10px; }
+                    
+                    /* Estilo do Aviso de Segurança */
+                    .warning-box { 
+                        background-color: #fff7ed; 
+                        border: 1px solid #fed7aa; 
+                        border-left: 4px solid #f97316; 
+                        padding: 15px; 
+                        margin: 20px 0; 
+                        text-align: left;
+                        border-radius: 4px;
+                    }
+                    .warning-title { color: #9a3412; font-weight: bold; font-size: 14px; margin-bottom: 5px; display: block; }
+                    .warning-text { color: #7c2d12; font-size: 13px; margin: 0; }
+
                     .btn-container { margin: 35px 0; }
                     .button { 
                         background-color: #2563eb; 
@@ -199,7 +213,18 @@ export const sendPasswordResetEmail = async (userId, userEmail, userName, resetT
                     <div class="content">
                         <h2>Recuperação de Acesso</h2>
                         <p>Olá, <strong>${userName}</strong>!</p>
-                        <p>Recebemos uma solicitação para redefinir a senha da sua conta no <strong>ReUse</strong>. Clique no botão abaixo para escolher uma nova senha:</p>
+                        <p>Recebemos uma solicitação para redefinir a senha da sua conta no <strong>ReUse</strong>.</p>
+                        
+                        <div class="warning-box">
+                            <span class="warning-title">⚠️ AVISO IMPORTANTE DE SEGURANÇA</span>
+                            <p class="warning-text">
+                                Devido à nossa <strong>Criptografia de Ponta a Ponta</strong>, suas mensagens são protegidas pela sua senha. 
+                                Ao redefinir sua senha, você perderá permanentemente o acesso ao histórico de mensagens atuais, 
+                                pois a chave de segurança antiga será descartada por proteção.
+                            </p>
+                        </div>
+
+                        <p>Clique no botão abaixo para escolher uma nova senha:</p>
                         
                         <div class="btn-container">
                             <a href="${resetUrl}" class="button">Redefinir Minha Senha</a>
@@ -214,7 +239,6 @@ export const sendPasswordResetEmail = async (userId, userEmail, userName, resetT
                     </div>
                     <div class="footer">
                         <p>&copy; 2026 ReUse Brasil - Reciclagem Tecnológica Sustentável</p>
-                        <p>Proteja sua conta: Nunca compartilhe este link com ninguém.</p>
                     </div>
                 </div>
             </body>

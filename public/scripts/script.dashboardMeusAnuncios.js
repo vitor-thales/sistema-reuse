@@ -11,10 +11,6 @@
     const listRoot = document.getElementById("dash-list");
     const canvas = document.getElementById("chartSemana");
 
-<<<<<<< HEAD
-    // Modal (mesmo do criar)
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     const modal = document.getElementById("telaNovoAnuncio");
     const btnAbrirCriar = document.getElementById("botaoNovoAnuncio");
     const btnFecharModal = document.getElementById("botaoFecharModal");
@@ -84,12 +80,6 @@
         return null;
     }
 
-<<<<<<< HEAD
-    /* =========================
-       BADGE % REAL (backend manda viewsDeltaPct / salesDeltaPct)
-       ========================= */
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     function applyDeltaBadge(el, pct) {
         if (!el) return;
 
@@ -130,9 +120,6 @@
         applyDeltaBadge(elSalesBadge, data?.salesDeltaPct);
     }
 
-    /* =========================
-       Chart
-       ========================= */
     let chart = null;
     function renderChartSemana(data) {
         if (!canvas || typeof Chart === "undefined") return;
@@ -170,25 +157,13 @@
         canvas.parentElement.style.height = "14rem";
     }
 
-<<<<<<< HEAD
-    /* =========================
-       Modal state (create/edit)
-       ========================= */
-    const MAX_FILES = 5;
-    let mode = "create"; // "create" | "edit"
-=======
     const MAX_FILES = 5;
     let mode = "create"; 
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     let editingId = null;
 
     let selectedFiles = [];
     let previewUrls = [];
-<<<<<<< HEAD
-    let existingImages = []; // [{idImagem, nomeArquivo}]
-=======
     let existingImages = [];
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     let removedImageIds = [];
 
     function openModal() {
@@ -263,10 +238,6 @@
 
         resetPreviews();
 
-<<<<<<< HEAD
-        // existentes (BD)
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
         existingImages
             .filter((img) => !removedImageIds.includes(img.idImagem))
             .forEach((img) => {
@@ -296,10 +267,6 @@
                 previewAnexos.appendChild(wrap);
             });
 
-<<<<<<< HEAD
-        // novas (upload)
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
         selectedFiles.forEach((file, idx) => {
             const wrap = document.createElement("div");
             wrap.className =
@@ -330,8 +297,6 @@
         });
     }
 
-<<<<<<< HEAD
-=======
     async function carregarCategorias() {
         const select = document.getElementById("select-categorias");
 
@@ -353,7 +318,6 @@
         }
     }
 
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     function attachUploadListener() {
         if (!form) return;
         const fileInput = form.querySelector('input[name="imagens_produto"]');
@@ -365,11 +329,7 @@
             const slots = Math.max(0, MAX_FILES - used);
 
             if (slots <= 0) {
-<<<<<<< HEAD
-                alert("Você já adicionou o número máximo de imagens.");
-=======
                 toast.show("Você já adicionou o número máximo de imagens.", "error");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 fileInput.value = "";
                 return;
             }
@@ -377,11 +337,7 @@
             selectedFiles = selectedFiles.concat(incoming.slice(0, slots));
 
             if (incoming.length > slots) {
-<<<<<<< HEAD
-                alert(`Apenas ${MAX_FILES} imagens são permitidas. As demais foram ignoradas.`);
-=======
                 toast.show(`Apenas ${MAX_FILES} imagens são permitidas. As demais foram ignoradas.`);
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
             }
 
             updateFileInput();
@@ -391,12 +347,6 @@
 
     attachUploadListener();
 
-<<<<<<< HEAD
-    /* =========================
-       Preencher form (EDIT)
-       ========================= */
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     function reverseCondicaoToSelectValue(dbValue) {
         const s = String(dbValue || "").toLowerCase();
         if (s.includes("funcional")) return "usado-funcional";
@@ -428,19 +378,12 @@
         const data = res?.data || res;
         const anuncio = data?.anuncio;
         const imagens = data?.imagens || [];
-<<<<<<< HEAD
-=======
         console.log(anuncio);
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 
         if (!anuncio) throw new Error("Não foi possível carregar o anúncio.");
 
         setField("nomeProduto", anuncio.nomeProduto);
-<<<<<<< HEAD
-        setField("valorTotal", anuncio.valorTotal == null ? "" : fmtBRL(anuncio.valorTotal)); // visual
-=======
         setField("valorTotal", anuncio.valorTotal == null ? "" : fmtBRL(anuncio.valorTotal)); 
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
         setField("quantidade", anuncio.quantidade ?? "");
         setField("unidadeMedida", anuncio.unidadeMedida ?? "");
         setField("pesoTotal", anuncio.pesoTotal ?? "");
@@ -467,12 +410,6 @@
         openModal();
     }
 
-<<<<<<< HEAD
-    /* =========================
-       Submit (create/edit)
-       ========================= */
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     form?.addEventListener("submit", async (e) => {
         e.preventDefault();
 
@@ -498,11 +435,7 @@
                     throw new Error(msg);
                 }
 
-<<<<<<< HEAD
-                alert("Alterações salvas com sucesso!");
-=======
                 toast.show("Alterações salvas com sucesso!");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 closeModal();
                 await loadAll();
                 return;
@@ -523,29 +456,15 @@
                 throw new Error(msg);
             }
 
-<<<<<<< HEAD
-            alert("Anúncio publicado com sucesso!");
-=======
             toast.show("Anúncio publicado com sucesso!");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
             closeModal();
             setCreateMode();
             await loadAll();
         } catch (err) {
-<<<<<<< HEAD
-            alert(err.message || "Erro ao salvar.");
-        }
-    });
-
-    /* =========================
-       Menu 3 pontos (posição inteligente)
-       ========================= */
-=======
             toast.show(err.message || "Erro ao salvar.", "error");
         }
     });
 
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     let openMenuEl = null;
 
     function closeOpenMenu() {
@@ -620,12 +539,6 @@
         true
     );
 
-<<<<<<< HEAD
-    /* =========================
-       APIs (status/delete)
-       ========================= */
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     async function apiSetStatus(id, status) {
         await fetchJson(API.status(id), {
             method: "PATCH",
@@ -638,12 +551,6 @@
         await fetchJson(API.del(id), { method: "DELETE" });
     }
 
-<<<<<<< HEAD
-    /* =========================
-       Lista
-       ========================= */
-=======
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     let cacheLista = [];
 
     function buildRow(anuncio) {
@@ -677,11 +584,7 @@
           <div class="min-w-0">
             <p class="text-sm font-semibold text-darkblue truncate">${nome}</p>
             <div class="flex items-center gap-3 text-xs text-gray-500 mt-1 flex-wrap">
-<<<<<<< HEAD
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 font-semibold">${cat}</span>
-=======
               <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-mainblue/15 text-mainblue font-semibold">${cat}</span>
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 
               <span class="inline-flex items-center gap-2">
                 <i class="fa-solid fa-chart-line"></i>
@@ -785,22 +688,14 @@
             if (action === "sold") {
                 closeOpenMenu();
 
-<<<<<<< HEAD
-                const ok = confirm("Marcar este anúncio como VENDIDO? Ele não aparece na landing page.");
-=======
                 const ok = toast.confirm("Marcar este anúncio como VENDIDO? Essa ação não é reversível!");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 if (!ok) return;
 
                 try {
                     await apiSetStatus(id, "vendido");
                     await loadAll();
                 } catch (err) {
-<<<<<<< HEAD
-                    alert("Não foi possível marcar como vendido: " + err.message);
-=======
                     toast.show("Não foi possível marcar como vendido: " + err.message, "error");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 }
                 return;
             }
@@ -808,13 +703,8 @@
             if (action === "delete") {
                 closeOpenMenu();
 
-<<<<<<< HEAD
-                const ok = confirm(
-                    "Tem certeza que deseja EXCLUIR este anúncio?\n\nEssa ação remove do banco e apaga as imagens."
-=======
                 const ok = toast.confirm(
                     "Tem certeza que deseja EXCLUIR este anúncio?\n\nEssa ação não é reversível!"
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 );
                 if (!ok) return;
 
@@ -822,11 +712,7 @@
                     await apiDelete(id);
                     await loadAll();
                 } catch (err) {
-<<<<<<< HEAD
-                    alert("Não foi possível excluir: " + err.message);
-=======
                     toast.show("Não foi possível excluir: " + err.message, "error");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 }
                 return;
             }
@@ -836,11 +722,7 @@
                 try {
                     await openEdit(id);
                 } catch (err) {
-<<<<<<< HEAD
-                    alert("Não foi possível abrir para edição: " + err.message);
-=======
                     toast.show("Não foi possível abrir para edição: " + err.message, "error");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 }
                 return;
             }
@@ -855,11 +737,7 @@
                     await apiSetStatus(id, next);
                     await loadAll();
                 } catch (err) {
-<<<<<<< HEAD
-                    alert("Não foi possível pausar/reativar: " + err.message);
-=======
                     toast.show("Não foi possível pausar/reativar: " + err.message, "error");
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
                 }
                 return;
             }
@@ -939,9 +817,6 @@
         loadAll();
         btnRefresh?.addEventListener("click", () => loadAll());
         inputSearch?.addEventListener("input", () => applySearch());
-<<<<<<< HEAD
-=======
         carregarCategorias();
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     });
 })();
