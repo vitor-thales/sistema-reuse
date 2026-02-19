@@ -122,6 +122,182 @@ import { toast } from "./utils/script.toast.js";
         applyDeltaBadge(elSalesBadge, data?.salesDeltaPct);
     }
 
+    function clampNonNegativeNumber(el, { integer = false } = {}) {
+        if (!el) return;
+
+        let v = (el.value ?? "").toString();
+
+        v = v.replace(/[eE+\-]/g, "");
+        v = v.replace(",", ".");
+        v = v.replace(/[^0-9.]/g, "");
+
+        const parts = v.split(".");
+        if (parts.length > 2) v = parts[0] + "." + parts.slice(1).join("");
+
+        if (v === "") {
+            el.value = "";
+            return;
+        }
+
+        let num = Number(v);
+        if (!Number.isFinite(num) || num < 0) num = 0;
+        if (integer) num = Math.floor(num);
+
+        el.value = num.toString();
+    }
+
+    function attachNonNegativeNumeric(el, opts) {
+        if (!el) return;
+
+        el.addEventListener("keydown", (e) => {
+            const blocked = ["e", "E", "+", "-"];
+            if (blocked.includes(e.key)) e.preventDefault();
+        });
+
+        el.addEventListener("input", () => clampNonNegativeNumber(el, opts));
+        el.addEventListener("blur", () => clampNonNegativeNumber(el, opts));
+
+        el.setAttribute("min", "0");
+    }
+
+    function stripHtmlTags(text) {
+        return String(text || "").replace(/<[^>]*>/g, "");
+    }
+
+    function attachNoHtml(el) {
+        if (!el) return;
+
+        el.addEventListener("keydown", (e) => {
+            if (e.key === "<" || e.key === ">") e.preventDefault();
+        });
+
+        el.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData("text");
+            const clean = stripHtmlTags(text);
+            document.execCommand("insertText", false, clean);
+        });
+
+        el.addEventListener("input", () => {
+            const clean = stripHtmlTags(el.value);
+            if (clean !== el.value) el.value = clean;
+        });
+
+        el.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const text = e.dataTransfer.getData("text");
+            el.value = (el.value || "") + stripHtmlTags(text);
+        });
+    }
+
+    const MAX_BRL = 50000;
+    const MAX_DIGITS = String(Math.round(MAX_BRL * 100));
+
+    function clampDigitsToMax(digits) {
+        if (!digits) return "";
+        let norm = digits.replace(/^0+/, "");
+        if (norm === "") norm = "0";
+
+        if (norm.length > MAX_DIGITS.length) return MAX_DIGITS;
+        if (norm.length === MAX_DIGITS.length && norm > MAX_DIGITS) return MAX_DIGITS;
+
+        return norm;
+    }
+
+    function formatBRLFromDigits(digits) {
+        const n = Number(digits || "0") / 100;
+        return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    function digitsToNumberString(digits) {
+        const d = (digits || "").replace(/\D/g, "");
+        if (!d) return "";
+
+        const n = Number(d) / 100;
+        if (!Number.isFinite(n)) return "";
+
+        const clamped = Math.min(Math.max(n, 0), MAX_BRL);
+        return clamped.toFixed(2);
+    }
+
+    function hardResetInput(input) {
+        if (!input) return null;
+
+        const clone = input.cloneNode(true);
+
+        clone.setAttribute("type", "text");
+        clone.setAttribute("inputmode", "numeric");
+        clone.setAttribute("autocomplete", "off");
+
+        clone.removeAttribute("step");
+        clone.removeAttribute("min");
+        clone.removeAttribute("max");
+
+        clone.value = "";
+        clone.dataset.digits = "";
+
+        input.parentNode?.replaceChild(clone, input);
+        return clone;
+    }
+
+    function attachCentavosMask(valorInput) {
+        if (!valorInput) return null;
+
+        valorInput = hardResetInput(valorInput);
+        if (!valorInput) return null;
+
+        let digits = "";
+        const render = () => {
+            if (!digits || digits === "0") {
+                valorInput.value = "";
+                valorInput.dataset.digits = "";
+                return;
+            }
+            valorInput.value = formatBRLFromDigits(digits);
+            valorInput.dataset.digits = digits;
+        };
+
+        const navKeys = new Set([
+            "Tab", "Enter", "Escape",
+            "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown",
+            "Home", "End"
+        ]);
+
+        valorInput.addEventListener("keydown", (e) => {
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (navKeys.has(e.key)) return;
+
+            if (e.key === "Backspace" || e.key === "Delete") {
+                e.preventDefault();
+                digits = digits.slice(0, -1);
+                render();
+                return;
+            }
+
+            if (/^\d$/.test(e.key)) {
+                e.preventDefault();
+                digits = clampDigitsToMax(digits + e.key);
+                render();
+                return;
+            }
+
+            e.preventDefault();
+        });
+
+        valorInput.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData("text") || "";
+            digits = clampDigitsToMax(text.replace(/\D/g, ""));
+            render();
+        });
+
+        valorInput.addEventListener("blur", render);
+
+        render();
+
+        return valorInput;
+    }
+
     let chart = null;
     function renderChartSemana(data) {
         if (!canvas || typeof Chart === "undefined") return;
@@ -159,8 +335,28 @@ import { toast } from "./utils/script.toast.js";
         canvas.parentElement.style.height = "14rem";
     }
 
+    let valorTotalRef = null;
+
+    (function setupValidations() {
+        if (!form) return;
+
+        const valorTotal = form.querySelector('[name="valorTotal"]');
+        const quantidade = form.querySelector('[name="quantidade"]');
+        const pesoTotal = form.querySelector('[name="pesoTotal"]');
+
+        valorTotalRef = attachCentavosMask(valorTotal);
+
+        attachNonNegativeNumeric(quantidade, { integer: true });
+        attachNonNegativeNumeric(pesoTotal, { integer: false });
+
+        attachNoHtml(form.querySelector('[name="origem"]'));
+        attachNoHtml(form.querySelector('[name="composicao"]'));
+        attachNoHtml(form.querySelector('[name="descricao"]'));
+    })();
+
+
     const MAX_FILES = 5;
-    let mode = "create"; 
+    let mode = "create";
     let editingId = null;
 
     let selectedFiles = [];
@@ -304,7 +500,7 @@ import { toast } from "./utils/script.toast.js";
 
         try {
             const response = await fetch("/anuncie/categorias");
-            const categorias = await response.json();
+            const categorias = await response.json();   
 
             select.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>';
 
@@ -385,7 +581,7 @@ import { toast } from "./utils/script.toast.js";
         if (!anuncio) throw new Error("Não foi possível carregar o anúncio.");
 
         setField("nomeProduto", anuncio.nomeProduto);
-        setField("valorTotal", anuncio.valorTotal == null ? "" : fmtBRL(anuncio.valorTotal)); 
+        setField("valorTotal", anuncio.valorTotal == null ? "" : fmtBRL(anuncio.valorTotal));
         setField("quantidade", anuncio.quantidade ?? "");
         setField("unidadeMedida", anuncio.unidadeMedida ?? "");
         setField("pesoTotal", anuncio.pesoTotal ?? "");

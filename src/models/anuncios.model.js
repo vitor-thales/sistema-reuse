@@ -41,6 +41,103 @@ function mapModalidade(modalidade) {
   return mapa[modalidade] || "Disponível para Agendamento";
 }
 
+function parseNumber(v) {
+  if (v === undefined || v === null || v === "") return null;
+  const n = Number(v);
+  return Number.isNaN(n) ? null : n;
+}
+
+export async function getAnunciosFiltro(filtros = {}) {
+  const { categoria, condicao, uf, cidade, precoMin, precoMax, quantidade } = filtros;
+
+  const where = ["a.status = 'ativo'"];
+  const params = [];
+
+  if (categoria) {
+    const idCat = parseNumber(categoria);
+    if (idCat !== null) {
+      where.push("a.idCategoria = ?");
+      params.push(idCat);
+    } else {
+      where.push("c.nome = ?");
+      params.push(String(categoria).trim());
+    }
+  }
+
+  if (condicao) {
+    where.push("a.condicao = ?");
+    params.push(mapCondicao(String(condicao)));
+  }
+
+  if (uf) {
+    where.push("UPPER(e.estado) = ?");
+    params.push(String(uf).trim().toUpperCase());
+  }
+
+  if (cidade) {
+    where.push("LOWER(e.cidade) LIKE CONCAT('%', LOWER(?), '%')");
+    params.push(String(cidade).trim());
+  }
+
+  const min = parseNumber(precoMin);
+  if (min !== null) {
+    where.push("a.valorTotal >= ?");
+    params.push(min);
+  }
+
+  const max = parseNumber(precoMax);
+  if (max !== null) {
+    where.push("a.valorTotal <= ?");
+    params.push(max);
+  }
+
+  if (quantidade) {
+    const q = String(quantidade).trim();
+    if (q === "1-10") where.push("a.quantidade BETWEEN 1 AND 10");
+    else if (q === "11-50") where.push("a.quantidade BETWEEN 11 AND 50");
+    else if (q === "51-100") where.push("a.quantidade BETWEEN 51 AND 100");
+    else if (q === "100+") where.push("a.quantidade >= 100");
+  }
+
+  const sql = `
+    SELECT 
+      a.idAnuncio,
+      a.nomeProduto,
+      a.valorTotal,
+      a.quantidade,
+      a.unidadeMedida,
+      a.pesoTotal,
+      a.descricao,
+      a.condicao,
+      a.origem,
+      a.composicao,
+      a.status,
+      a.dataStatus,
+      e.nomeFantasia AS nomeEmpresa,
+      e.cidade AS cidade,
+      e.estado AS estado,
+      c.nome AS categoria,
+      img.nomeArquivo
+    FROM tbAnuncios a
+    LEFT JOIN tbEmpresas e ON a.idEmpresa = e.idEmpresa
+    LEFT JOIN tbCategorias c ON c.idCategoria = a.idCategoria
+    LEFT JOIN (
+      SELECT i1.idAnuncio, i1.nomeArquivo
+      FROM tbImagensAnuncios i1
+      INNER JOIN (
+        SELECT idAnuncio, MIN(idImagem) AS minIdImagem
+        FROM tbImagensAnuncios
+        GROUP BY idAnuncio
+      ) x ON x.idAnuncio = i1.idAnuncio AND x.minIdImagem = i1.idImagem
+    ) img ON img.idAnuncio = a.idAnuncio
+    WHERE ${where.join(" AND ")}
+    ORDER BY a.dataStatus DESC
+  `;
+
+  const [rows] = await db.query(sql, params);
+  return rows;
+}
+
 export async function getAnuncios() {
   const sql = `
     SELECT 
@@ -296,11 +393,7 @@ export async function getMeuAnuncioDetalhe(idEmpresa, idAnuncio) {
       a.modalidadeColeta,
       a.status,
       a.dataStatus,
-<<<<<<< HEAD
-      c.nome AS categoria
-=======
       c.idCategoria AS categoria
->>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     FROM tbAnuncios a
     LEFT JOIN tbCategorias c ON c.idCategoria = a.idCategoria
     WHERE a.idAnuncio = ? AND a.idEmpresa = ?
@@ -410,103 +503,6 @@ export async function updateStatusMeuAnuncio(idEmpresa, idAnuncio, status) {
   return true;
 }
 
-export async function getAnunciosFiltro(filtros = {}) {
-  const { categoria, condicao, uf, cidade, precoMin, precoMax } = filtros;
-
-  const where = [];
-  const params = [];
-
-  where.push("a.status = 'ativo'");
-
-  if (categoria) {
-    const asNumber = Number(categoria);
-    if (!Number.isNaN(asNumber) && String(asNumber) === String(categoria).trim()) {
-      where.push("v.idCategoria = ?");
-      params.push(asNumber);
-    } else {
-      where.push(`
-        v.idCategoria = (
-          SELECT c.idCategoria
-          FROM tbCategorias c
-          WHERE c.nome = ?
-          LIMIT 1
-        )
-      `);
-      params.push(String(categoria));
-    }
-  }
-
-  if (condicao) {
-    where.push("v.condicao = ?");
-    params.push(mapCondicao(String(condicao)));
-  }
-
-  if (uf) {
-    where.push("v.estadoEmpresa = ?");
-    params.push(String(uf).trim().toUpperCase());
-  }
-
-  if (cidade) {
-    where.push("LOWER(v.cidadeEmpresa) LIKE CONCAT('%', LOWER(?), '%')");
-    params.push(String(cidade).trim());
-  }
-
-  if (precoMin !== undefined && precoMin !== null && precoMin !== "") {
-    const n = Number(precoMin);
-    if (!Number.isNaN(n)) {
-      where.push("v.precoTotal >= ?");
-      params.push(n);
-    }
-  }
-
-  if (precoMax !== undefined && precoMax !== null && precoMax !== "") {
-    const n = Number(precoMax);
-    if (!Number.isNaN(n)) {
-      where.push("v.precoTotal <= ?");
-      params.push(n);
-    }
-  }
-
-  const sql = `
-    SELECT 
-      a.idAnuncio,
-      a.nomeProduto,
-      a.valorTotal,
-      a.quantidade,
-      a.unidadeMedida,
-      a.pesoTotal,
-      a.descricao,
-      a.condicao,
-      a.origem,
-      a.composicao,
-      a.status,
-      a.dataStatus,
-      e.nomeFantasia AS nomeEmpresa,
-      e.cidade AS cidade,
-      e.estado AS estado,
-      c.nome AS categoria,
-      img.nomeArquivo
-    FROM viewFiltroBusca v
-    JOIN tbAnuncios a ON a.idAnuncio = v.idAnuncio
-    JOIN tbEmpresas e ON e.idEmpresa = a.idEmpresa
-    LEFT JOIN tbCategorias c ON c.idCategoria = a.idCategoria
-    LEFT JOIN (
-      SELECT i1.idAnuncio, i1.nomeArquivo
-      FROM tbImagensAnuncios i1
-      INNER JOIN (
-        SELECT idAnuncio, MIN(idImagem) AS minIdImagem
-        FROM tbImagensAnuncios
-        GROUP BY idAnuncio
-      ) x ON x.idAnuncio = i1.idAnuncio AND x.minIdImagem = i1.idImagem
-    ) img ON img.idAnuncio = a.idAnuncio
-    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-    ORDER BY a.dataStatus DESC
-  `;
-
-  const [rows] = await db.query(sql, params);
-  return rows;
-}
-
 export async function deleteMeuAnuncioComImagens(idEmpresa, idAnuncio) {
   const conn = await db.getConnection();
   try {
@@ -543,16 +539,16 @@ export async function deleteMeuAnuncioComImagens(idEmpresa, idAnuncio) {
 }
 
 export async function getCountAnunciosCategoria(idCategoria) {
-    const [rows] = await db.query(
-        "SELECT COUNT(*) AS total FROM tbAnuncios WHERE idCategoria = ?",
-        [idCategoria]
-    );
-    return rows;
+  const [rows] = await db.query(
+    "SELECT COUNT(*) AS total FROM tbAnuncios WHERE idCategoria = ?",
+    [idCategoria]
+  );
+  return rows;
 }
 
 export async function getTotalAnuncios() {
-    const [rows] = await db.query(
-        `SELECT 
+  const [rows] = await db.query(
+    `SELECT 
             COUNT(CASE WHEN status = 'ativo' THEN 1 END) AS total_atual,
             ROUND(
                 ((COUNT(CASE WHEN status = 'ativo' THEN 1 END) - 
@@ -560,34 +556,34 @@ export async function getTotalAnuncios() {
                 / NULLIF(COUNT(CASE WHEN status = 'ativo' AND dataStatus < DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') THEN 1 END), 0)) * 100, 
             2) AS percentual_crescimento
         FROM tbAnuncios;`
-    );
-    return rows;
+  );
+  return rows;
 }
 
 export async function getWeeklyAnnounced() {
-    const [rows] = await db.query(
-        'SELECT * FROM viewItensAnunciadosUltimas4Semanas'
-    );
-    return rows;
+  const [rows] = await db.query(
+    'SELECT * FROM viewItensAnunciadosUltimas4Semanas'
+  );
+  return rows;
 }
 
 export async function getSemesterSold() {
-    const [rows] = await db.query(
-        'SELECT * FROM viewVendasUltimos6Meses'
-    );
-    return rows;
+  const [rows] = await db.query(
+    'SELECT * FROM viewVendasUltimos6Meses'
+  );
+  return rows;
 }
 
 export async function getAnunciosPerState() {
-    const [rows] = await db.query(
-        'SELECT * FROM viewDensidadePorEstado'
-    );
-    return rows;
+  const [rows] = await db.query(
+    'SELECT * FROM viewDensidadePorEstado'
+  );
+  return rows;
 }
 
 export async function getAnunciosPerCategory() {
-    const [rows] = await db.query(
-        'SELECT * FROM viewItensPorCategoriaTop5'
-    );
-    return rows;
+  const [rows] = await db.query(
+    'SELECT * FROM viewItensPorCategoriaTop5'
+  );
+  return rows;
 }
