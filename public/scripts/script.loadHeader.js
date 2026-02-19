@@ -28,14 +28,14 @@ fetch('/components/header.html')
         }
 
         toast.show('Você precisa estar logado para anunciar.', "error");
-        window.location.href = '/pages/login.html';
+        window.location.href = '/login';
       } catch (err) {
         toast.show('Não foi possível verificar o login. Tente novamente.', "error");
       }
     }
 
     btnEntrar?.addEventListener('click', () => {
-      window.location.href = '/pages/login.html';
+      window.location.href = '/login';
     });
 
     btnAnuncie?.addEventListener('click', handleAnuncieClick);

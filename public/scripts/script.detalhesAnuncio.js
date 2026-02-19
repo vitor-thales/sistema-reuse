@@ -1,3 +1,5 @@
+import { toast } from "./utils/script.toast.js";
+
 document.addEventListener("DOMContentLoaded", async () => {
   const imgPrincipal = document.getElementById("img-principal");
   const thumbs = document.getElementById("thumbs");
@@ -25,6 +27,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const specColeta = document.getElementById("spec-coleta");
 
   const btnContato = document.getElementById("btn-contato");
+
+  window.copyLink = function() {
+    navigator.clipboard.writeText(window.location.href);
+    toast.show("Link copiado!");
+  }
 
   function formatCurrency(value) {
     if (value === null || value === undefined || value === "") return "A combinar";
@@ -121,6 +128,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       precoUnidade.textContent = "";
     }
     empresaNome.textContent = json.nome || "Empresa";
+    empresaNome.addEventListener("click", () => window.location.href = `/detalhes-empresa/${data.idEmpresa}`)
     empresaIniciais.textContent = getIniciais(json.nome);
     empresaLocal.querySelector("span").textContent =
       `${data.cidade || "—"}, ${data.estado || "—"}`;

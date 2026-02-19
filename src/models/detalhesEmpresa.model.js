@@ -1,6 +1,12 @@
 import { db } from "../config/database.js";
 
 export async function getPerfilEmpresaById(idEmpresa) {
+  try {
+    await db.query("CALL calcTempoRespostaPerfil()");
+  } catch(err) {
+    throw err;
+  }
+
   const id = Number(idEmpresa);
   if (!Number.isFinite(id) || id <= 0) return null;
 
@@ -17,7 +23,9 @@ export async function getPerfilEmpresaById(idEmpresa) {
       tempoResposta,
       emailEmpresa,
       foneEmpresa,
-      sobreEmpresa
+      sobreEmpresa,
+      razaoSocialEmpresa,
+      cnpjEmpresa
     FROM viewPerfilEmpresas
     WHERE idEmpresa = ?
     LIMIT 1
@@ -81,4 +89,12 @@ export async function getCountAnunciosAtivosEmpresa(idEmpresa) {
   );
 
   return Number(rows?.[0]?.total || 0);
+}
+
+export async function getPrivacidadeEmpresa(idEmpresa) {
+  const [rows] = await db.query(
+      `SELECT * FROM tbConfigEmpresas WHERE idEmpresa = ?`,
+      [idEmpresa]
+  );
+  return rows;
 }

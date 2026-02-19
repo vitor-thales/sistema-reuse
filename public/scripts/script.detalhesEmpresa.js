@@ -1,3 +1,5 @@
+import { toast } from "./utils/script.toast.js";
+
 document.addEventListener("DOMContentLoaded", () => {
     const getIdEmpresaFromUrl = () => {
         const parts = window.location.pathname.split("/").filter(Boolean);
@@ -28,6 +30,36 @@ document.addEventListener("DOMContentLoaded", () => {
         const v = safeText(value);
         node.textContent = v ? v : fallback;
     }
+
+    const formatPhoneNumber = (value) => {
+      if (!value) return "";
+
+      const digits = value.replace(/\D/g, "");
+
+      return digits.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+    };
+
+    const formatYearMonth = (dateString) => {
+      const date = new Date(`${dateString}-01T12:00:00`);
+
+      const month = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(date);
+      const year = date.getFullYear();
+
+      const capitalizedMonth = month.charAt(0).toUpperCase() + month.slice(1);
+
+      return `${capitalizedMonth}, ${year}`;
+    };
+
+    const formatCNPJ = (value) => {
+      if (!value) return "";
+
+      const digits = value.replace(/\D/g, "");
+
+      return digits.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+      );
+    };
 
     function setHref(id, href) {
         const node = el(id);
@@ -124,11 +156,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function load() {
+        const enviarMensagens = document.getElementById("btn-enviar-mensagem");
+
         const idEmpresa = getIdEmpresaFromUrl();
         if (!idEmpresa) {
             toast.show("URL inválida (idEmpresa não encontrado).", "error");
+            const notFound = await fetch("/404");
+            const text = await notFound.text();
+            document.body.innerHTML = new DOMParser().parseFromString(text, "text/html").body.innerHTML;
+            document.body.classList.add("flex", "items-center", "justify-center", "p-6");
             return;
         }
+
+        const r = await fetch(`/mensagens/api/getPartner/${idEmpresa}`);
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        const j = await r.json();
+
+        enviarMensagens.addEventListener("click", () => startNewChat(idEmpresa, j.nome, j.publicKey));
 
         const res = await fetch(`/detalhes-empresa/api/${idEmpresa}`, {
             credentials: "include",
@@ -136,15 +180,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!res.ok) {
             const msg = `Erro ${res.status}`;
+            const notFound = await fetch("/404");
+            const text = await notFound.text();
+            document.body.innerHTML = new DOMParser().parseFromString(text, "text/html").body.innerHTML;
+            document.body.classList.add("flex", "items-center", "justify-center", "p-6");
             toast.show(msg, "error");
             return;
         }
 
-        const { perfil, produtosRecentes } = await res.json();
+        const { perfil, produtosRecentes, privacidade } = await res.json();
 
-        setText("empresa-nome", perfil?.nomeEmpresa);
-        setText("empresa-local", perfil?.enderecoEmpresa);
-        setText("empresa-membro", perfil?.membroDesde ? `Membro desde ${perfil.membroDesde}` : "");
+        let nome = privacidade[0].privMostrarRazaoSocial ? perfil?.razaoSocialEmpresa : perfil?.nomeEmpresa;
+        if(privacidade[0].privMostrarCNPJ) nome += ` (${formatCNPJ(perfil?.cnpjEmpresa)})`; 
+
+        setText("empresa-nome", nome);
+        setText("empresa-local", privacidade[0].privPerfilPrivado ? "Privado" : perfil?.enderecoEmpresa);
+        setText("empresa-membro", perfil?.membroDesde ? `Membro desde ${formatYearMonth(perfil.membroDesde)}` : "");
         setText("empresa-iniciais", buildIniciais(perfil?.nomeEmpresa));
 
         setText("empresa-card-ativos", fmtInt(perfil?.anunciosAtivos || 0));
@@ -152,8 +203,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setText("empresa-card-taxa", `${Number(perfil?.taxaResposta || 0)}%`);
 
         setText("empresa-sobre", perfil?.sobreEmpresa, "Sem descrição.");
-        setText("empresa-email", perfil?.emailEmpresa, "—");
-        setText("empresa-telefone", perfil?.foneEmpresa, "—");
+        setText("empresa-email", privacidade[0].privPerfilPrivado ? "Privado" : perfil?.emailEmpresa, "Privado");
+        setText("empresa-telefone", privacidade[0].privPerfilPrivado ? "Privado" : formatPhoneNumber(perfil?.foneEmpresa), "Privado");
 
         const taxa = Number(perfil?.taxaResposta || 0);
         setText("empresa-taxa-label", `${taxa}%`);
@@ -164,13 +215,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setText("empresa-produtos-badge", `${fmtInt(perfil?.anunciosAtivos || 0)} ativos`);
 
-        setHref("empresa-ver-todos", `/buscar?empresa=${idEmpresa}`);
+        setHref("empresa-ver-todos", `/detalhes-empresa/anuncios/${idEmpresa}`);
 
         renderProdutos(el("empresa-produtos-grid"), perfil, produtosRecentes);
     }
 
-    load().catch((e) => {
+    load().catch(async (e) => {
         console.error(e);
+        const notFound = await fetch("/404");
+        const text = await notFound.text();
+        document.body.innerHTML = new DOMParser().parseFromString(text, "text/html").body.innerHTML;
+        document.body.classList.add("flex", "items-center", "justify-center", "p-6");
         toast.show("Falha ao carregar detalhes da empresa.", "error");
     });
 });
