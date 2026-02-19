@@ -39,44 +39,51 @@
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-bold text-darkblue">Nome Fantasia</label>
-            <input id="nomeFantasia" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+            <input id="nomeFantasia" disabled type="text"
+                class="h-10 text-darkblue/70 font-medium rounded-lg bg-darkergray/70 cursor-not-allowed px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-bold text-darkblue">CNPJ</label>
-            <input id="cnpj" type="text" maxlength="18" placeholder="00.000.000/0000-00" oninput="maskCNPJ(this)"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+            <input id="cnpj" type="text" maxlength="18" disabled placeholder="00.000.000/0000-00" oninput="maskCNPJ(this)"
+                class="h-10 text-darkblue/70 font-medium rounded-lg bg-darkergray/70 cursor-not-allowed px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
-        <div class="flex flex-col gap-2">
+        <div class="flex flex-col gap-2 col-span-2">
             <label class="text-sm font-bold text-darkblue">Razão Social</label>
-            <input id="razaoSocial" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-bold text-darkblue">Inscrição estadual/municipal</label>
-            <input id="inscricao" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+            <input id="razaoSocial" disabled type="text"
+                class="h-10 text-darkblue/70 font-medium rounded-lg bg-darkergray/70 cursor-not-allowed px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-bold text-darkblue">E-mail Corporativo</label>
             <input id="email" type="email"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-bold text-darkblue">Telefone</label>
             <input id="telefone" type="text" maxlength="15" placeholder="(00) 00000-0000" oninput="maskPhone(this)"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2 col-span-2">
             <label class="text-sm font-bold text-darkblue">Descrição da Empresa</label>
             <textarea id="descricao" rows="4"
-                class="h-24 rounded-lg bg-darkergray px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-mainblue"></textarea>
+                class="h-24 rounded-lg text-darkblue font-medium bg-darkergray px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-mainblue"></textarea>
+        </div>
+
+        <div class="flex items-start gap-3 col-span-2 p-4 border border-mainblue/40 bg-mainblue/5 rounded-xl">
+            <i class="fa-solid fa-question text-mainblue mt-0.5"></i>
+            <div>
+                <p class="text-sm font-semibold text-darkblue">
+                    Por que bloqueamos a mudança de alguns campos?
+                </p>
+                <p class="text-xs text-gray-500">
+                    Por questões de segurança nosso sistema não permite a alteração de informações cadastrais essenciais como CNPJ e Razão Social.
+                    Caso tenha realizado a alteração de forma legal, por favor, entre em contato e alteraremos as suas informações.
+                </p>
+            </div>
         </div>
 
     </section>
@@ -99,43 +106,43 @@
             <label class="text-sm font-bold text-darkblue">CEP</label>
             <input id="cep" type="text" maxlength="9" placeholder="00000-000"
                 oninput="maskCEP(this); handleCEPChange(this)" onblur="buscarCEP(); handleCEPChange(this)"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-bold text-darkblue">Cidade</label>
             <input id="cidade" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-bold text-darkblue">Bairro</label>
-            <input id="bairro" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-bold text-darkblue">Endereço Completo</label>
             <input id="endereco" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Bairro</label>
+            <input id="bairro" type="text"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-bold text-darkblue">Estado</label>
             <input id="estado" type="text" maxlength="2" placeholder="UF"
-                class="h-10 rounded-lg bg-darkergray px-4 uppercase focus:outline-none focus:ring-2 focus:ring-mainblue">
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2">
-            <label class="text-sm font-bold text-darkblue">País</label>
-            <input id="pais" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+            <label class="text-sm font-bold text-darkblue">Número</label>
+            <input id="numero" type="text"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
         <div class="flex flex-col gap-2 col-span-2">
             <label class="text-sm font-bold text-darkblue">Complemento</label>
             <input id="complemento" type="text"
-                class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
         </div>
 
     </section>
@@ -231,7 +238,7 @@
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-bold text-darkblue">Senha Atual</label>
                 <input id="senhaAtual" type="password"
-                    class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                    class="h-10 text-darkblue font-medium rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
             </div>
 
             <div class="flex flex-col gap-2">
@@ -239,7 +246,7 @@
                 <label class="text-sm font-bold text-darkblue">Senha Nova</label>
 
                 <input id="senhaNova" type="password"
-                    class="h-10 rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+                    class="h-10 text-darkblue font-medium rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
 
                 <div class="flex justify-end mt-2">
                     <button type="button" onclick="trocarSenha()"
@@ -316,7 +323,7 @@
         </div>
     </section>
 
-    <section class="container w-full max-w-300 mx-auto mt-10 mb-10">
+    <section class="container w-full max-w-300 mx-auto mt-10 pb-10">
         <div class="flex items-center justify-between gap-4">
 
             <button id="btnLogout" type="button"
@@ -327,11 +334,13 @@
 
             <div class="flex items-center gap-4">
                 <button id="btnCancelarAlteracoes" type="button"
+                    onclick="loadDefaultConfig()"
                     class="px-6 py-2 rounded-xl border border-stronggray text-darkblue bg-white hover:bg-gray-50 transition">
                     Cancelar
                 </button>
 
                 <button id="btnSalvarAlteracoes" type="button"
+                    onclick="enviarConfiguracoes()"
                     class="px-6 py-2 rounded-xl bg-mainblue text-white font-semibold hover:opacity-90 transition flex items-center gap-2">
                     <i class="fa-solid fa-floppy-disk"></i>
                     Salvar Alterações
@@ -342,9 +351,9 @@
     </section>
 
     <script src="../scripts/tema.js"></script>
-    <script src="../scripts/script.loadHeader.js"></script>
-    <script src="../scripts/script.configuracoes.js"></script>
-    <script src="../scripts/script.loadToggle.js"></script>
+    <script type="module" src="../scripts/script.loadHeader.js"></script>
+    <script type="module" src="../scripts/script.configuracoes.js"></script>
+    <script type="module" src="../scripts/script.loadToggle.js"></script>
     <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 
 </body>

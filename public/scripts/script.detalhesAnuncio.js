@@ -99,6 +99,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       return `/uploads/${x}`;
     });
 
+    const res = await fetch(`/mensagens/api/getPartner/${data.idEmpresa}`);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const json = await res.json();
+
     if (imagens[0]) imgPrincipal.src = imagens[0];
     renderThumbs(imagens);
 
@@ -114,9 +118,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       precoUnidade.textContent = "";
     }
-
-    empresaNome.textContent = data.nomeEmpresa || "Empresa";
-    empresaIniciais.textContent = getIniciais(data.nomeEmpresa);
+    empresaNome.textContent = json.nome || "Empresa";
+    empresaIniciais.textContent = getIniciais(json.nome);
     empresaLocal.querySelector("span").textContent =
       `${data.cidade || "—"}, ${data.estado || "—"}`;
 
@@ -133,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     specColeta.textContent = data.modalidadeColeta || "—";
 
     btnContato.addEventListener("click", async () => {
-      alert("Aqui você liga com sua rota de mensagens/conversa (backend).");
+      startNewChat(data.idEmpresa, json.nome, json.publicKey);
     });
 
   } catch (err) {

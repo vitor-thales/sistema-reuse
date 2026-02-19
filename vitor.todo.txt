@@ -1,3 +1,0 @@
-// TODO: AAAA
-
-- When changing password change keys too :)

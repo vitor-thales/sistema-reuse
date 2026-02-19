@@ -5,12 +5,10 @@ import cookieParser from 'cookie-parser';
 import loginRoute from "./routes/login.route.js"
 import landingPageRoute from "./routes/landingPage.route.js"
 import anuncieRoute from "./routes/anuncie.route.js"
-
 import anunciosRouter from "./routes/anuncios.route.js";
 import configuracoesRoute from "./routes/configuracoes.route.js";
 import logoutRoute from "./routes/logout.route.js";
 import detalhesRoute from "./routes/detalhesAnuncio.route.js";
-import loginRoute from "./routes/login.route.js";
 import cadastroRoute from "./routes/cadastro.route.js";
 import forgotRoute from "./routes/forgot.route.js";
 import adminRoute from "./routes/admin.route.js";

@@ -1,10 +1,15 @@
-document.addEventListener("DOMContentLoaded", () => {
+import { toast } from "./utils/script.toast.js";
+
+window.loadAllConfigToggles = async function () {
+    const res = await fetch("/configuracoes/config-empresa");
+    const json = await res.json();
+    if(!res.ok) toast.show("Erro carregando configurações do usuário", "error");
 
     carregarToggle({
         containerId: "toggle-mensagens-empresas",
         title: "Mensagens de empresas",
         description: "Notificações quando receber mensagens de outras empresas",
-        checked: true,
+        checked: json.notMsgEmpresas || false,
         name: "mensagens_empresas"
     });
 
@@ -12,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-atualizacoes-anuncios",
         title: "Atualizações de anúncios",
         description: "Status dos seus anúncios publicados",
-        checked: false,
+        checked: json.notAttAnuncios || false,
         name: "atualizacoes_anuncios"
     });
 
@@ -20,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-perfil-privado",
         title: "Perfil Privado",
         description: "Outras empresas terão acesso apenas ao seu nome fantasia",
-        checked: true,
+        checked: json.privPerfilPrivado || false,
         name: "perfil_privado"
     });
 
@@ -28,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-email-publico",
         title: "Email Corporativo",
         description: "Exibir email no perfil público",
-        checked: true,
+        checked: json.privMostrarEmail || false,
         name: "email_publico"
     });
 
@@ -36,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-telefone-publico",
         title: "Telefone",
         description: "Exibir telefone no perfil público",
-        checked: true,
+        checked: json.privMostrarFone || false,
         name: "telefone_publico"
     });
 
@@ -44,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-endereco-publico",
         title: "Endereço Completo",
         description: "Mostrar endereço detalhado (apenas cidade se desativado)",
-        checked: true,
+        checked: json.privMostrarEndCompleto || false,
         name: "endereco_publico"
     });
 
@@ -52,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-cnpj-publico",
         title: "CNPJ",
         description: "Exibir CNPJ no perfil público",
-        checked: true,
+        checked: json.privMostrarCNPJ || false,
         name: "cnpj_publico"
     });
 
@@ -60,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-razao-social-publico",
         title: "Razão Social",
         description: "Exibir Razão Social no perfil público",
-        checked: true,
+        checked: json.privMostrarRazaoSocial || false,
         name: "razao_social_publica"
     });
 
@@ -68,11 +73,10 @@ document.addEventListener("DOMContentLoaded", () => {
         containerId: "toggle-2fa",
         title: "Autenticação de Dois Fatores",
         description: "Adicione uma camada extra de segurança à sua conta",
-        checked: false, 
+        checked: json.segAutDuasEtapas || false,
         name: "segAutDuasEtapas"
     });
-
-});
+}
 
 async function carregarToggle({
     containerId,
@@ -97,22 +101,7 @@ async function carregarToggle({
         toggleTitle.textContent = title;
         toggleDesc.textContent = description;
         toggle.checked = checked;
-        toggle.name = name;
-
-        toggle.addEventListener("change", async () => {
-            await fetch("/configuracoes/toggle", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    nome: name,
-                    valor: toggle.checked
-                })
-            });
-        });
-
+        toggle.id = name;
 
     } catch (err) {
         console.error('Erro ao carregar toggle:', err);

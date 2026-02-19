@@ -1,8 +1,7 @@
 import ChatEngine from '../utils/script.chat.engine.js';
 import { toast } from "../utils/script.toast.js";
 
-const messagesTab = document.getElementById("messages-tab");
-
+var messagesTab;
 var overlay;
 var body;
 var convView;
@@ -23,6 +22,8 @@ export async function loadUserDataAndStart() {
     const res = await fetch("/mensagens/api/userData");
     const json = await res.json();
     const {id, pk} = json;
+
+    messagesTab = document.getElementById("messages-tab");
 
     initializeMessagingSystem(id, pk);
 }
@@ -228,11 +229,13 @@ async function renderConversationRow(conv, prepend = false) {
             convList.innerHTML = '';
         }
     }
+
+    const partnerName = conv.partnerName || conv.scndPartnerName;
     
     let existing = document.querySelector(`[data-conv-id="${conv.idConversa}"]`);
     if (existing) existing.remove();
 
-    const initials = conv.partnerName.substring(0, 2).toUpperCase();
+    const initials = partnerName.substring(0, 2).toUpperCase();
     let snippet = 'Nova conversa';
 
     if (conv.lastMessageContent && conv.wrappedKey && conv.lastMessageIv) {
@@ -248,15 +251,15 @@ async function renderConversationRow(conv, prepend = false) {
 
     const el = document.createElement('div');
     el.setAttribute('data-conv-id', conv.idConversa);
-    el.setAttribute('data-search-name', conv.partnerName.toLowerCase());
-    el.className = "p-4 flex items-start gap-3 hover:bg-lightgray/50 cursor-pointer transition-colors group";
-    el.onclick = () => openChat(conv.idConversa, conv.partnerId, conv.partnerName, initials, conv.partnerPublicKey);
+    el.setAttribute('data-search-name', partnerName.toLowerCase());
+    el.className = "p-4 flex items-start gap-3 hover:bg-darkgray/15 border-b border-darkblue/20 cursor-pointer transition-colors group";
+    el.onclick = () => openChat(conv.idConversa, conv.partnerId, partnerName, initials, conv.partnerPublicKey);
     
     el.innerHTML = `
         <div class="w-12 h-12 flex-shrink-0 rounded-full bg-mainblue/10 flex items-center justify-center text-mainblue font-bold">${initials}</div>
         <div class="flex-1 min-w-0">
             <div class="flex justify-between items-baseline">
-                <h4 class="font-bold text-darkblue text-sm truncate">${conv.partnerName}</h4>
+                <h4 class="font-bold text-darkblue text-sm truncate">${partnerName}</h4>
                 <span class="text-[10px] text-darkgray">${msgTime}</span>
             </div>
             <p class="text-xs text-darkgray truncate mt-1 snippet-text">${snippet}</p>
@@ -438,6 +441,7 @@ window.closeActiveChat = function () {
     activePartnerPublicKey = null;
     chatView.classList.add('translate-x-full'); 
     convView.classList.remove('-translate-x-full'); 
+    fetchAndRenderConversations();
 }
 
 window.handleSendMessage = async function(e) {
@@ -461,7 +465,7 @@ window.handleSendMessage = async function(e) {
         });
     } catch(err) {
         document.querySelector(`[data-msg-id="pending"]`)?.remove();
-        alert("Falha na criptografia. Mensagem não enviada.");
+        toast.show("Falha na criptografia. Mensagem não enviada.", "error");
     }
 }
 
@@ -476,7 +480,7 @@ window.startNewChat = async function(partnerId, partnerName, partnerPublicKey) {
         const data = await res.json();
         
         if (data.error) {
-            alert(data.error);
+            toast.show(data.error, "error");
             return;
         }
 
@@ -544,7 +548,7 @@ window.addEventListener('chat:message', async (e) => {
     const existingRow = document.querySelector(`[data-conv-id="${data.idConversa}"]`);
     const currentName = existingRow 
         ? existingRow.querySelector('h4').innerText 
-        : (data.partnerName || "Contato");
+        : (data.partnerName || data.scndPartnerName || "Contato");
 
     const mockConv = {
         idConversa: data.idConversa,
@@ -578,5 +582,3 @@ window.addEventListener('chat:read', (e) => {
 window.addEventListener('chat:error', (e) => {
     toast.show(e, "error");
 });
-
-loadUserDataAndStart();

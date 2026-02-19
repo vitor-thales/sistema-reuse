@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 
 import { getConversationsWithLastMessage, getMessagesByConversation, findOrCreateConversation, getUserPublicKey } from "../models/messages.model.js";
+import { getEmpresa } from "../models/empresas.model.js"
 
 export default {
     async getConversations(req, res) {
@@ -27,6 +28,18 @@ export default {
         } catch (err) {
             console.error(err);
             res.status(500).json({ error: "Erro ao carregar dados do usuário" });
+        }
+    },
+
+    async getPartnerData(req, res) {
+        try {
+            const id = parseInt(req.params.id);
+            if(!id || !Number.isInteger(id)) return res.status(400).json({error: "Id inválido"});
+            const partner = await getEmpresa(id);
+            res.json({nome: partner[0].nomeFantasia || partner[0].razaoSocial, publicKey: partner[0].ikPublica});
+        } catch(err) {
+            console.error(err);
+            return res.status(400).send();
         }
     },
 

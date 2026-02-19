@@ -1,3 +1,5 @@
+import { loadUserDataAndStart } from "./components/messages.js";
+
 fetch('/components/header.html')
   .then(response => response.text())
   .then(async (data) => {
@@ -7,7 +9,7 @@ fetch('/components/header.html')
 
     if (iconeUsuario) {
       iconeUsuario.addEventListener("click", () => {
-        window.location.href = "/pages/configuracoes.html";
+        window.location.href = "/configuracoes";
       });
     }
 
@@ -42,6 +44,8 @@ fetch('/components/header.html')
       window.location.href = '/';
     });
     await atualizarHeader();
+
+    loadUserDataAndStart();
   });
 
 function exibirNotificacao(mensagem) {
@@ -50,7 +54,7 @@ function exibirNotificacao(mensagem) {
 
 async function verificarLogin() {
   try {
-    const r = await fetch("/auth/check", { credentials: "include" });
+    const r = await fetch("/login/api/checkLogin");
     if (!r.ok) return false;
     const d = await r.json();
     return d.loggedIn === true;

@@ -39,7 +39,7 @@ CREATE TABLE tbEmpresas (
 ------------------------------------------------------------
 CREATE TABLE tbConfigEmpresas (
     idConfig INT AUTO_INCREMENT PRIMARY KEY,
-    idEmpresa INT NOT NULL,
+    idEmpresa INT NOT NULL UNIQUE,
     notMsgEmpresas BOOLEAN NOT NULL DEFAULT TRUE,
     notAttAnuncios BOOLEAN NOT NULL DEFAULT TRUE,
     privPerfilPrivado BOOLEAN NOT NULL DEFAULT FALSE,
