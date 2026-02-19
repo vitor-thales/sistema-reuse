@@ -27,10 +27,17 @@ fetch('/components/header.html')
           return;
         }
 
+<<<<<<< HEAD
         alert('Você precisa estar logado para anunciar.');
         window.location.href = '/pages/login.html';
       } catch (err) {
         alert('Não foi possível verificar o login. Tente novamente.');
+=======
+        toast.show('Você precisa estar logado para anunciar.', "error");
+        window.location.href = '/pages/login.html';
+      } catch (err) {
+        toast.show('Não foi possível verificar o login. Tente novamente.', "error");
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
       }
     }
 
@@ -48,10 +55,13 @@ fetch('/components/header.html')
     loadUserDataAndStart();
   });
 
+<<<<<<< HEAD
 function exibirNotificacao(mensagem) {
   alert(mensagem);
 }
 
+=======
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 async function verificarLogin() {
   try {
     const r = await fetch("/login/api/checkLogin");
@@ -67,7 +77,10 @@ async function verificarLogin() {
 async function atualizarHeader() {
   const botaoEntrar = document.getElementById("botaoEntrar");
   const iconeUser = document.getElementById("userIcon");
+<<<<<<< HEAD
   const iconeNotificacao = document.getElementById("notificacoes")
+=======
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
   const iconeChat = document.getElementById("mensagens");
 
   if (!botaoEntrar || !iconeUser) {
@@ -78,6 +91,7 @@ async function atualizarHeader() {
   const logado = await verificarLogin();
 
   if (logado) {
+<<<<<<< HEAD
     iconeChat.style.display = "inline-block"
     iconeNotificacao.style.display = "inline-block"
     botaoEntrar.style.display = "none";
@@ -85,6 +99,13 @@ async function atualizarHeader() {
   } else {
     iconeChat.style.display = "none"
     iconeNotificacao.style.display = "none"
+=======
+    iconeChat.style.display = "inline-block";
+    botaoEntrar.style.display = "none";
+    iconeUser.style.display = "inline-block";
+  } else {
+    iconeChat.style.display = "none";
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     botaoEntrar.style.display = "inline-block";
     iconeUser.style.display = "none";
   }

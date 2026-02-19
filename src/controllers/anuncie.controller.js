@@ -14,8 +14,16 @@ import {
   updateMeuAnuncio,
   updateStatusMeuAnuncio,
   deleteMeuAnuncioComImagens,
+<<<<<<< HEAD
 } from "../models/anuncios.model.js";
 
+=======
+  getAnuncio,
+} from "../models/anuncios.model.js";
+
+import { getAllCategorias } from "../models/categories.model.js";
+
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 function getEmpresaIdFromReq(req) {
   const token = req.cookies?.reuseToken;
   if (!token) return null;
@@ -27,6 +35,7 @@ function getEmpresaIdFromReq(req) {
   }
 }
 
+<<<<<<< HEAD
 async function getPage(req, res) {
   return res.sendFile(path.join(publicDir, "pages/anuncie.html"));
 }
@@ -273,3 +282,244 @@ const anuncieController = {
 };
 
 export default anuncieController;
+=======
+export default {
+  async getPage(req, res) {
+    return res.sendFile(path.join(publicDir, "pages/anuncie.html"));
+  },
+
+  async sendRequisition(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) {
+        return res.status(401).json({ ok: false, error: "Não autenticado." });
+      }
+
+      const files = req.files?.imagens_produto || [];
+      const result = await insertAnuncio(idEmpresa, req.body, files);
+
+      if (result === true) return res.status(201).json({ ok: true });
+
+      return res.status(400).json({ ok: false, error: result });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao criar anúncio" });
+    }
+  },
+
+  async listarAnuncios(req, res) {
+    try {
+      const anuncios = await getAnuncios();
+      return res.status(200).json(anuncios);
+    } catch (err) {
+      console.error("Erro ao listar anúncios:", err);
+      return res.status(500).json({ error: "Erro ao buscar anúncios." });
+    }
+  },
+
+  async meusAnunciosResumo(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) {
+        return res.status(401).json({ error: "Não autenticado." });
+      }
+
+      const dash = await getDashboardMeusAnuncios(idEmpresa);
+      return res.status(200).json(dash.cards);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Erro ao carregar resumo." });
+    }
+  },
+
+  async meusAnunciosSemana(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) {
+        return res.status(401).json({ error: "Não autenticado." });
+      }
+
+      const dash = await getDashboardMeusAnuncios(idEmpresa);
+      return res.status(200).json(dash.semana);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Erro ao carregar semana." });
+    }
+  },
+
+  async meusAnunciosLista(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) {
+        return res.status(401).json({ error: "Não autenticado." });
+      }
+
+      const rows = await getMeusAnuncios(idEmpresa);
+
+      const normalized = rows.map((a) => ({
+        ...a,
+        visualizacoesMes: a.visualizacoesMes ?? a.totalVisualizacoes ?? 0,
+      }));
+
+      return res.status(200).json(normalized);
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: "Erro ao carregar seus anúncios." });
+    }
+  },
+
+  async dashboardMeusAnuncios(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+      const dash = await getDashboardMeusAnuncios(idEmpresa);
+      return res.status(200).json({ ok: true, dash });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao carregar dashboard." });
+    }
+  },
+
+  async listarMeusAnuncios(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+      const rows = await getMeusAnuncios(idEmpresa);
+      return res.status(200).json({ ok: true, anuncios: rows });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao carregar seus anúncios." });
+    }
+  },
+
+  async detalheMeuAnuncio(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+      const idAnuncio = Number(req.params.idAnuncio);
+      const data = await getMeuAnuncioDetalhe(idEmpresa, idAnuncio);
+      if (!data) return res.status(404).json({ ok: false, error: "Anúncio não encontrado." });
+
+      return res.status(200).json({ ok: true, data });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao buscar anúncio." });
+    }
+  },
+
+  async editarMeuAnuncio(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+      const idAnuncio = Number(req.params.idAnuncio);
+      const files = req.files?.imagens_produto || [];
+
+      const removeIdsRaw = req.body?.removerImagensIds;
+      const removerImagensIds = Array.isArray(removeIdsRaw)
+        ? removeIdsRaw.map((x) => Number(x)).filter(Number.isFinite)
+        : String(removeIdsRaw || "")
+          .split(",")
+          .map((x) => Number(x.trim()))
+          .filter(Number.isFinite);
+
+      const result = await updateMeuAnuncio(idEmpresa, idAnuncio, req.body, files, removerImagensIds);
+
+      if (result === true) return res.status(200).json({ ok: true });
+
+      return res.status(400).json({ ok: false, error: result });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao editar anúncio." });
+    }
+  },
+
+  async alterarStatusMeuAnuncio(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+      const idAnuncio = Number(req.params.idAnuncio);
+      const { status } = req.body;
+
+      const anuncio = await getAnuncio(idAnuncio);
+      if(anuncio.length === 0) return res.status(400).json({ok: false, error: "Anúncio não existe"});
+      if(anuncio[0].status === 'vendido') return res.status(401).json({ok: false, error: "Você não pode interagir com um anúncio marcado como vendido!"});
+
+      const result = await updateStatusMeuAnuncio(idEmpresa, idAnuncio, status);
+
+      if (result === true) return res.status(200).json({ ok: true });
+      return res.status(400).json({ ok: false, error: result });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao alterar status." });
+    }
+  },
+
+  async toggleMeuAnuncio(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+      const idAnuncio = Number(req.params.idAnuncio);
+      if (!Number.isFinite(idAnuncio)) {
+        return res.status(400).json({ ok: false, error: "idAnuncio inválido." });
+      }
+
+      // busca o anúncio pra saber o status atual
+      const data = await getMeuAnuncioDetalhe(idEmpresa, idAnuncio);
+      if (!data?.anuncio) {
+        return res.status(404).json({ ok: false, error: "Anúncio não encontrado." });
+      }
+
+      const atual = String(data.anuncio.status || "").toLowerCase();
+      const novoStatus = atual === "pausado" ? "ativo" : "pausado";
+
+      const result = await updateStatusMeuAnuncio(idEmpresa, idAnuncio, novoStatus);
+
+      if (result === true) return res.status(200).json({ ok: true, status: novoStatus });
+
+      return res.status(400).json({ ok: false, error: result });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao alternar status." });
+    }
+  },
+
+  async excluirMeuAnuncio(req, res) {
+    try {
+      const idEmpresa = getEmpresaIdFromReq(req);
+      if (!idEmpresa) return res.status(401).json({ ok: false, error: "Não autenticado." });
+
+      const idAnuncio = Number(req.params.idAnuncio);
+
+      const result = await deleteMeuAnuncioComImagens(idEmpresa, idAnuncio);
+
+      if (result?.ok !== true) {
+        return res.status(400).json({ ok: false, error: result?.error || "Não foi possível excluir." });
+      }
+
+      const uploadDir = path.join(publicDir, "uploads");
+      for (const nomeArquivo of result.filesToDelete) {
+        try {
+          await fs.unlink(path.join(uploadDir, nomeArquivo));
+        } catch {
+        }
+      }
+
+      return res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ ok: false, error: "Erro ao excluir anúncio." });
+    }
+  },
+
+  async getCategorias(req, res) {
+    const categorias = await getAllCategorias();
+    return res.json(categorias);
+  }
+}
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7

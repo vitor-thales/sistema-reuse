@@ -41,6 +41,7 @@ function mapModalidade(modalidade) {
   return mapa[modalidade] || "Disponível para Agendamento";
 }
 
+<<<<<<< HEAD
 async function resolveCategoriaId(tipo) {
   if (!tipo) return null;
 
@@ -59,6 +60,8 @@ async function resolveCategoriaId(tipo) {
   return result.insertId;
 }
 
+=======
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 export async function getAnuncios() {
   const sql = `
     SELECT 
@@ -99,13 +102,24 @@ export async function getAnuncios() {
   return rows;
 }
 
+<<<<<<< HEAD
+=======
+export async function getAnuncio(id) {
+  const [rows] = await db.query("SELECT * FROM tbAnuncios WHERE idAnuncio = ?", [id]);
+  return rows;
+}
+
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
 export async function insertAnuncio(idEmpresa, data, files = []) {
   try {
     if (!idEmpresa) return "Empresa não identificada. Faça login novamente.";
 
+<<<<<<< HEAD
     const categoriaId = await resolveCategoriaId(data.tipo);
     if (!categoriaId) return "Categoria não encontrada.";
 
+=======
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     const valorTotal = parseCurrency(data.valorTotal);
 
     const quantidade = Number.parseInt(data.quantidade, 10);
@@ -127,7 +141,11 @@ export async function insertAnuncio(idEmpresa, data, files = []) {
         data.unidadeMedida,
         pesoFinal,
         data.descricao,
+<<<<<<< HEAD
         categoriaId,
+=======
+        data.tipo,
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
         mapCondicao(data.condicao),
         data.origem || null,
         data.composicao || null,
@@ -291,7 +309,11 @@ export async function getMeuAnuncioDetalhe(idEmpresa, idAnuncio) {
       a.modalidadeColeta,
       a.status,
       a.dataStatus,
+<<<<<<< HEAD
       c.nome AS categoria
+=======
+      c.idCategoria AS categoria
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     FROM tbAnuncios a
     LEFT JOIN tbCategorias c ON c.idCategoria = a.idCategoria
     WHERE a.idAnuncio = ? AND a.idEmpresa = ?
@@ -321,9 +343,12 @@ export async function updateMeuAnuncio(idEmpresa, idAnuncio, data, files = [], r
     );
     if (!own.length) return "Anúncio não encontrado para sua empresa.";
 
+<<<<<<< HEAD
     const categoriaId = await resolveCategoriaId(data.tipo);
     if (!categoriaId) return "Categoria não encontrada.";
 
+=======
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
     const valorTotal = parseCurrency(data.valorTotal);
 
     const quantidade = Number.parseInt(data.quantidade, 10);
@@ -365,7 +390,11 @@ export async function updateMeuAnuncio(idEmpresa, idAnuncio, data, files = [], r
         data.unidadeMedida,
         pesoFinal,
         data.descricao,
+<<<<<<< HEAD
         categoriaId,
+=======
+        data.tipo,
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
         mapCondicao(data.condicao),
         data.origem || null,
         data.composicao || null,
@@ -390,7 +419,11 @@ export async function updateMeuAnuncio(idEmpresa, idAnuncio, data, files = [], r
 }
 
 export async function updateStatusMeuAnuncio(idEmpresa, idAnuncio, status) {
+<<<<<<< HEAD
   const allowed = new Set(["ativo", "vendido"]);
+=======
+  const allowed = new Set(["ativo", "vendido", "pausado"]);
+>>>>>>> 59aa0b15c2bf03ec5f160db01d20928fd82479a7
   if (!allowed.has(status)) return "Status inválido.";
 
   const [result] = await db.query(
