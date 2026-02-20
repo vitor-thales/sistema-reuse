@@ -1,50 +1,29 @@
 <header class="fixed top-0 left-0 w-full z-50 border-b border-stronggray py-4 bg-white">
-    <div class="container mx-auto px-4 flex flex-wrap lg:flex-nowrap items-center justify-between gap-4">
+  <div class="container mx-auto px-4 flex flex-wrap lg:flex-nowrap items-center justify-between gap-4">
 
-        <div class="flex items-center hover:cursor-pointer min-w-fit" id="logoRetorna">
-            <img src="/images/favicon.ico" class="w-12 h-12 md:w-16 md:h-16 object-contain" alt="Logo">
-            <h1 class="ml-3">
-                <span class="font-bold text-3xl md:text-4xl text-mainblue">Re</span><span
-                    class="text-darkblue font-bold text-3xl md:text-4xl">Use</span>
-            </h1>
-        </div>
+    <div class="flex items-center hover:cursor-pointer min-w-fit" id="logoRetorna">
+      <img src="/images/favicon.ico" class="w-12 h-12 md:w-16 md:h-16 object-contain" alt="Logo">
+      <h1 class="ml-3">
+        <span class="font-bold text-3xl md:text-4xl text-mainblue">Re</span><span
+          class="text-darkblue font-bold text-3xl md:text-4xl">Use</span>
+      </h1>
+    </div>
 
-        <div class="w-full lg:flex-1 max-w-2xl order-3 lg:order-2">
-            <input placeholder="Buscar resíduos eletrônicos, placas, componentes..."
-                class="w-full h-11 bg-gray-100 rounded-2xl text-center px-4 focus:outline-none focus:ring-2 focus:ring-mainblue transition-all">
-        </div>
-
-        <div class="flex items-center gap-6 order-2 lg:order-3">
-            <i id="mensagens" onclick="toggleOverlay()" class="fa-regular fa-message text-darkblue cursor-pointer text-2xl mt-1"></i>
-            <div class="flex gap-6">
-                <button
-                    class="px-6 py-2 border border-mainblue bg-white rounded-3xl text-mainblue font-bold hover:bg-blue-50 transition-all"
-                    id="botaoEntrar">
-                    Entrar
-                </button>
-                <i id="userIcon" class="fa-regular fa-user text-darkblue text-2xl mt-2 cursor-pointer"></i>
-                <button
-                    class="px-6 py-2 bg-mainblue rounded-3xl text-white font-bold hover:brightness-110 shadow-sm transition-all cursor-pointer"
-                    id="botaoAnuncie">
-                    Anuncie
-                </button>
-            </div>
-        </div>
+    <div class="w-full lg:flex-1 max-w-2xl order-3 lg:order-2">
+      <input placeholder="Buscar resíduos eletrônicos, placas, componentes..."
+        class="w-full h-11 bg-gray-100 rounded-2xl text-center px-4 focus:outline-none focus:ring-2 focus:ring-mainblue transition-all">
     </div>
 
     <div class="flex items-center gap-6 order-2 lg:order-3">
       <i id="mensagens" onclick="toggleOverlay()"
         class="fa-regular fa-message text-darkblue cursor-pointer text-2xl mt-1"></i>
-
       <div class="flex gap-6">
         <button
           class="px-6 py-2 border border-mainblue bg-white rounded-3xl text-mainblue font-bold hover:bg-blue-50 transition-all"
           id="botaoEntrar">
           Entrar
         </button>
-
         <i id="userIcon" class="fa-regular fa-user text-darkblue text-2xl mt-2 cursor-pointer"></i>
-
         <button
           class="px-6 py-2 bg-mainblue rounded-3xl text-white font-bold hover:brightness-110 shadow-sm transition-all cursor-pointer"
           id="botaoAnuncie">
