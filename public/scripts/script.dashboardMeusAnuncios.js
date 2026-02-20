@@ -190,6 +190,54 @@ import { toast } from "./utils/script.toast.js";
         });
     }
 
+    function attachAllowedChars(el, { allowPattern, cleanPattern }) {
+        if (!el) return;
+
+        const nav = new Set([
+            "Backspace",
+            "Delete",
+            "Tab",
+            "Enter",
+            "Escape",
+            "ArrowLeft",
+            "ArrowRight",
+            "ArrowUp",
+            "ArrowDown",
+            "Home",
+            "End",
+        ]);
+
+        el.addEventListener("keydown", (e) => {
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (nav.has(e.key)) return;
+
+            if (e.key === "Backspace" || e.key === "Delete") return;
+
+            if (e.key.length === 1 && !allowPattern.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        el.addEventListener("input", () => {
+            const cleaned = (el.value || "").replace(cleanPattern, "");
+            if (cleaned !== el.value) el.value = cleaned;
+        });
+
+        el.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData("text") || "";
+            const cleaned = text.replace(cleanPattern, "");
+            document.execCommand("insertText", false, cleaned);
+        });
+
+        el.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const text = (e.dataTransfer && e.dataTransfer.getData("text")) || "";
+            const cleaned = String(text).replace(cleanPattern, "");
+            el.value = (el.value || "") + cleaned;
+        });
+    }
+
     const MAX_BRL = 50000;
     const MAX_DIGITS = String(Math.round(MAX_BRL * 100));
 
@@ -258,9 +306,15 @@ import { toast } from "./utils/script.toast.js";
         };
 
         const navKeys = new Set([
-            "Tab", "Enter", "Escape",
-            "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown",
-            "Home", "End"
+            "Tab",
+            "Enter",
+            "Escape",
+            "ArrowLeft",
+            "ArrowRight",
+            "ArrowUp",
+            "ArrowDown",
+            "Home",
+            "End",
         ]);
 
         valorInput.addEventListener("keydown", (e) => {
@@ -352,8 +406,26 @@ import { toast } from "./utils/script.toast.js";
         attachNoHtml(form.querySelector('[name="origem"]'));
         attachNoHtml(form.querySelector('[name="composicao"]'));
         attachNoHtml(form.querySelector('[name="descricao"]'));
-    })();
 
+        const unidadeMedida = form.querySelector('[name="unidadeMedida"]');
+        const origem = form.querySelector('[name="origem"]');
+        const composicao = form.querySelector('[name="composicao"]');
+
+        attachAllowedChars(unidadeMedida, {
+            allowPattern: /^[A-Za-zÀ-ÖØ-öø-ÿ\s-]$/,
+            cleanPattern: /[^A-Za-zÀ-ÖØ-öø-ÿ\s-]/g,
+        });
+
+        attachAllowedChars(origem, {
+            allowPattern: /^[A-Za-zÀ-ÖØ-öø-ÿ\s-]$/,
+            cleanPattern: /[^A-Za-zÀ-ÖØ-öø-ÿ\s-]/g,
+        });
+
+        attachAllowedChars(composicao, {
+            allowPattern: /^[A-Za-zÀ-ÖØ-öø-ÿ0-9\s%]$/,
+            cleanPattern: /[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s%]/g,
+        });
+    })();
 
     const MAX_FILES = 5;
     let mode = "create";
@@ -500,11 +572,11 @@ import { toast } from "./utils/script.toast.js";
 
         try {
             const response = await fetch("/anuncie/categorias");
-            const categorias = await response.json();   
+            const categorias = await response.json();
 
             select.innerHTML = '<option value="" disabled selected>Selecione uma categoria</option>';
 
-            categorias.forEach(cat => {
+            categorias.forEach((cat) => {
                 const option = document.createElement("option");
                 option.value = cat.idCategoria;
                 option.textContent = cat.nome;
@@ -548,8 +620,7 @@ import { toast } from "./utils/script.toast.js";
     function reverseCondicaoToSelectValue(dbValue) {
         const s = String(dbValue || "").toLowerCase();
         if (s.includes("funcional")) return "usado-funcional";
-        if (s.includes("não funcional") || s.includes("nao funcional") || s.includes("sucata"))
-            return "sucata";
+        if (s.includes("não funcional") || s.includes("nao funcional") || s.includes("sucata")) return "sucata";
         if (s.includes("novo")) return "novo";
         return "usado-funcional";
     }
@@ -613,6 +684,13 @@ import { toast } from "./utils/script.toast.js";
 
         try {
             const fd = new FormData(form);
+
+            if (valorTotalRef) {
+                const digits = valorTotalRef.dataset.digits || "";
+                const numStr = digitsToNumberString(digits); 
+                if (numStr === "") fd.set("valorTotal", ""); 
+                else fd.set("valorTotal", numStr);
+            }
 
             if (mode === "edit") {
                 if (!editingId) throw new Error("ID do anúncio não encontrado para edição.");
@@ -759,9 +837,7 @@ import { toast } from "./utils/script.toast.js";
         const badgeCls = statusBadgeClass(anuncio?.status);
 
         const valor =
-            anuncio?.valorTotal === null || anuncio?.valorTotal === undefined
-                ? "a combinar"
-                : fmtBRL(anuncio?.valorTotal);
+            anuncio?.valorTotal === null || anuncio?.valorTotal === undefined ? "a combinar" : fmtBRL(anuncio?.valorTotal);
 
         const qtd =
             anuncio?.quantidade !== null && anuncio?.quantidade !== undefined
@@ -901,9 +977,7 @@ import { toast } from "./utils/script.toast.js";
             if (action === "delete") {
                 closeOpenMenu();
 
-                const ok = toast.confirm(
-                    "Tem certeza que deseja EXCLUIR este anúncio?\n\nEssa ação não é reversível!"
-                );
+                const ok = toast.confirm("Tem certeza que deseja EXCLUIR este anúncio?\n\nEssa ação não é reversível!");
                 if (!ok) return;
 
                 try {
@@ -990,11 +1064,7 @@ import { toast } from "./utils/script.toast.js";
         try {
             closeOpenMenu();
 
-            const [resumo, semana, lista] = await Promise.all([
-                fetchJson(API.resumo),
-                fetchJson(API.semana),
-                fetchJson(API.lista),
-            ]);
+            const [resumo, semana, lista] = await Promise.all([fetchJson(API.resumo), fetchJson(API.semana), fetchJson(API.lista)]);
 
             renderResumo(resumo);
             renderChartSemana(semana);
