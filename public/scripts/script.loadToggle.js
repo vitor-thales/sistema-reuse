@@ -6,22 +6,6 @@ window.loadAllConfigToggles = async function () {
     if(!res.ok) toast.show("Erro carregando configurações do usuário", "error");
 
     carregarToggle({
-        containerId: "toggle-mensagens-empresas",
-        title: "Mensagens de empresas",
-        description: "Notificações quando receber mensagens de outras empresas",
-        checked: json.notMsgEmpresas || false,
-        name: "mensagens_empresas"
-    });
-
-    carregarToggle({
-        containerId: "toggle-atualizacoes-anuncios",
-        title: "Atualizações de anúncios",
-        description: "Status dos seus anúncios publicados",
-        checked: json.notAttAnuncios || false,
-        name: "atualizacoes_anuncios"
-    });
-
-    carregarToggle({
         containerId: "toggle-perfil-privado",
         title: "Perfil Privado",
         description: "Outras empresas terão acesso apenas ao seu nome fantasia",

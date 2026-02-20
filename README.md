@@ -118,5 +118,33 @@ npm start
 
 ---
 
+### 🔐 Credenciais de Teste
+
+Para testar as funcionalidades de marketplace e mensageria criptografada, utilize as contas pré-configuradas abaixo.
+
+#### **Usuários Empresariais (Marketplace/Chat)**
+
+* **Google**: 
+* Login: `vitor.rohling.becker@gmail.com` ou `06990590000557`
+* Senha: `Senha123`
+
+* **Microsoft**: 
+* Login: `thales@belle.com` ou `04712500000107`
+* Senha: `Senha123`
+
+#### **Acesso Administrativo (Painel Admin)**
+
+* *E-mail*: `admin@reuse.com.br`
+* *Senha:* `123`
+---
+
+### Aviso!
+
+**Atenção sobre a Integridade dos Dados:**
+As contas da Google e Microsoft são as únicas totalmente funcionais para o sistema de Mensagem E2E com os dados iniciais do banco (`db.sql`).
+
+Como o sistema utiliza criptografia assimétrica (RSA), as chaves privadas e públicas no banco de dados estão vinculadas logicamente. Não altere manualmente as colunas ikPublica, ikPrivada, salt ou iv no MySQL, pois isso quebrará a capacidade da conta de descriptografar mensagens e realizar login.
+
+---
 
 **Projeto desenvolvido para fins acadêmicos - SENAI 2026.**

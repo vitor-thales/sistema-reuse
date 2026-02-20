@@ -119,8 +119,8 @@ export default {
         if (!token) return res.status(401).json({ error: "Não autenticado" });
 
         const decoded = jwt.verify(token, env.JWT_SECRET);
-
+        
         const config = await ConfigEmpresasModel.getByEmpresaId(decoded.id);
-        return res.json(config || {});
+        return res.json({...config, id: decoded.id});
     }
 };

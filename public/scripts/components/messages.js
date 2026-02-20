@@ -306,6 +306,7 @@ async function openChat(idConversa, partnerId, partnerName, initials, partnerPub
         for (const msg of encryptedMessages) {
             const isMe = msg.idRemetente === myUserId;
             const decryptedText = await ChatEngine.decryptMessage(msg.content, msg.wrappedKey, msg.iv);
+            if(decryptedText === null) continue;
             
             const dbStatus = isMe ? (msg.lida ? 'read' : 'sent') : 'received';
             

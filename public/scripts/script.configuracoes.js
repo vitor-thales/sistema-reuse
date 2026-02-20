@@ -90,8 +90,6 @@ window.enviarConfiguracoes = async function () {
         estado: document.getElementById("estado").value,
         numEndereco: document.getElementById("numero").value,
         compEndereco: document.getElementById("complemento").value,
-        notMsgEmpresas: document.getElementById("mensagens_empresas").checked,
-        notAttAnuncios: document.getElementById("atualizacoes_anuncios").checked,
         privPerfilPrivado: document.getElementById("perfil_privado").checked,
         privMostrarEmail: document.getElementById("email_publico").checked,
         privMostrarFone: document.getElementById("telefone_publico").checked,
@@ -187,6 +185,8 @@ window.loadDefaultConfig = async function () {
     document.getElementById("bairro").value = json.bairro;
     document.getElementById("numero").value = json.numEndereco;
     document.getElementById("complemento").value = json.compEndereco;
+
+    document.getElementById("user-perfil").href = `/detalhes-empresa/${json.id}`;
 }
 
 

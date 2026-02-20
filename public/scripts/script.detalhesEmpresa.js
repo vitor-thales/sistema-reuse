@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         produtos.forEach((p) => {
-            const imgSrc = p?.nomeArquivo ? `/uploads/${p.nomeArquivo}` : "../images/adicionar.png";
+            const imgSrc = p?.nomeArquivo ? `/uploads/${p.nomeArquivo}` : "../images/favicon.ico";
             const categoria = safeText(p?.categoria) || "Categoria";
             const qtd = Number(p?.quantidade);
             const unidade = safeText(p?.unidadeMedida);

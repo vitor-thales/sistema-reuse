@@ -40,14 +40,12 @@ CREATE TABLE tbEmpresas (
 CREATE TABLE tbConfigEmpresas (
     idConfig INT AUTO_INCREMENT PRIMARY KEY,
     idEmpresa INT NOT NULL UNIQUE,
-    notMsgEmpresas BOOLEAN NOT NULL DEFAULT TRUE,
-    notAttAnuncios BOOLEAN NOT NULL DEFAULT TRUE,
     privPerfilPrivado BOOLEAN NOT NULL DEFAULT FALSE,
     privMostrarEmail BOOLEAN NOT NULL DEFAULT TRUE,
     privMostrarFone BOOLEAN NOT NULL DEFAULT TRUE,
     privMostrarEndCompleto BOOLEAN NOT NULL DEFAULT FALSE,
     privMostrarCNPJ BOOLEAN NOT NULL DEFAULT FALSE,
-    privMostrarRazaoSocial BOOLEAN NOT NULL DEFAULT TRUE,
+    privMostrarRazaoSocial BOOLEAN NOT NULL DEFAULT FALSE,
     segAutDuasEtapas BOOLEAN NOT NULL DEFAULT FALSE,
     aparenciaTema INT NOT NULL DEFAULT 1,
     FOREIGN KEY (idEmpresa) REFERENCES tbEmpresas(idEmpresa)

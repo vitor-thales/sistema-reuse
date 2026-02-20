@@ -12,6 +12,13 @@
     <section class="grid grid-cols-1 lg:grid-cols-7 h-screen">
         <div class="h-full lg:col-span-2 bg-lightgray flex flex-col items-center py-5 my-auto px-6 overflow-y-auto" id="register-forms">
             <div class="grow min-h-1"></div>
+            <div class="mb-4 left">
+                <a href="javascript:history.back()"
+                    class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-darkblue transition">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Voltar
+                </a>
+            </div>
             
             <h1 class="text-2xl lg:text-4xl text-darkblue text-center mb-2 font-semibold relative">CADASTRAR-SE</h1>
             <p class="text-darkblue/70 font-semibold text-base lg:text-[18px] mb-2 text-center" id="page-description">PREENCHA AS INFORMAÇÕES</p>
@@ -66,7 +73,7 @@
                     </div>
 
                     <div class="relative w-full">
-                        <input class="pl-13 pt-2.5 pb-2.5 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" required type="text" name="nome-responsavel" placeholder="Nome do responsável*" />
+                        <input pattern="[A-Za-zÀ-ÿ\s]+" title="Por favor, use apenas letras e espaços." class="pl-13 pt-2.5 pb-2.5 pr-3 text-xl w-full focus:outline-darkblue/90 text-darkblue placeholder:text-darkblue/60 border border-darkblue rounded-[20px]" required type="text" name="nome-responsavel" placeholder="Nome do responsável*" />
 
                         <div class="absolute left-3.5 top-2.5 text-darkblue">
                             <i class="fa-solid fa-user text-3xl"></i>
@@ -207,14 +214,30 @@
                     <div class="bg-mainblue/10 border-2 border-mainblue rounded-2xl overflow-hidden">
                         <h2 class="text-center text-darkblue text-2xl border-b-2 border-mainblue py-2">Política de Privacidade</h2>
                         <div class="max-h-60 overflow-y-auto">
-                            <p class="text-justify px-5 py-2">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
+                            <p class="text-justify px-5 py-2">
+<span class="font-bold">1. Coleta de Dados de Cadastro</span>
+<br>
+Coletamos dados corporativos (CNPJ, Razão Social, E-mail e Telefone Corporativo) e dados do responsável pelo cadastro. Esses dados são necessários para a manutenção da segurança e autenticidade da rede B2B.
+<br>
+<span class="font-bold">2. Documentação e Armazenamento Temporário</span>
+<br>
+Para o processo de verificação de conta, solicitamos o upload de documentos comprovantes (Cartão CNPJ, Contrato Social, etc.). Estes arquivos são armazenados em caráter temporário e estritamente para fins de auditoria interna. Todos os arquivos de documentos são excluídos de nossos servidores imediatamente após o cadastro ser aprovado ou negado pela administração.
+<br>
+<span class="font-bold">3. Criptografia de Dados</span>
+<br>
+As mensagens trocadas entre usuários são protegidas por criptografia de ponta a ponta. O conteúdo das conversas não é lido, monitorado ou armazenado de forma legível pela ReUse. O banco de dados armazena apenas metadados necessários para a entrega das mensagens e o conteúdo criptografado (ilegível para terceiros).
+<br>
+<span class="font-bold">4. Configurações de Privacidade de Perfil</span>
+<br>
+A plataforma oferece ferramentas de privacidade onde a empresa pode configurar o que deseja exibir publicamente em seu perfil para outros usuários, como telefone, e-mail, CNPJ e endereço completo. É responsabilidade do usuário gerenciar essas permissões em suas configurações de conta.
+<br>
+<span class="font-bold">5. Segurança</span>
+<br>
+Empregamos protocolos de segurança rigorosos para proteger os hashes de senhas e tokens de acesso. Recomendamos que o usuário nunca compartilhe links de redefinição de senha, sob risco de comprometer a integridade de seus dados criptografados.
+<br>
+<span class="font-bold">6. Alterações</span>
+<br>
+Esta política pode ser atualizada conforme novas funcionalidades forem implementadas. O uso continuado da plataforma após alterações constitui aceitação da nova política.
                             </p>
                         </div>
                         <div class="items-center flex border-t-2 py-2 px-3 border-mainblue">
@@ -230,14 +253,30 @@
                     <div class="bg-mainblue/10 border-2 border-mainblue rounded-2xl overflow-hidden">
                         <h2 class="text-center text-darkblue text-2xl border-b-2 border-mainblue py-2">Termos e Condições</h2>
                         <div class="max-h-60 overflow-auto">
-                            <p class="text-justify px-5 py-2">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
-                                Lorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit ametLorem ipsum dolor sit amet
+                            <p class="text-justify px-5 py-2">
+<span class="font-bold">1. Aceitação dos Termos</span>
+<br>
+Ao acessar e utilizar a plataforma ReUse, você concorda integralmente com estes Termos e Condicoes de Uso. Esta plataforma é destinada exclusivamente ao uso B2B (Business to Business), sendo obrigatório o cadastro via CNPJ para a realização de anuncios e interações.
+<br>
+<span class="font-bold">2. Natureza da Plataforma</span>
+<br>
+A ReUse atua exclusivamente como um marketplace de anuncios para resíduos eletrônicos. A plataforma funciona como um facilitador de contato, fornecendo ferramentas de exposição e controle. Nenhuma transaçãoo financeira, pagamento ou venda é processada diretamente pelo site. A negociação de valores, logística de entrega e pagamentos são de responsabilidade integral e exclusiva das empresas anunciante e compradora.
+<br>
+<span class="font-bold">3. Restrição de Itens</span>
+<br>
+A plataforma é destinada unicamente a venda e descarte de resíduos eletrônicos. É terminantemente proíbido o anuncio de qualquer outro tipo de produto ou resíduo que não se enquadre na categoria de e-lixo ou tecnologia sustentavel.
+<br>
+<span class="font-bold">4. Sistema de Mensagens e Criptografia</span>
+<br>
+Para garantir a seguranca corporativa, a ReUse utiliza criptografia de ponta a ponta (E2EE) em seu sistema de chat. Isso significa que apenas os participantes da conversa possuem as chaves necessarias para ler o conteúdo. A ReUse não possui acesso as chaves de descriptografia e, portanto, não consegue recuperar o conteúdo das mensagens em nenhuma hípotese.
+<br>
+<span class="font-bold">5. Perda de Acesso e Senha</span>
+<br>
+Devido a arquitetura de seguranca E2EE, a chave privada do usuario é protegida por sua senha pessoal. O usuario declara estar ciente de que, em caso de redefinição de senha, o acesso ao histórico de mensagens anteriores será permanentemente perdido, uma vez que a chave de segurança antiga sera descartada por proteção.
+<br>
+<span class="font-bold">6. Responsabilidades</span>
+<br>
+As empresas usuarias são responsáveis pela veracidade das informações postadas e pela conformidade legal do descarte de resíduos conforme a legislaçãoo ambiental vigente. A ReUse não se responsabiliza por danos decorrentes de negociações firmadas entre usuarios fora ou dentro da plataforma.
                             </p>
                         </div>
                         <div class="items-center flex border-t-2 py-2 px-3 border-mainblue">

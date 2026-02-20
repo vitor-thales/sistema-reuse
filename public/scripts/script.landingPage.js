@@ -174,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
     image.alt = anuncio.nomeProduto || "Anúncio";
     image.src = anuncio.nomeArquivo
       ? `/uploads/${anuncio.nomeArquivo}`
-      : "/images/adicionar.png";
+      : "/images/favicon.ico";
 
     media.appendChild(image);
 

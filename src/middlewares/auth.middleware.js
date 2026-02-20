@@ -2,20 +2,30 @@ import jwt from "jsonwebtoken";
 
 import { env } from "../config/env.js";
 import { checkPermissionLevel } from "../utils/checkPermission.js";
+import { validateUser } from "../models/auth.model.js";
 
-export function auth(req, res, next) {
+export async function auth(req, res, next) {
     const token = req.cookies?.reuseToken;
-
+    
     if (!token) {
         const error = new Error();
         error.status = 401;
         return next(error);
     };
-
     try {
-        jwt.verify(token, env.JWT_SECRET);
+        const payload = jwt.verify(token, env.JWT_SECRET);
+        
+        const isValid = await validateUser(payload.id, payload.role);
+        if (!isValid) {
+            res.clearCookie("reuseToken");
+            const error = new Error("Usuário inexistente ou inativo");
+            error.status = 401;
+            return next(error);
+        }
+
         next();
     } catch (err) {
+        console.log(err);
         const error = new Error();
         error.status = 401;
         return next(error);
@@ -72,6 +82,14 @@ export async function adminAuth(req, res, next) {
             error.status = 401;
             return next(error);
         };
+
+        const isValid = await validateUser(payload.id, payload.role);
+        if (!isValid) {
+            res.clearCookie("reuseToken");
+            const error = new Error("Usuário inexistente ou inativo");
+            error.status = 401;
+            return next(error);
+        }
 
         const segments = req.path.split("/");
         const target = segments[1];
