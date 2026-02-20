@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="relative">
                 <img class="w-full h-40 object-cover" 
                      alt="${produto.nomeProduto}" 
-                     src="${produto.nomeArquivo ? `/uploads/${produto.nomeArquivo}` : '/images/placeholder.png'}">
+                     src="${produto.nomeArquivo ? `/uploads/${produto.nomeArquivo}` : '/images/favicon.ico'}">
                 ${produto.status === 'disponivel' ? '<span class="absolute top-2 right-2 bg-green-500 text-white text-[10px] px-2 py-0.5 rounded-md opacity-80">disponível</span>' : ''}
             </div>
             

@@ -8,7 +8,7 @@ const router = Router();
 router.get("/", auth, anuncieController.getPage);
 router.get("/novo", auth, anuncieController.getPage);
 
-router.get("/categorias", auth, anuncieController.getCategorias);
+router.get("/categorias", anuncieController.getCategorias);
 
 router.get("/api/anuncios", anuncieController.listarAnuncios);
 

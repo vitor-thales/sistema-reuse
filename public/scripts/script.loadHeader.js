@@ -33,19 +33,11 @@ fetch('/components/header.html')
           return;
         }
 
-        if (window.toast?.show) {
-          window.toast.show('Você precisa estar logado para anunciar.', "error");
-        } else {
-          console.warn("toast.show não encontrado, redirecionando para /login");
-        }
+        toast.show('Você precisa estar logado para anunciar.', "error");
 
         window.location.href = '/login';
       } catch (err) {
-        if (window.toast?.show) {
-          window.toast.show('Não foi possível verificar o login. Tente novamente.', "error");
-        } else {
-          console.error("Erro ao verificar login:", err);
-        }
+        toast.show('Não foi possível verificar o login. Tente novamente.', "error");
       }
     }
 
@@ -60,6 +52,7 @@ fetch('/components/header.html')
     });
 
     const barraPesquisa = document.getElementById("barraPesquisa");
+    console.log(barraPesquisa);
 
     barraPesquisa?.addEventListener("input", () => {
       const q = (barraPesquisa.value || "").trim().toLowerCase();

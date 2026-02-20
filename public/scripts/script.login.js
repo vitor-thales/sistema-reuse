@@ -44,7 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             else { 
                 const { encryptedPrivateKey, salt, iv } = await res.json();
-                
+                let destination;
+
                 if(encryptedPrivateKey) {
                     const wrappingKey = await deriveKeyFromPassword(data.password, salt);
 
@@ -80,10 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     localStorage.setItem("persistent_iv", btoa(String.fromCharCode(...persistenceIv)));
 
                     document.cookie = `device_secret=${deviceSecretBase64}; path=/; Max-Age=604800; SameSite=Strict;`;
+
+                    destination = "/";
+                } else {
+                    destination = "/admin/dashboard";
                 }
 
                 toast.show("Login realizado com sucesso! Redirecionando...");
-                setTimeout(() => window.location.href = "/", 2000);
+                setTimeout(() => window.location.href = destination, 2000);
             }
         } catch (err) {
             console.error(err);

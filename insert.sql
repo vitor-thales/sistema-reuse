@@ -1,49 +1,37 @@
 USE dbReuse;
 
 -- ----------------------------------------------------------
--- 1. POPULATE tbEmpresas (Real Keys provided)
+-- 1. POPULATE tbEmpresas 
 -- ----------------------------------------------------------
 INSERT INTO tbEmpresas (
     ikPublica, ikPrivada, salt, iv, cnpj, razaoSocial, nomeFantasia, 
-    emailCorporativo, foneCorporativo, nomeResponsavel, cpfResponsavel, senhaHash, 
-    cepEmpresa, estado, cidade, bairro, endereco, numEndereco, compEndereco, 
-    docComprovanteEndereco, docCartaoCNPJ, docContratoSocial, dataCadastro, cadastroAtivo
+    emailCorporativo, foneCorporativo, nomeResponsavel, cpfResponsavel, 
+    senhaHash, cepEmpresa, estado, cidade, bairro, endereco, numEndereco, 
+    compEndereco, docComprovanteEndereco, docCartaoCNPJ, docContratoSocial, 
+    descricao, dataCadastro, cadastroAtivo, dataAprovacao
 ) VALUES 
-(
-    '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', 
-    'WJMmC6KHczFV+cAxBwuFuQ==', 
-    '/EJt1Ee0UWdy6B7f', 
-    '06990590000557', 
-    'Google Com Ltda', 
-    NULL, 
-    'vitor.rohling.becker@gmail.com', 
-    '45998041305', 
-    'Vitor', 
-    '10295007974', 
-    '$2a$10$Kpj8GjztIxgNKd/ILFeUJ.4.EdUofSF/yAAD2OxwXl7Hn5kwD1Jre', 
-    '85819020', 'Paraná', 'Cascavel', 'Universitário', 'Rua Pedro Bau', '361', 'Teste', 
-    '8d535761051e8a8d.jpg', 'ec1b7e0134a556de.jpg', NULL, '2026-02-17 20:10:18', 1
-),
-( 
-    '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', 
-    'OwykX+cfH47rGLKSwTjMQw==', 
-    'Boi5OZV+VmHyFl31', 
-    '58289793000190', 
-    'Roblox LTDA', 
-    'Roblox', 
-    'roblox@nemsei.com', 
-    '45999999999', 
-    'Roblox Dono', 
-    '05561856090', 
-    '$2a$10$Kpj8GjztIxgNKd/ILFeUJ.4.EdUofSF/yAAD2OxwXl7Hn5kwD1Jre', 
-    '85819020', 'Paraná', 'Cascavel', 'Universitário', 'Rua Pedro Bau', '111', '', 
-    'f632f27ec0e17ae5.jpg', '070a0c70d5faaa0e.jpg', NULL, '2026-02-17 20:18:16', 1
-);
+('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', 'eVwU+1jW+ioJHP+vawEHGQ==', 'QNHYG0fFam8dHB4u', '06990590000557', 'GOOGLE BRASIL INTERNET LTDA.', 'Google', 'vitor.rohling.becker@gmail.com', '45998041305', 'Vitor Valentin', '34293729097', '$2b$10$3OX/cvYXk3EwdDGdZrBWxeZqQen870HQjYiJ2/hk0DCEFRnABkfW2', '85819020', 'Paraná', 'Cascavel', 'Universitário', 'Rua Pedro Bau', '104', 'Teste2', '2139afcfd72fc201.jpg', '3b256353ed5c5d2e.jpg', NULL, '', '2026-02-19 20:46:40', 1, '2026-02-19 20:52:30'),
+('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', 'lhzgKSNZj6wAYMREPXrx2A==', 'Q+qQoGEKCyVGr7r4', '04712500000107', 'Microsoft do Brasil Importacao e Comercio de Software e Video Games LTDA', 'Microsoft', 'thales@belle.com', '45111111111', 'Thales Bellé', '29451865004', '$2b$10$jOHQYHX7yBkr/7jUdyRvDO3vJhBZTDSY6tdpP0zVhQwhNyLkXjxJe', '85819020', 'Paraná', 'Cascavel', 'Universitário', 'Rua Pedro Bau', '110', '', 'ff3eccdeef9fd03d.jpg', '13448f488ba256cb.jpg', NULL, '', '2026-02-19 20:50:08', 1, '2026-02-19 20:52:05'),
+('PUB_KEY_003', 'PRIV_KEY_003', 'SALT_003', 'IV_003', '12345678000190', 'TECH SOLUTIONS LTDA', 'TechSol', 'contact@techsol.com', '11988887777', 'Ana Silva', '12345678901', 'HASH_003', '01001000', 'São Paulo', 'São Paulo', 'Sé', 'Praça da Sé', '10', 'Sala 101', 'comp_003.jpg', 'cnpj_003.jpg', 'social_003.jpg', 'Software Dev', DATE_SUB(NOW(), INTERVAL 1 DAY), 1, DATE_SUB(NOW(), INTERVAL 20 HOUR)),
+('PUB_KEY_004', 'PRIV_KEY_004', 'SALT_004', 'IV_004', '98765432000100', 'GREEN ENERGY S.A.', 'GreenE', 'info@greenenergy.com', '21977776666', 'Carlos Souza', '98765432100', 'HASH_004', '20040000', 'Rio de Janeiro', 'Rio de Janeiro', 'Centro', 'Av Rio Branco', '500', '', 'comp_004.jpg', 'cnpj_004.jpg', NULL, 'Renewable Energy', DATE_SUB(NOW(), INTERVAL 1 MONTH), 1, DATE_SUB(NOW(), INTERVAL 28 DAY)),
+('PUB_KEY_005', 'PRIV_KEY_005', 'SALT_005', 'IV_005', '11223344000155', 'BLUE LOGISTICS TRANSPORTES', 'BlueLog', 'ops@bluelog.com', '31966665555', 'Maria Oliveira', '11122233344', 'HASH_005', '30110000', 'Minas Gerais', 'Belo Horizonte', 'Savassi', 'Rua Pernambuco', '123', 'Bloco B', 'comp_005.jpg', 'cnpj_005.jpg', 'social_005.jpg', 'Logistics Services', DATE_SUB(NOW(), INTERVAL 7 DAY), 0, NULL),
+('PUB_KEY_006', 'PRIV_KEY_006', 'SALT_006', 'IV_006', '55667788000122', 'ALPHA CONSULTORIA EMPRESARIAL', 'AlphaConsult', 'hr@alphaconsult.com', '41955554444', 'Roberto Santos', '55566677788', 'HASH_006', '80010010', 'Paraná', 'Curitiba', 'Batel', 'Av Sete de Setembro', '2000', 'Andar 5', 'comp_006.jpg', 'cnpj_006.jpg', NULL, 'Business Strategy', DATE_SUB(NOW(), INTERVAL 2 MONTH), 1, DATE_SUB(NOW(), INTERVAL 55 DAY)),
+('PUB_KEY_007', 'PRIV_KEY_007', 'SALT_007', 'IV_007', '99001122000133', 'HEALTH CARE PLUS SERVICOS MEDICOS', 'HealthPlus', 'admin@healthplus.com', '51944443333', 'Lucia Mendes', '99900011122', 'HASH_007', '90010000', 'Rio Grande do Sul', 'Porto Alegre', 'Moinhos de Vento', 'Rua Padre Chagas', '45', '', 'comp_007.jpg', 'cnpj_007.jpg', 'social_007.jpg', 'Medical Services', DATE_SUB(NOW(), INTERVAL 3 DAY), 0, NULL),
+('PUB_KEY_008', 'PRIV_KEY_008', 'SALT_008', 'IV_008', '33445566000144', 'SUNRISE FOODS DISTRIBUIDORA', 'Sunrise', 'sales@sunrise.com', '61933332222', 'Fernando Lima', '33344455566', 'HASH_008', '70040000', 'Distrito Federal', 'Brasília', 'Asa Sul', 'CLS 405', 'S/N', 'Loja 12', 'comp_008.jpg', 'cnpj_008.jpg', NULL, 'Food Distribution', DATE_SUB(NOW(), INTERVAL 14 DAY), 1, DATE_SUB(NOW(), INTERVAL 12 DAY)),
+('PUB_KEY_009', 'PRIV_KEY_009', 'SALT_009', 'IV_009', '77889900000111', 'URBAN ARCHITECTS ESTUDIO', 'UrbanArch', 'design@urbanarch.com', '71922221111', 'Juliana Costa', '77788899900', 'HASH_009', '40015000', 'Bahia', 'Salvador', 'Barra', 'Av Oceanica', '99', 'Sala 2', 'comp_009.jpg', 'cnpj_009.jpg', 'social_009.jpg', 'Architecture and Design', DATE_SUB(NOW(), INTERVAL 45 DAY), 1, DATE_SUB(NOW(), INTERVAL 40 DAY)),
+('PUB_KEY_010', 'PRIV_KEY_010', 'SALT_010', 'IV_010', '44556677000188', 'PEAK PERFORMANCE ACADEMIA LTDA', 'PeakGym', 'manager@peakgym.com', '81911110000', 'Marcos Rocha', '44455566677', 'HASH_010', '50010000', 'Pernambuco', 'Recife', 'Boa Viagem', 'Av Boa Viagem', '1500', '', 'comp_010.jpg', 'cnpj_010.jpg', NULL, 'Fitness Center', DATE_SUB(NOW(), INTERVAL 5 DAY), 0, NULL);
+('PK_011', 'SK_011', 'S_011', 'IV_011', '55111222000199', 'COFFEE BREAK EXPRESS', 'CoffeeEx', 'admin@coffee.br', '1133221100', 'Pedro Ramos', '45678912300', 'HASH_11', '04543011', 'São Paulo', 'São Paulo', 'Itaim Bibi', 'Rua Tabapuã', '450', 'Andar 2', 'c11.jpg', 'j11.jpg', 's11.jpg', 'Coffee Shop', DATE_SUB(NOW(), INTERVAL 10 DAY), 1, DATE_SUB(NOW(), INTERVAL 9 DAY)),
+('PK_012', 'SK_012', 'S_012', 'IV_012', '66222333000188', 'OCEAN BLUE SURF SHOP', 'OceanSurf', 'surf@ocean.com', '4899112233', 'Gabriel Mares', '78912345611', 'HASH_12', '88010000', 'Santa Catarina', 'Florianópolis', 'Centro', 'Rua das Palmeiras', '12', '', 'c12.jpg', 'j12.jpg', NULL, 'Surf Gear', DATE_SUB(NOW(), INTERVAL 3 MONTH), 1, DATE_SUB(NOW(), INTERVAL 85 DAY)),
+('PK_013', 'SK_013', 'S_013', 'IV_013', '77333444000177', 'METALURGICA FERRO FORTE', 'FerroForte', 'vendas@ferro.br', '5432215566', 'Ricardo Aço', '15926348700', 'HASH_13', '95010000', 'Rio Grande do Sul', 'Caxias do Sul', 'Lourdes', 'Rua Sinimbu', '990', 'Galpão', 'c13.jpg', 'j13.jpg', 's13.jpg', 'Metallurgy', DATE_SUB(NOW(), INTERVAL 60 DAY), 0, NULL),
+('PK_014', 'SK_014', 'S_014', 'IV_014', '88444555000166', 'PET SHOP FELIZ LTDA', 'PetFeliz', 'pet@feliz.com', '1932556677', 'Carla Dias', '32165498711', 'HASH_14', '13010000', 'São Paulo', 'Campinas', 'Cambuí', 'Av Julio de Mesquita', '200', 'Loja B', 'c14.jpg', 'j14.jpg', NULL, 'Pet Services', DATE_SUB(NOW(), INTERVAL 4 DAY), 1, DATE_SUB(NOW(), INTERVAL 3 DAY)),
+('PK_015', 'SK_015', 'S_015', 'IV_015', '99555666000155', 'LIVRARIA PAGINA UM', 'PaginaUm', 'contato@pagina1.com', '2125443322', 'Sonia Veras', '98732165422', 'HASH_15', '20010000', 'Rio de Janeiro', 'Rio de Janeiro', 'Centro', 'Rua do Ouvidor', '55', '', 'c15.jpg', 'j15.jpg', 's15.jpg', 'Bookstore', DATE_SUB(NOW(), INTERVAL 15 DAY), 0, NULL),
+('PK_016', 'SK_016', 'S_016', 'IV_016', '10111222000144', 'AUTO PECAS RAPIDO', 'AutoRapido', 'pecas@rapido.br', '3133445566', 'Jose Motor', '74185296300', 'HASH_16', '31010000', 'Minas Gerais', 'Belo Horizonte', 'Prado', 'Rua Platina', '80', '', 'c16.jpg', 'j16.jpg', NULL, 'Car Parts', DATE_SUB(NOW(), INTERVAL 22 DAY), 1, DATE_SUB(NOW(), INTERVAL 20 DAY)),
+('PK_017', 'SK_017', 'S_017', 'IV_017', '11122233000133', 'FARMACIA SAUDE TOTAL', 'SaudeTotal', 'sac@saude.com', '6233112244', 'Beatriz Remédio', '36925814755', 'HASH_17', '74010000', 'Goiás', 'Goiânia', 'Setor Oeste', 'Av Republica', '1001', 'Térreo', 'c17.jpg', 'j17.jpg', 's17.jpg', 'Pharmacy', DATE_SUB(NOW(), INTERVAL 8 DAY), 1, DATE_SUB(NOW(), INTERVAL 7 DAY)),
+('PK_018', 'SK_018', 'S_018', 'IV_018', '22233344000122', 'MERCADO DO POVO', 'MercPov', 'contato@povomerc.br', '8134556677', 'Wilson Silva', '15975345688', 'HASH_18', '50010100', 'Pernambuco', 'Recife', 'Santo Amaro', 'Av Cruz Cabugá', '300', '', 'c18.jpg', 'j18.jpg', NULL, 'Grocery', DATE_SUB(NOW(), INTERVAL 12 MONTH), 1, DATE_SUB(NOW(), INTERVAL 360 DAY)),
+('PK_019', 'SK_019', 'S_019', 'IV_019', '33344455000111', 'RESTAURANTE SABOR LOCAL', 'SaborLoc', 'chefe@sabor.com.br', '7133449900', 'Leticia Tempero', '85296374133', 'HASH_19', '40000000', 'Bahia', 'Salvador', 'Pelourinho', 'Rua Direita', '5', '', 'c19.jpg', 'j19.jpg', 's19.jpg', 'Restaurant', DATE_SUB(NOW(), INTERVAL 2 DAY), 0, NULL),
+('PK_020', 'SK_020', 'S_020', 'IV_020', '44455566000100', 'MODA TREND BRASIL', 'ModaTrend', 'style@trend.com', '1144556677', 'Alice Estilo', '96385274144', 'HASH_20', '01153000', 'São Paulo', 'São Paulo', 'Bom Retiro', 'Rua José Paulino', '88', 'Loja 4', 'c20.jpg', 'j20.jpg', NULL, 'Clothing Store', DATE_SUB(NOW(), INTERVAL 35 DAY), 1, DATE_SUB(NOW(), INTERVAL 30 DAY));
 
--- Note: tbConfigEmpresas is automatically populated by your TRIGGER tgCreateConfigEmpresa
-
+UPDATE tbConfigEmpresas SET segAutDuasEtapas = 1 WHERE idEmpresa = 1;
 -- ----------------------------------------------------------
 -- 2. POPULATE tbCategorias
 -- ----------------------------------------------------------
@@ -57,32 +45,75 @@ INSERT INTO tbCategorias (nome, descricao) VALUES
 -- ----------------------------------------------------------
 -- 3. POPULATE tbAnuncios
 -- ----------------------------------------------------------
-INSERT INTO tbAnuncios (idEmpresa, nomeProduto, valorTotal, quantidade, unidadeMedida, pesoTotal, descricao, idCategoria, condicao, origem, composicao, modalidadeColeta, status, dataStatus) VALUES 
-(1, 'Lote de Placas-mãe Antigas', 500.00, 10, 'Unidades', 15, 'Lote com 10 placas-mãe de servidores antigos para extração de metais.', 1, 'Usado - Não Funcional', 'Descarte Corporativo', 'Cobre, Ouro, Fibra', 'Disponível para Agendamento', 'ativo', NOW()),
-(1, 'Notebooks Dell para Peças', 1200.00, 3, 'Unidades', 8, '3 notebooks Latitude sem HD. Ligam mas telas estão quebradas.', 2, 'Usado - Não Funcional', 'Leilão', 'Plástico, Alumínio, Lítio', 'Entrega Direta em Endereço', 'ativo', NOW()),
-(2, 'Baterias Estacionárias 12v', 450.00, 5, 'Unidades', 40, 'Baterias de UPS/No-break usadas. Ideais para reciclagem de chumbo.', 3, 'Usado - Funcional', 'Troca de Infraestrutura', 'Chumbo, Ácido', 'Disponível para Agendamento', 'ativo', NOW()),
-(2, 'Fios de Cobre Encapados', 200.00, 50, 'Metros', 20, 'Sobras de instalação elétrica industrial.', 4, 'Novo', 'Sobra de obra', 'Cobre, PVC', 'Entrega Direta em Endereço', 'vendido', DATE_SUB(NOW(), INTERVAL 1 MONTH));
+INSERT INTO tbAnuncios (idEmpresa, nomeProduto, valorTotal, quantidade, unidadeMedida, pesoTotal, descricao, idCategoria, condicao, origem, composicao, modalidadeColeta, status) VALUES 
+(1, 'Lote de Servidores Rack', 15000.00, 10, 'Unidades', 250, 'Servidores desativados para reciclagem de componentes.', 2, 'Usado - Não Funcional', 'Data Center', 'Metal, Silício, Plásticos', 'Entrega Direta em Endereço', 'ativo'),
+(1, 'Cabos de Rede Cat6e Usados', 450.00, 50, 'Metros', 15, 'Sobras de manutenção de infraestrutura.', 4, 'Usado - Funcional', 'Escritório', 'Cobre, PVC', 'Disponível para Agendamento', 'ativo'),
+(2, 'Monitores LED 24 pol', 5000.00, 20, 'Unidades', 80, 'Monitores com dead pixels ou avarias estéticas.', 5, 'Usado - Não Funcional', 'Escritório SP', 'Vidro, Plástico, Circuitos', 'Entrega Direta em Endereço', 'ativo'),
+(2, 'Baterias de Notebook Surface', 1200.00, 30, 'Unidades', 12, 'Baterias inchadas ou com baixa autonomia para descarte químico.', 3, 'Usado - Não Funcional', 'SAC Brasil', 'Lítio', 'Disponível para Agendamento', 'ativo'),
+(3, 'Placas-mãe de Notebooks', 2500.00, 45, 'Unidades', 10, 'Placas diversas para extração de metais preciosos.', 1, 'Usado - Não Funcional', 'Manutenção', 'Metais, Cerâmica', 'Disponível para Agendamento', 'ativo'),
+(3, 'Lote de Teclados Mecânicos', 800.00, 15, 'Unidades', 12, 'Teclados com defeito em switch.', 2, 'Usado - Não Funcional', 'Logística Reversa', 'Plástico ABS, Metal', 'Entrega Direta em Endereço', 'ativo'),
+(3, 'Fontes de Alimentação ATX', 600.00, 10, 'Unidades', 15, 'Fontes 500W testadas e funcionando.', 4, 'Usado - Funcional', 'Upgrade de Máquinas', 'Cobre, Alumínio', 'Disponível para Agendamento', 'ativo'),
+(3, 'Tablets Educativos', 3000.00, 20, 'Unidades', 8, 'Telas quebradas, touch não funciona.', 2, 'Usado - Não Funcional', 'Doação governamental', 'Vidro, Lítio', 'Entrega Direta em Endereço', 'ativo'),
+(3, 'Fios de Cobre Descapados', 200.00, 5, 'Quilos', 5, 'Cobre limpo para reciclagem direta.', 4, 'Usado - Não Funcional', 'Instalação Elétrica', 'Cobre', 'Disponível para Agendamento', 'ativo'),
+(4, 'Baterias Estacionárias 100Ah', 4500.00, 5, 'Unidades', 150, 'Baterias de no-break solar para reciclagem.', 3, 'Usado - Não Funcional', 'Sistema Solar', 'Chumbo-Ácido', 'Entrega Direta em Endereço', 'ativo'),
+(4, 'Painéis Solares Avariados', 1500.00, 4, 'Unidades', 72, 'Vidro trincado, mas células gerando baixa tensão.', 1, 'Usado - Não Funcional', 'Parque Solar', 'Silício, Alumínio', 'Disponível para Agendamento', 'ativo'),
+(4, 'Controladores de Carga MPPT', 850.00, 3, 'Unidades', 6, 'Equipamentos com erro de firmware.', 1, 'Usado - Não Funcional', 'Manutenção Campo', 'Placas de Circuito', 'Entrega Direta em Endereço', 'ativo'),
+(4, 'Carcaças de Inversores', 300.00, 10, 'Unidades', 40, 'Alumínio de alta qualidade.', 4, 'Usado - Não Funcional', 'Sucata', 'Alumínio', 'Disponível para Agendamento', 'ativo'),
+(4, 'Cabo Flexível 16mm', 1100.00, 100, 'Metros', 25, 'Sobras de obra de usina fotovoltaica.', 4, 'Novo', 'Obra Finalizada', 'Cobre', 'Entrega Direta em Endereço', 'ativo');
 
 -- ----------------------------------------------------------
--- 4. POPULATE tbImagensAnuncios (Linking to the IDs above)
+-- 4. POPULATE tbImagensAnuncios 
 -- ----------------------------------------------------------
 INSERT INTO tbImagensAnuncios (idAnuncio, nomeArquivo) VALUES 
-(1, 'placas_servidor.jpg'),
-(2, 'notebook_dell.jpg'),
-(3, 'bateria_chumbo.jpg'),
-(4, 'fios_cobre.jpg');
+(1, 'placeholder.jpg'), (1, 'placeholder.jpg'),
+(2, 'placeholder.jpg'),
+(3, 'placeholder.jpg'), (3, 'placeholder.jpg'),
+(4, 'placeholder.jpg'),
+(5, 'placeholder.jpg'),
+(6, 'placeholder.jpg'),
+(10, 'placeholder.jpg'),
+(11, 'placeholder.jpg');
 
 -- ----------------------------------------------------------
--- 5. POPULATE tbVisualizacoesAnuncios (To feed your dashboard views)
+-- 5. POPULATE tbVisualizacoesAnuncios
 -- ----------------------------------------------------------
-INSERT INTO tbVisualizacoesAnuncios (idAnuncio, idEmpresa, dataVisualizacao) VALUES 
-(1, 2, NOW()),
-(1, 2, DATE_SUB(NOW(), INTERVAL 1 DAY)),
-(2, 1, DATE_SUB(NOW(), INTERVAL 2 DAY)),
-(3, 1, NOW());
+INSERT INTO tbVisualizacoesAnuncios (idAnuncio, idEmpresa) VALUES 
+(1, 2), (1, 3), (1, 4), 
+(3, 1), (3, 5),          
+(5, 6), (5, 7), (5, 8),
+(10, 3), (11, 3);        
 
 -- ----------------------------------------------------------
--- 6. POPULATE tbUsuariosSistema (Admin Users)
+-- 6. POPULATE Conversations 
+-- ----------------------------------------------------------
+INSERT INTO tbConversas (idEmpresa1, idEmpresa2) VALUES 
+(3, 4), 
+(3, 5),
+(4, 6), 
+(7, 8), 
+(9, 10); 
+INSERT INTO tbMensagens (idConversa, idRemetente, idDestinatario, content, iv, sig, dataEnvio, entregue, lida) VALUES 
+(1, 3, 4, 'Encrypted_Content_A1...', 'iv_vector_001==', 'signature_001==', DATE_SUB(NOW(), INTERVAL 2 HOUR), 1, 1),
+(1, 4, 3, 'Encrypted_Content_A2...', 'iv_vector_002==', 'signature_002==', DATE_SUB(NOW(), INTERVAL 1 HOUR), 1, 1),
+(1, 3, 4, 'Encrypted_Content_A3...', 'iv_vector_003==', 'signature_003==', DATE_SUB(NOW(), INTERVAL 30 MINUTE), 1, 0),
+(2, 5, 3, 'Encrypted_Logistics_Data...', 'iv_vector_004==', 'signature_004==', DATE_SUB(NOW(), INTERVAL 1 DAY), 1, 1),
+(3, 6, 4, 'Encrypted_Proposal_X...', 'iv_vector_005==', 'signature_005==', DATE_SUB(NOW(), INTERVAL 5 HOUR), 1, 1),
+(4, 7, 8, 'Encrypted_Health_Report...', 'iv_vector_006==', 'signature_006==', DATE_SUB(NOW(), INTERVAL 10 MINUTE), 1, 0),
+(5, 10, 9, 'Encrypted_Gym_Layout...', 'iv_vector_007==', 'signature_007==', DATE_SUB(NOW(), INTERVAL 3 DAY), 1, 1);
+INSERT INTO tbMensagensKeys (idMensagem, idEmpresa, wrappedKey) VALUES 
+(1, 3, 'WrappedKey_For_TechSol_Msg1=='),
+(1, 4, 'WrappedKey_For_GreenEnergy_Msg1=='),
+(2, 3, 'WrappedKey_For_TechSol_Msg2=='),
+(2, 4, 'WrappedKey_For_GreenEnergy_Msg2=='),
+(3, 3, 'WrappedKey_For_TechSol_Msg3=='),
+(3, 4, 'WrappedKey_For_GreenEnergy_Msg3=='),
+(4, 3, 'WrappedKey_For_TechSol_Msg4=='),
+(4, 5, 'WrappedKey_For_BlueLog_Msg4=='),
+(5, 4, 'WrappedKey_For_GreenEnergy_Msg5=='),
+(5, 6, 'WrappedKey_For_AlphaConsult_Msg5==');
+
+-- ----------------------------------------------------------
+-- 7. POPULATE tbUsuariosSistema (Admin Users)
 -- ----------------------------------------------------------
 INSERT INTO tbUsuariosSistema (nome, email, cargo, status, pAdmin, pGerenciarCategorias, pGerenciarPedidos, senhaHash) VALUES 
 ('Administrador Geral', 'admin@reuse.com.br', 'Gerente', 1, 1, 1, 1, '$2a$10$Kpj8GjztIxgNKd/ILFeUJ.4.EdUofSF/yAAD2OxwXl7Hn5kwD1Jre');
