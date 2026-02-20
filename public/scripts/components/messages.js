@@ -160,7 +160,7 @@ function createBubbleElement(text, isMe, messageId, status, date) {
     const timeStr = messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     wrapper.innerHTML = `
-        <div class="max-w-[80%] rounded-2xl p-3 text-sm relative break-words overflow-hidden ${
+        <div class="max-w-[80%] rounded-2xl p-3 text-sm relative break-word overflow-hidden ${
             isMe ? 'bg-mainblue text-white rounded-br-none' : 'bg-white text-darkblue shadow-sm border border-lightgray rounded-bl-none'
         }">
             <p class="whitespace-pre-wrap">${text}</p>
@@ -256,7 +256,7 @@ async function renderConversationRow(conv, prepend = false) {
     el.onclick = () => openChat(conv.idConversa, conv.partnerId, partnerName, initials, conv.partnerPublicKey);
     
     el.innerHTML = `
-        <div class="w-12 h-12 flex-shrink-0 rounded-full bg-mainblue/10 flex items-center justify-center text-mainblue font-bold">${initials}</div>
+        <div class="w-12 h-12 shrink-0 rounded-full bg-mainblue/10 flex items-center justify-center text-mainblue font-bold">${initials}</div>
         <div class="flex-1 min-w-0">
             <div class="flex justify-between items-baseline">
                 <h4 class="font-bold text-darkblue text-sm truncate">${partnerName}</h4>

@@ -32,7 +32,7 @@ export default {
             const msgId = await createE2EData(data);
             const senderPublicKey = await getUserPublicKey(idRemetente);
             const remetente = await getEmpresa(idRemetente);
-            
+
             const messageToPush = {
                 idMensagem: msgId,
                 ...data,
@@ -44,7 +44,7 @@ export default {
             this.io.to(`user_${data.idDestinatario}`).emit("receive_message", messageToPush);
             this.io.to(`user_${data.idRemetente}`).emit("message_confirm", messageToPush);
 
-        } catch(err) {
+        } catch (err) {
             console.error("[socket] Erro ao processar mensagem: ", err.message);
             this.io.to(`user_${data.idRemetente}`).emit("error", err.message || "Erro ao processar mensagem.");
         }
