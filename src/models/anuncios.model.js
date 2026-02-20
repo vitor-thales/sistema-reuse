@@ -114,6 +114,7 @@ export async function getAnunciosFiltro(filtros = {}) {
       a.status,
       a.dataStatus,
       e.nomeFantasia AS nomeEmpresa,
+      e.idEmpresa,
       e.cidade AS cidade,
       e.estado AS estado,
       c.nome AS categoria,
@@ -156,6 +157,7 @@ export async function getAnuncios() {
       e.nomeFantasia AS nomeEmpresa,
       e.cidade AS cidade,
       e.estado AS estado,
+      e.idEmpresa,
       c.nome AS categoria,
       img.nomeArquivo
     FROM tbAnuncios a
