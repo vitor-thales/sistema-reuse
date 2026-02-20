@@ -52,6 +52,7 @@ fetch('/components/header.html')
     });
 
     const barraPesquisa = document.getElementById("barraPesquisa");
+    console.log(barraPesquisa);
 
     barraPesquisa?.addEventListener("input", () => {
       const q = (barraPesquisa.value || "").trim().toLowerCase();

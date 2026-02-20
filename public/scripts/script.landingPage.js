@@ -218,7 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
       <i class="fa-solid fa-building text-gray-400"></i>
       <a href="/detalhes-empresa/${anuncio.idEmpresa}" class="line-clamp-1">${anuncio.nomeEmpresa || "Empresa"}</a>
     `;
-    console.log(anuncio);
 
     const locationRow = document.createElement("div");
     locationRow.className = "flex items-center gap-2";
@@ -418,6 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("reuse:search", (e) => {
     searchQuery = e.detail?.q || "";
+    console.log("oi");
     filteredAnuncios = filtrarPorBusca(allAnuncios, searchQuery);
 
     expanded = false;
