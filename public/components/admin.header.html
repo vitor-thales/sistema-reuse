@@ -1,0 +1,61 @@
+<header class="h-20 bg-lightgray flex items-center justify-between px-4 md:px-8">
+
+  <div class="flex items-center gap-4">
+    <button onclick="toggleSidebar()" class="lg:hidden text-darkblue text-xl hover:text-mainblue">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <h1 id="page-title" class="text-lg md:text-xl font-bold text-darkblue truncate">
+        Titulo da Página
+    </h1>
+  </div>
+
+  <div class="flex items-center gap-3 md:gap-6">
+
+    <div class="relative hidden sm:block">
+      <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-darkcyangrey text-sm"></i>
+      <input 
+        id="globalSearch"
+        type="text"
+        placeholder="Buscar..."
+        class="w-40 md:w-72 pl-10 pr-4 py-2 rounded-full bg-white border border-cyangrey focus:outline-none focus:ring-2 focus:ring-mainblue text-sm"
+      />
+    </div>
+    
+    <div class="relative">
+      <div 
+        onclick="toggleUserMenu(event)" 
+        class="flex items-center gap-3 cursor-pointer hover:bg-black/5 p-1 rounded-lg transition-all"
+        id="user-menu-button"
+      >
+        <div id="user-photo" class="pt-0.75 pr-0.5 w-10 h-10 rounded-full bg-lightgray border border-cyangrey flex items-center justify-center text-mainblue font-semibold shrink-0">
+          CR
+        </div>
+
+        <div class="leading-tight hidden sm:block">
+          <p id="username" class="text-sm font-medium text-darkblue">
+            Carregando...
+          </p>
+          <p id="user-cargo" class="text-xs text-darkcyangrey">
+            Carregando...
+          </p>
+        </div>
+        <i class="fa-solid fa-chevron-down text-[10px] text-darkcyangrey ml-1"></i>
+      </div>
+
+      <div 
+        id="logout-dropdown" 
+        class="hidden absolute right-0 mt-2 w-48 bg-white border border-cyangrey rounded-xl shadow-lg py-2 z-50"
+      >
+        <button 
+          onclick="handleLogout()" 
+          class="flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 w-full text-left transition-colors"
+        >
+          <i class="fa-solid fa-arrow-right-from-bracket w-4"></i> Sair do Sistema
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+</header>

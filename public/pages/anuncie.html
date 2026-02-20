@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="/styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Detalhes do Anúncio</title>
+</head>
+
+<body class="bg-gray-50">
+    <div id="header-placeholder"></div>
+
+    <section class="border-b border-stronggray py-10 bg-white">
+        <div class="container mx-auto px-4 md:px-10 flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-3xl text-darkblue">Meus Anúncios</h1>
+                <p class="text-gray-500">Gerencie seus produtos e acompanhe o desempenho</p>
+            </div>
+            <button id="botaoNovoAnuncio"
+                class="px-6 py-3 bg-mainblue rounded-2xl text-white font-medium hover:brightness-110 flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Criar novo anúncio
+            </button>
+        </div>
+    </section>
+
+    <main class="container mx-auto px-4 md:px-10 py-8 space-y-6">
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div class="bg-white border border-stronggray rounded-2xl p-5 flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-mainblue/10 flex items-center justify-center">
+                        <i class="fa-solid fa-eye text-mainblue"></i>
+                    </div>
+                    <div>
+                        <p id="dash-views-month" class="text-lg font-bold text-darkblue leading-none">—</p>
+                        <p class="text-xs text-gray-500 mt-1">Visualizações Mensais</p>
+                    </div>
+                </div>
+                <span id="dash-views-badge"
+                    class="text-[0.7rem] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-600 font-semibold">
+                    —
+                </span>
+            </div>
+
+            <div class="bg-white border border-stronggray rounded-2xl p-5 flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-mainblue/10 flex items-center justify-center">
+                        <i class="fa-solid fa-bag-shopping text-mainblue"></i>
+                    </div>
+                    <div>
+                        <p id="dash-sales-month" class="text-lg font-bold text-darkblue leading-none">—</p>
+                        <p class="text-xs text-gray-500 mt-1">Vendas no Mês</p>
+                    </div>
+                </div>
+                <span id="dash-sales-badge"
+                    class="text-[0.7rem] px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 font-semibold">
+                    —
+                </span>
+            </div>
+
+            <div class="bg-white border border-stronggray rounded-2xl p-5 flex items-start justify-between gap-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-mainblue/10 flex items-center justify-center">
+                        <i class="fa-solid fa-box text-mainblue"></i>
+                    </div>
+                    <div>
+                        <p id="dash-active" class="text-lg font-bold text-darkblue leading-none">—</p>
+                        <p class="text-xs text-gray-500 mt-1">Anúncios Ativos</p>
+                    </div>
+                </div>
+                <span class="text-[0.7rem] px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 font-semibold">
+                    Ativos
+                </span>
+            </div>
+        </section>
+
+        <section class="bg-white border border-stronggray rounded-2xl p-6">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h2 class="text-sm font-bold text-darkblue">Visualizações da Semana</h2>
+                    <p class="text-xs text-gray-500">Acompanhe o engajamento dos seus anúncios</p>
+                </div>
+
+                <button id="dash-refresh" type="button"
+                    class="px-4 py-2 rounded-xl border border-stronggray text-darkblue bg-white hover:bg-gray-50 transition text-sm font-semibold flex items-center gap-2">
+                    <i class="fa-solid fa-rotate"></i>
+                    Atualizar
+                </button>
+            </div>
+
+            <div class="w-full">
+                <canvas id="chartSemana" class="w-full"></canvas>
+            </div>
+        </section>
+
+        <section class="bg-white border border-stronggray rounded-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-stronggray flex items-center justify-between">
+                <h2 class="text-sm font-bold text-darkblue">Todos os anúncios</h2>
+
+                <div class="flex items-center gap-2">
+                    <input id="dash-search" type="text" placeholder="Buscar anúncio..."
+                        class="h-10 w-64 max-w-full rounded-xl bg-gray-100 px-4 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none" />
+                </div>
+            </div>
+
+            <div id="dash-list" class="divide-y divide-stronggray">
+                <div class="p-6 text-sm text-gray-500">
+                    Carregando anúncios...
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="telaNovoAnuncio" style="display: none;"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+
+        <section class="w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b border-stronggray flex justify-between items-center bg-white sticky top-0">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Criar Anúncio</h2>
+                    <p class="text-stronggray">Preencha os detalhes do novo anúncio</p>
+                </div>
+                <button id="botaoFecharModal" class="text-gray-400 hover:text-red-500 transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+
+            <form id="formAnuncio" class="p-6 overflow-y-auto space-y-6">
+                <input type="hidden" name="removerImagensIds" id="removerImagensIds" value="">
+                <div class="space-y-3">
+                    <div class="space-y-1">
+                        <h3 class="text-sm font-semibold text-darkblue">Imagens do Produto (até 5 imagens)</h3>
+                        <label id="uploadLabel"
+                            class="w-32 h-32 border-2 border-dashed border-stronggray rounded-2xl flex flex-col items-center justify-center gap-2 text-stronggray cursor-pointer self-start">
+                            <input type="file" name="imagens_produto" accept="image/png,image/jpeg,image/webp" multiple
+                                class="hidden">
+                            <i class="fa-solid fa-arrow-up-from-bracket text-lg"></i>
+                            <span class="text-sm">Upload</span>
+                        </label>
+                        <p class="text-xs text-gray-400">PNG, JPEG ou WEBP (máx. 5MB cada)</p>
+                        <div id="previewAnexos" class="flex flex-wrap gap-3"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-semibold text-sm text-darkblue">Nome do Produto *</label>
+                    <input type="text" name="nomeProduto" required
+                        placeholder="Ex: Placas de Circuito PCB – Lote de Alta Qualidade"
+                        class="w-full bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex flex-col gap-1">
+                        <label class="font-semibold text-sm text-darkblue">Valor Total <span
+                                class="text-stronggray font-normal">(opcional)</span></label>
+
+                        <input type="text" id="valorTotal" name="valorTotal" inputmode="numeric" autocomplete="off"
+                            placeholder="R$ 0,00"
+                            class="bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
+
+                        <span class="text-xs text-gray-400">Deixe vazio para “a combinar”</span>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="font-semibold text-sm text-darkblue">Quantidade *</label>
+
+                        <input type="number" name="quantidade" required placeholder="150" min="0" step="1"
+                            inputmode="numeric"
+                            class="bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="font-semibold text-sm text-darkblue">Unidade de Medida *</label>
+                        <input name="unidadeMedida" required placeholder="Ex: Quilogramas, Toneladas, etc..."
+                            class="bg-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-mainblue outline-none">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-semibold text-sm text-darkblue">Peso Total</label>
+                    <input type="number" name="pesoTotal" placeholder="150" min="0" step="0.01" inputmode="decimal"
+                        class="w-full bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="font-semibold text-sm text-darkblue">Descrição *</label>
+                    <textarea name="descricao" rows="4" required
+                        placeholder="Descreva os detalhes do produto, sua aplicação, características especiais, etc."
+                        class="w-full bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none resize-none"></textarea>
+                </div>
+
+                <div class="pt-6 border-t border-stronggray/50 space-y-4">
+                    <h3 class="text-sm font-semibold text-darkblue">Especificações Técnicas</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-semibold text-sm text-darkblue">Tipo *</label>
+                            <select id="select-categorias" name="tipo" required
+                                class="bg-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-mainblue outline-none">
+                                <option value="" disabled selected>Carregando categorias...</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-semibold text-sm text-darkblue">Condição *</label>
+                            <select name="condicao" required
+                                class="bg-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-mainblue outline-none">
+                                <option value="usado-funcional" selected>Usado - Funcional</option>
+                                <option value="sucata">Sucata / Reciclável</option>
+                                <option value="novo">Novo (Estoque parado)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-semibold text-sm text-darkblue">Origem</label>
+                            <input type="text" name="origem" placeholder="Ex: Descarte industrial, Equipamentos de TI"
+                                class="bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="font-semibold text-sm text-darkblue">Composição</label>
+                            <input type="text" name="composicao" placeholder="Ex: 60% cobre, 30% plástico, 10% outros"
+                                class="bg-gray-100 rounded-xl px-4 py-3 text-sm placeholder-gray-400 focus:ring-2 focus:ring-mainblue outline-none">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <label class="font-semibold text-sm text-darkblue">Modalidade de Coleta *</label>
+                        <select name="modalidadeColeta" required
+                            class="bg-gray-100 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-mainblue outline-none">
+                            <option value="agendamento" selected>Disponível para agendamento</option>
+                            <option value="entrega">Entrega no local</option>
+                            <option value="retirada">Retirada imediata</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-stronggray/50 flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('telaNovoAnuncio').style.display='none'"
+                        class="px-6 py-2 border border-stronggray rounded-xl font-semibold text-gray-600 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit"
+                        class="px-6 py-2 bg-mainblue text-white rounded-xl font-bold hover:brightness-110 shadow-md transition-all flex items-center gap-2">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="../scripts/tema.js"></script>
+    <script type="module" src="../scripts/script.loadHeader.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script type="module" src="../scripts/script.dashboardMeusAnuncios.js" defer></script>
+</body>
+
+</html>

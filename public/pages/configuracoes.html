@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Configurações</title>
+</head>
+
+<body>
+
+    <div id="header-placeholder"></div>
+
+    <section class="border-b border-stronggray py-10 bg-white">
+        <div class="container mx-auto px-4 md:px-10 flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-3xl text-darkblue">Configurações</h1>
+                <p class="text-gray-500">Gerencie as informações e preferências da sua empresa</p>
+            </div>
+            <div>
+                <a href="#" id="user-perfil" class="font-bold text-white text-xl bg-mainblue px-6 py-4 rounded-xl">Meu Perfil</a>
+            </div>
+        </div>
+    </section>
+
+    <section
+        class="container w-full max-w-300 mx-auto mt-10 p-6 border border-stronggray rounded-2xl grid grid-cols-1 gap-6">
+
+        <div class="col-span-2 flex items-center gap-3 mb-2">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-mainblue/10">
+                <i class="fa-solid fa-building text-mainblue text-lg"></i>
+            </div>
+
+            <div>
+                <p class="text-sm font-bold text-darkblue">Informações da Empresa</p>
+                <p class="text-xs text-gray-500">Dados cadastrais e corporativos</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Nome Fantasia</label>
+            <input id="nomeFantasia" disabled type="text"
+                class="h-10 text-darkblue/70 font-medium rounded-lg bg-darkergray/70 cursor-not-allowed px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">CNPJ</label>
+            <input id="cnpj" type="text" maxlength="18" disabled placeholder="00.000.000/0000-00" oninput="maskCNPJ(this)"
+                class="h-10 text-darkblue/70 font-medium rounded-lg bg-darkergray/70 cursor-not-allowed px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2 col-span-2">
+            <label class="text-sm font-bold text-darkblue">Razão Social</label>
+            <input id="razaoSocial" disabled type="text"
+                class="h-10 text-darkblue/70 font-medium rounded-lg bg-darkergray/70 cursor-not-allowed px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">E-mail Corporativo</label>
+            <input id="email" type="email"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Telefone</label>
+            <input id="telefone" type="text" maxlength="15" placeholder="(00) 00000-0000" oninput="maskPhone(this)"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2 col-span-2">
+            <label class="text-sm font-bold text-darkblue">Descrição da Empresa</label>
+            <textarea id="descricao" rows="4"
+                class="h-24 rounded-lg text-darkblue font-medium bg-darkergray px-4 py-2 resize-none focus:outline-none focus:ring-2 focus:ring-mainblue"></textarea>
+        </div>
+
+        <div class="flex items-start gap-3 col-span-2 p-4 border border-mainblue/40 bg-mainblue/5 rounded-xl">
+            <i class="fa-solid fa-question text-mainblue mt-0.5"></i>
+            <div>
+                <p class="text-sm font-semibold text-darkblue">
+                    Por que bloqueamos a mudança de alguns campos?
+                </p>
+                <p class="text-xs text-gray-500">
+                    Por questões de segurança nosso sistema não permite a alteração de informações cadastrais essenciais como CNPJ e Razão Social.
+                    Caso tenha realizado a alteração de forma legal, por favor, entre em contato e alteraremos as suas informações.
+                </p>
+            </div>
+        </div>
+
+    </section>
+
+    <section
+        class="container w-full max-w-300 mx-auto mt-10 p-6 border border-stronggray rounded-2xl grid grid-cols-1 gap-6">
+
+        <div class="col-span-2 flex items-center gap-3 mb-2">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-mainblue/10">
+                <i class="fa-solid fa-location-dot text-mainblue text-lg"></i>
+            </div>
+
+            <div>
+                <p class="text-sm font-bold text-darkblue">Endereço</p>
+                <p class="text-xs text-gray-500">Localização da empresa</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">CEP</label>
+            <input id="cep" type="text" maxlength="9" placeholder="00000-000"
+                oninput="maskCEP(this); handleCEPChange(this)" onblur="buscarCEP(); handleCEPChange(this)"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Cidade</label>
+            <input id="cidade" type="text"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Endereço Completo</label>
+            <input id="endereco" type="text"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Bairro</label>
+            <input id="bairro" type="text"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Estado</label>
+            <input id="estado" type="text" maxlength="2" placeholder="UF"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-bold text-darkblue">Número</label>
+            <input id="numero" type="text"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+        <div class="flex flex-col gap-2 col-span-2">
+            <label class="text-sm font-bold text-darkblue">Complemento</label>
+            <input id="complemento" type="text"
+                class="h-10 rounded-lg text-darkblue font-medium bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+        </div>
+
+    </section>
+
+    <section
+        class="container w-full max-w-300 mx-auto mt-10 p-6 border border-stronggray rounded-2xl grid grid-cols-1 gap-6">
+
+        <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-mainblue/10">
+                <i class="fa-solid fa-eye text-mainblue text-lg"></i>
+            </div>
+
+            <div>
+                <p class="text-sm font-bold text-darkblue">Privacidade</p>
+                <p class="text-xs text-gray-500">Controle a visibilidade das suas informações</p>
+            </div>
+        </div>
+
+        <div id="toggle-perfil-privado"></div>
+
+        <div class="flex flex-col gap-4 border-b border-stronggray pb-4">
+            <p class="text-sm font-semibold text-darkblue">Informações de Contato</p>
+
+            <div id="toggle-email-publico"></div>
+            <div id="toggle-telefone-publico"></div>
+            <div id="toggle-endereco-publico"></div>
+        </div>
+
+        <div class="flex flex-col gap-4">
+            <p class="text-sm font-semibold text-darkblue">Informações Empresariais</p>
+
+            <div id="toggle-cnpj-publico"></div>
+            <div id="toggle-razao-social-publico"></div>
+        </div>
+
+        <div class="flex items-start gap-3 p-4 border border-mainblue/40 bg-mainblue/5 rounded-xl">
+            <i class="fa-solid fa-shield-halved text-mainblue mt-0.5"></i>
+            <div>
+                <p class="text-sm font-semibold text-darkblue">
+                    Suas informações estão seguras
+                </p>
+                <p class="text-xs text-gray-500">
+                    Seus dados pessoais nunca serão compartilhados com terceiros.
+                    Mantemos suas informações protegidas de acordo com a LGPD.
+                </p>
+            </div>
+        </div>
+
+    </section>
+
+    <section
+        class="container w-full max-w-300 mx-auto mt-10 p-6 border border-stronggray rounded-2xl grid grid-cols-1 gap-6">
+
+        <div class="col-span-2 flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-mainblue/10">
+                <i class="fa-solid fa-shield-halved text-mainblue text-lg"></i>
+            </div>
+
+            <div>
+                <p class="text-sm font-bold text-darkblue">Segurança</p>
+                <p class="text-xs text-gray-500">Proteja sua conta</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 col-span-2">
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-bold text-darkblue">Senha Atual</label>
+                <input id="senhaAtual" type="password"
+                    class="h-10 text-darkblue font-medium rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+            </div>
+
+            <div class="flex flex-col gap-2">
+
+                <label class="text-sm font-bold text-darkblue">Senha Nova</label>
+
+                <input id="senhaNova" type="password"
+                    class="h-10 text-darkblue font-medium rounded-lg bg-darkergray px-4 focus:outline-none focus:ring-2 focus:ring-mainblue">
+
+                <div class="flex justify-end mt-2">
+                    <button type="button" onclick="trocarSenha()"
+                        class="px-5 py-2 rounded-lg bg-mainblue text-white text-sm font-semibold hover:opacity-90 transition">
+                        Alterar Senha
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="toggle-2fa" class="col-span-2"></div>
+
+    </section>
+
+    <section
+        class="container w-full max-w-300 mx-auto mt-10 p-6 border border-stronggray rounded-2xl grid grid-cols-1 gap-6">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-mainblue/10 shrink-0">
+                <i class="fa-solid fa-palette text-mainblue text-lg"></i>
+            </div>
+
+            <div class="min-w-0">
+                <p class="text-sm font-bold text-darkblue">Aparência</p>
+                <p class="text-xs text-gray-500">Customize a interface</p>
+            </div>
+        </div>
+
+        <label class="text-sm font-bold text-darkblue">Tema</label>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <input id="tema-claro" name="tema" type="radio" class="peer sr-only" checked />
+                <label for="tema-claro" class="block cursor-pointer w-full border border-stronggray rounded-2xl p-4 transition
+               hover:border-mainblue
+               peer-checked:border-mainblue peer-checked:ring-2 peer-checked:ring-mainblue/30
+               peer-checked:[&_.check]:opacity-100
+               peer-checked:[&_.dot]:bg-mainblue/10
+               peer-checked:[&_.dot]:border-mainblue">
+                    <div class="w-full h-30 rounded-2xl bg-white border border-stronggray"></div>
+
+                    <div class="mt-2 flex items-center justify-between">
+                        <span class="text-1x1 text-gray-500">Claro</span>
+
+                        <span
+                            class="dot inline-flex items-center justify-center w-6 h-6 rounded-full border border-stronggray">
+                            <i class="check fa-solid fa-check text-mainblue text-xs opacity-0 transition"></i>
+                        </span>
+                    </div>
+                </label>
+            </div>
+
+            <div>
+                <input id="tema-escuro" name="tema" type="radio" class="peer sr-only" />
+                <label for="tema-escuro" class="block cursor-pointer w-full border border-stronggray rounded-2xl p-4 transition
+               hover:border-mainblue
+               peer-checked:border-mainblue peer-checked:ring-2 peer-checked:ring-mainblue/30
+               peer-checked:[&_.check]:opacity-100
+               peer-checked:[&_.dot]:bg-mainblue/10
+               peer-checked:[&_.dot]:border-mainblue">
+                    <div class="w-full h-30 rounded-2xl bg-darkblue"></div>
+
+                    <div class="mt-2 flex items-center justify-between">
+                        <span class="text-1x1 text-gray-500">Escuro</span>
+
+                        <span
+                            class="dot inline-flex items-center justify-center w-6 h-6 rounded-full border border-stronggray">
+                            <i class="check fa-solid fa-check text-mainblue text-xs opacity-0 transition"></i>
+                        </span>
+                    </div>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <section class="container w-full max-w-300 mx-auto mt-10 pb-10">
+        <div class="flex items-center justify-between gap-4">
+
+            <button id="btnLogout" type="button"
+                class="px-6 py-2 rounded-xl border border-red-500 text-red-500 bg-white hover:bg-red-50 transition flex items-center gap-2">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Sair da conta
+            </button>
+
+            <div class="flex items-center gap-4">
+                <button id="btnCancelarAlteracoes" type="button"
+                    onclick="loadDefaultConfig()"
+                    class="px-6 py-2 rounded-xl border border-stronggray text-darkblue bg-white hover:bg-gray-50 transition">
+                    Cancelar
+                </button>
+
+                <button id="btnSalvarAlteracoes" type="button"
+                    onclick="enviarConfiguracoes()"
+                    class="px-6 py-2 rounded-xl bg-mainblue text-white font-semibold hover:opacity-90 transition flex items-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Salvar Alterações
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="../scripts/tema.js"></script>
+    <script type="module" src="../scripts/script.loadHeader.js"></script>
+    <script type="module" src="../scripts/script.configuracoes.js"></script>
+    <script type="module" src="../scripts/script.loadToggle.js"></script>
+    <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+
+</body>
+
+</html>

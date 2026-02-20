@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico" />
+    <link href="../styles/styles.output.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/5b13c47c87.js" crossorigin="anonymous"></script>
+    <title>ReUse - Verificação</title>
+</head>
+<body>
+    <section class="grid grid-cols-1 lg:grid-cols-7 h-screen overflow-hidden">
+        <div class="h-full lg:col-span-2 bg-white flex flex-col items-center py-5 px-6 sm:px-10 overflow-y-auto relative" id="auth-container">
+            
+            <a href="/login" class="absolute top-8 left-6 cursor-pointer text-darkblue hover:text-mainblue transition-colors">
+                <i class="fa-solid fa-chevron-left text-2xl"></i>
+            </a>
+
+            <div class="grow"></div>
+
+            <div id="step-verification" class="w-full max-w-sm flex flex-col items-center">
+                <div class="bg-mainblue/10 p-4 rounded-full mb-6">
+                    <i class="fa-solid fa-shield-halved text-4xl text-mainblue"></i>
+                </div>
+                
+                <h1 class="text-2xl font-bold text-darkblue text-center mb-2 uppercase leading-tight">Verifique seu e-mail</h1>
+                <p class="text-darkblue/60 text-sm text-center mb-8 px-2">
+                    Enviamos um código de segurança de 6 dígitos para o seu e-mail cadastrado.
+                </p>
+
+                <div class="flex justify-between w-full gap-2 mb-8" id="otp-container">
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-12 h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-12 h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-12 h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-12 h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-12 h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                    <input type="text" maxlength="1" class="otp-input w-full max-w-12 h-14 border border-gray-400 rounded-xl text-center text-2xl focus:border-mainblue focus:ring-2 focus:ring-mainblue/20 outline-none transition-all" />
+                </div>
+
+                <button id="btn-verify" class="w-full py-3 bg-mainblue text-white font-bold rounded-full text-lg shadow-lg hover:bg-blue-700 transition-colors">
+                    VERIFICAR
+                </button>
+
+                <button id="btn-resend" class="mt-6 text-mainblue font-semibold underline text-sm hover:text-darkblue transition-colors">
+                    Não recebi o código. Reenviar.
+                </button>
+            </div>
+
+            <div class="grow"></div>
+        </div>
+
+        <div class="h-full col-span-5 bg-[url('../images/login_bg.png')] bg-no-repeat bg-cover hidden lg:flex flex-col justify-center items-center gap-2 p-10">
+            <h1 class="font-bold text-4xl lg:text-6xl text-white text-center">Proteja sua conta</h1>
+            <p class="font-normal text-2xl text-white text-center max-w-2xl">A verificação em duas etapas garante que apenas você tenha acesso aos seus dados e negociações.</p>
+        </div>
+    </section>
+
+    <script type="module" src="../scripts/script.tfauth.js"></script>
+</body>
+</html>
