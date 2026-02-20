@@ -80,6 +80,7 @@
     --leading-tight: 1.25;
     --leading-snug: 1.375;
     --leading-relaxed: 1.625;
+    --radius-sm: 0.25rem;
     --radius-md: 0.375rem;
     --radius-lg: 0.5rem;
     --radius-xl: 0.75rem;
@@ -286,9 +287,6 @@
   .relative {
     position: relative;
   }
-  .static {
-    position: static;
-  }
   .sticky {
     position: sticky;
   }
@@ -306,9 +304,6 @@
   }
   .top-0 {
     top: calc(var(--spacing) * 0);
-  }
-  .top-1 {
-    top: calc(var(--spacing) * 1);
   }
   .top-1\/2 {
     top: calc(1/2 * 100%);
@@ -357,9 +352,6 @@
   }
   .left-0 {
     left: calc(var(--spacing) * 0);
-  }
-  .left-2 {
-    left: calc(var(--spacing) * 2);
   }
   .left-2\.5 {
     left: calc(var(--spacing) * 2.5);
@@ -460,9 +452,6 @@
   .-mt-2 {
     margin-top: calc(var(--spacing) * -2);
   }
-  .mt-0 {
-    margin-top: calc(var(--spacing) * 0);
-  }
   .mt-0\.5 {
     margin-top: calc(var(--spacing) * 0.5);
   }
@@ -474,9 +463,6 @@
   }
   .mt-3 {
     margin-top: calc(var(--spacing) * 3);
-  }
-  .mt-3\.5 {
-    margin-top: calc(var(--spacing) * 3.5);
   }
   .mt-4 {
     margin-top: calc(var(--spacing) * 4);
@@ -571,9 +557,6 @@
   .inline-flex {
     display: inline-flex;
   }
-  .table {
-    display: table;
-  }
   .h-2 {
     height: calc(var(--spacing) * 2);
   }
@@ -588,9 +571,6 @@
   }
   .h-7 {
     height: calc(var(--spacing) * 7);
-  }
-  .h-8 {
-    height: calc(var(--spacing) * 8);
   }
   .h-9 {
     height: calc(var(--spacing) * 9);
@@ -736,9 +716,6 @@
   .w-full {
     width: 100%;
   }
-  .w-px {
-    width: 1px;
-  }
   .max-w-2xl {
     max-width: var(--container-2xl);
   }
@@ -787,23 +764,14 @@
   .flex-1 {
     flex: 1;
   }
-  .flex-shrink {
-    flex-shrink: 1;
-  }
   .flex-shrink-0 {
     flex-shrink: 0;
   }
   .shrink-0 {
     flex-shrink: 0;
   }
-  .flex-grow {
-    flex-grow: 1;
-  }
   .grow {
     flex-grow: 1;
-  }
-  .border-collapse {
-    border-collapse: collapse;
   }
   .-translate-x-full {
     --tw-translate-x: -100%;
@@ -815,10 +783,6 @@
   }
   .translate-x-full {
     --tw-translate-x: 100%;
-    translate: var(--tw-translate-x) var(--tw-translate-y);
-  }
-  .-translate-y-1 {
-    --tw-translate-y: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-y-1\/2 {
@@ -1201,9 +1165,6 @@
   .bg-amber-500 {
     background-color: var(--color-amber-500);
   }
-  .bg-black {
-    background-color: var(--color-black);
-  }
   .bg-black\/25 {
     background-color: color-mix(in srgb, #000 25%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1230,9 +1191,6 @@
   }
   .bg-blue-600 {
     background-color: var(--color-blue-600);
-  }
-  .bg-cyangrey {
-    background-color: var(--color-cyangrey);
   }
   .bg-darkblue {
     background-color: var(--color-darkblue);
@@ -1263,9 +1221,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-darkergray) 70%, transparent);
     }
-  }
-  .bg-darkgray {
-    background-color: var(--color-darkgray);
   }
   .bg-darkgray\/10 {
     background-color: color-mix(in srgb, #B1B1B1 10%, transparent);
@@ -1333,9 +1288,6 @@
       background-color: color-mix(in oklab, var(--color-mainblue) 15%, transparent);
     }
   }
-  .bg-mediumred {
-    background-color: var(--color-mediumred);
-  }
   .bg-mediumred\/10 {
     background-color: color-mix(in srgb, #FF82AC 10%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -1359,9 +1311,6 @@
   }
   .bg-rose-50 {
     background-color: var(--color-rose-50);
-  }
-  .bg-stronggray {
-    background-color: var(--color-stronggray);
   }
   .bg-stronggray\/60 {
     background-color: color-mix(in srgb, #ADADAD 60%, transparent);
@@ -1453,9 +1402,6 @@
   .px-10 {
     padding-inline: calc(var(--spacing) * 10);
   }
-  .py-0 {
-    padding-block: calc(var(--spacing) * 0);
-  }
   .py-0\.5 {
     padding-block: calc(var(--spacing) * 0.5);
   }
@@ -1489,17 +1435,11 @@
   .py-10 {
     padding-block: calc(var(--spacing) * 10);
   }
-  .pt-0 {
-    padding-top: calc(var(--spacing) * 0);
-  }
   .pt-0\.5 {
     padding-top: calc(var(--spacing) * 0.5);
   }
   .pt-0\.75 {
     padding-top: calc(var(--spacing) * 0.75);
-  }
-  .pt-2 {
-    padding-top: calc(var(--spacing) * 2);
   }
   .pt-2\.5 {
     padding-top: calc(var(--spacing) * 2.5);
@@ -1516,9 +1456,6 @@
   .pt-8 {
     padding-top: calc(var(--spacing) * 8);
   }
-  .pr-0 {
-    padding-right: calc(var(--spacing) * 0);
-  }
   .pr-0\.5 {
     padding-right: calc(var(--spacing) * 0.5);
   }
@@ -1530,9 +1467,6 @@
   }
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);
-  }
-  .pb-2 {
-    padding-bottom: calc(var(--spacing) * 2);
   }
   .pb-2\.5 {
     padding-bottom: calc(var(--spacing) * 2.5);
@@ -1884,22 +1818,10 @@
     --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
-  .shadow-mainblue {
-    --tw-shadow-color: #2D60FF;
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, var(--color-mainblue) var(--tw-shadow-alpha), transparent);
-    }
-  }
   .shadow-mainblue\/20 {
     --tw-shadow-color: color-mix(in srgb, #2D60FF 20%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-mainblue) 20%, transparent) var(--tw-shadow-alpha), transparent);
-    }
-  }
-  .shadow-red {
-    --tw-shadow-color: #FE5C73;
-    @supports (color: color-mix(in lab, red, red)) {
-      --tw-shadow-color: color-mix(in oklab, var(--color-red) var(--tw-shadow-alpha), transparent);
     }
   }
   .shadow-red\/20 {
@@ -1908,18 +1830,11 @@
       --tw-shadow-color: color-mix(in oklab, color-mix(in oklab, var(--color-red) 20%, transparent) var(--tw-shadow-alpha), transparent);
     }
   }
-  .ring-stronggray {
-    --tw-ring-color: var(--color-stronggray);
-  }
   .ring-stronggray\/70 {
     --tw-ring-color: color-mix(in srgb, #ADADAD 70%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       --tw-ring-color: color-mix(in oklab, var(--color-stronggray) 70%, transparent);
     }
-  }
-  .outline {
-    outline-style: var(--tw-outline-style);
-    outline-width: 1px;
   }
   .blur {
     --tw-blur: blur(8px);
@@ -1945,10 +1860,6 @@
   }
   .backdrop-saturate-150 {
     --tw-backdrop-saturate: saturate(150%);
-    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-  }
-  .backdrop-filter {
     -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
     backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
   }
@@ -2913,11 +2824,6 @@ html, body {
   inherits: false;
   initial-value: 0 0 #0000;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @property --tw-blur {
   syntax: "*";
   inherits: false;
@@ -3065,7 +2971,6 @@ html, body {
       --tw-ring-offset-width: 0px;
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 #0000;
-      --tw-outline-style: solid;
       --tw-blur: initial;
       --tw-brightness: initial;
       --tw-contrast: initial;

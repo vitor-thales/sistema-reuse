@@ -7,7 +7,7 @@ export default {
       `SELECT e.nomeFantasia, e.cnpj, e.razaoSocial, e.emailCorporativo, e.foneCorporativo, 
               e.descricao, e.cepEmpresa, e.estado, e.cidade, e.bairro, e.endereco, 
               e.numEndereco, e.compEndereco,
-              c.notMsgEmpresas, c.notAttAnuncios, c.privPerfilPrivado, c.privMostrarEmail, 
+            c.privPerfilPrivado, c.privMostrarEmail, 
               c.privMostrarFone, c.privMostrarEndCompleto, c.privMostrarCNPJ, 
               c.privMostrarRazaoSocial, c.segAutDuasEtapas, c.aparenciaTema
        FROM tbEmpresas e
@@ -54,13 +54,11 @@ export default {
 
         const sqlConfig = `
             INSERT INTO tbConfigEmpresas (
-                idEmpresa, notMsgEmpresas, notAttAnuncios, privPerfilPrivado,
+                idEmpresa, privPerfilPrivado,
                 privMostrarEmail, privMostrarFone, privMostrarEndCompleto,
                 privMostrarCNPJ, privMostrarRazaoSocial, segAutDuasEtapas
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
-                notMsgEmpresas = VALUES(notMsgEmpresas),
-                notAttAnuncios = VALUES(notAttAnuncios),
                 privPerfilPrivado = VALUES(privPerfilPrivado),
                 privMostrarEmail = VALUES(privMostrarEmail),
                 privMostrarFone = VALUES(privMostrarFone),
@@ -72,8 +70,6 @@ export default {
 
         await connection.query(sqlConfig, [
             idEmpresa,
-            data.notMsgEmpresas ?? true,
-            data.notAttAnuncios ?? true,
             data.privPerfilPrivado ?? false,
             data.privMostrarEmail ?? true,
             data.privMostrarFone ?? true,

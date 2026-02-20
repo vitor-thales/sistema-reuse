@@ -105,27 +105,35 @@ const ChatEngine = {
     },
 
     async decryptMessage(encryptedBlob, wrappedKeyBase64, ivBase64) {
-        const iv = Uint8Array.from(atob(ivBase64), c => c.charCodeAt(0));
-        const wrappedKey = Uint8Array.from(atob(wrappedKeyBase64), c => c.charCodeAt(0));
-        const content = Uint8Array.from(atob(encryptedBlob), c => c.charCodeAt(0));
+        try {
+            const iv = Uint8Array.from(atob(ivBase64), c => c.charCodeAt(0));
+            const wrappedKey = Uint8Array.from(atob(wrappedKeyBase64), c => c.charCodeAt(0));
+            const content = Uint8Array.from(atob(encryptedBlob), c => c.charCodeAt(0));
 
-        const rawAesKey = await crypto.subtle.decrypt(
-            { name: "RSA-OAEP" },
-            this.privateKey,
-            wrappedKey
-        );
+            // This is usually where OperationError happens if the Private Key is new/wrong
+            const rawAesKey = await crypto.subtle.decrypt(
+                { name: "RSA-OAEP" },
+                this.privateKey,
+                wrappedKey
+            );
 
-        const aesKey = await crypto.subtle.importKey(
-            "raw", rawAesKey, "AES-GCM", false, ["decrypt"]
-        );
+            const aesKey = await crypto.subtle.importKey(
+                "raw", rawAesKey, "AES-GCM", false, ["decrypt"]
+            );
 
-        const decryptedBuffer = await crypto.subtle.decrypt(
-            { name: "AES-GCM", iv },
-            aesKey,
-            content
-        );
+            const decryptedBuffer = await crypto.subtle.decrypt(
+                { name: "AES-GCM", iv },
+                aesKey,
+                content
+            );
 
-        return new TextDecoder().decode(decryptedBuffer);
+            return new TextDecoder().decode(decryptedBuffer);
+
+        } catch (error) {
+            console.warn("Decryption failed. Likely due to a password reset/key change:", error);
+        
+            return null;
+        }
     },
 
     async verifySignature(dataBuffer, signatureBase64, senderPublicKeyBase64) {

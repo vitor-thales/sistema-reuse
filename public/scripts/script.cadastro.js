@@ -311,7 +311,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const json = await res.json();
 
             if (res.status == 500) toast.show("Erro interno do sistema", "error");
-            else if (res.status == 400) toast.show(json.errors[0], "error");
+            else if (res.status == 400) {
+                if(json.errors) toast.show(json.errors[0], "error");
+                else toast.show(json.error, "error");
+            } 
             else { 
                 localStorage.clear();
                 window.location.href = "http://localhost:8080/registrar/sucesso"
@@ -380,6 +383,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     passwordInput.addEventListener("input", validatePasswordUI);
+
+    document.querySelectorAll('input[name="nome-responsavel"]').forEach(input => {
+        input.addEventListener('beforeinput', (e) => {
+            if (e.data && !/^[A-Za-zÀ-ÿ\s]+$/.test(e.data)) {
+                e.preventDefault();
+            }
+        });
+    });
 
     loadLastSession();
 });
